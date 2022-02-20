@@ -1,0 +1,166 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Seed {
+  id        Int      @id @default(autoincrement()) @db.UnsignedInt
+  seed      String   @db.VarChar(255)
+  createdAt DateTime @default(now())
+}
+
+enum UserRole {
+  GUEST
+  USER
+  ADMIN
+}
+
+model User {
+  id               BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  role             UserRole  @default(GUEST)
+  email            String    @unique @db.VarChar(255)
+  emailActivatedAt DateTime?
+  firstName        String?   @db.VarChar(255)
+  lastName         String?   @db.VarChar(255)
+  phone            String?   @db.VarChar(16)
+  passwordHash     String    @db.VarChar(72) // bcrypt
+  loggedAt         DateTime?
+  imageId          BigInt?   @db.UnsignedBigInt
+
+  isSim   Boolean @default(false)
+  isClean Boolean @default(false)
+
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // Relations
+  Image Image? @relation(fields: [imageId], references: [id])
+  Jwt   Jwt[]
+
+  @@index([deletedAt])
+  @@index([isClean])
+  @@index([isSim])
+}
+
+enum JwtType {
+  USER_AUTH
+  USER_ACTIVATION
+  USER_RECOVERY
+}
+
+model Jwt {
+  id           BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  type         JwtType
+  uid          String   @unique @db.VarChar(32)
+  expirationAt DateTime
+  userId       BigInt?  @db.UnsignedBigInt
+  meta         Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relations
+  User User? @relation(fields: [userId], references: [id])
+
+  @@unique([type, uid])
+}
+
+model Setting {
+  id    BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  name  String @unique @db.VarChar(512)
+  value Json   @db.Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TaskType {
+  SEND_EMAIL
+}
+
+model Task {
+  id       BigInt   @id @default(autoincrement())
+  type     TaskType @default(SEND_EMAIL)
+  data     Json     @db.Json
+  attempts Int      @default(0) @db.SmallInt
+
+  forNodeUid  String?   @db.VarChar(32)
+  isActive    Boolean   @default(false)
+  isFail      Boolean   @default(false)
+  lastStartAt DateTime?
+  failAt      DateTime?
+  errorText   String?   @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type])
+  @@index([isActive])
+}
+
+model Image {
+  id           BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  ipfsObjectId BigInt @db.UnsignedBigInt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relations
+  IpfsObject IpfsObject @relation(fields: [ipfsObjectId], references: [id])
+  Users      User[]
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+}
+
+enum IpfsObjectLocation {
+  S3_IPFS
+}
+
+model IpfsObject {
+  id       BigInt             @id @default(autoincrement()) @db.UnsignedBigInt
+  sha256   String             @db.VarChar(64)
+  location IpfsObjectLocation @default(S3_IPFS)
+  mime     String             @db.VarChar(255) // mime type
+  size     Int // bytes size
+  width    Int // image or video width
+  height   Int // image or video height
+
+  type     MediaType
+  isThumb  Boolean   @default(false)
+  isBanned Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Images      Image[]
+  ThumbsOrg   IpfsObjectThumb[] @relation("Org")
+  ThumbsThumb IpfsObjectThumb[] @relation("Thumb")
+
+  @@index([sha256])
+  @@index([isBanned])
+}
+
+model IpfsObjectThumb {
+  id                BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  orgIpfsObjectId   BigInt @db.UnsignedBigInt
+  thumbIpfsObjectId BigInt @db.UnsignedBigInt
+  thumbName         String @db.VarChar(32)
+
+  OrgObject   IpfsObject @relation("Org", fields: [orgIpfsObjectId], references: [id])
+  ThumbObject IpfsObject @relation("Thumb", fields: [thumbIpfsObjectId], references: [id])
+
+  @@unique([orgIpfsObjectId, thumbName])
+  @@index([orgIpfsObjectId])
+}
