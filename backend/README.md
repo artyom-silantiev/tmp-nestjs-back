@@ -18,26 +18,34 @@ $ docker-compose up
 ## Deploy for production
 
 ```bash
-# .env file
-$ cd <this folder>
-$ cp .env.default .env
-$ nano .env
+# install
+yarn
 
-# [OPTIONAL] docker for db, redis, s3
+# .env file
+$ yarn cli:env:setup
+
+# [OPTIONAL] if used db, redis, s3 from docker
 $ docker-compose up -d
 
 # db migrates
-$ npx prisma migrate deploy
+$ yarn migrate_prod
+
+# db seeder
+$ yarn cli:seeder
+
+# build
+$ yarn build:all
+$ sh build_frontend_main.sh
 
 # deploy apps
 $ cp pm2.config.default.js pm2.config.js
 $ nano pm2.config.js
 $ pm2 start pm2.config.js
 
-# traefik
+# traefik (if need)
 $ yarn cli:cluster:list
 $ yarn cli:cluster:update_traefik_config
-$ sudo traefik ./traefik/traefik.yml
+# traefik/README.md
 ```
 
 ## Build main app
@@ -113,7 +121,8 @@ https://www.prisma.io/docs/guides/application-lifecycle/developing-with-prisma-m
 ## Devs commands
 
 ```sh
-
+npx ts-node -r tsconfig-paths/register _apps/cli/src/_cmd.ts -- env:print_default
+npx ts-node -r tsconfig-paths/register _apps/cli/src/_cmd.ts -- env:setup
 ```
 
 ## Ports in project

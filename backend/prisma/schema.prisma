@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -11,7 +11,7 @@ generator client {
 }
 
 model Seed {
-  id        Int      @id @default(autoincrement()) @db.UnsignedInt
+  id        Int      @id @default(autoincrement())
   seed      String   @db.VarChar(255)
   createdAt DateTime @default(now())
 }
@@ -23,7 +23,7 @@ enum UserRole {
 }
 
 model User {
-  id               BigInt    @id @default(autoincrement()) @db.UnsignedBigInt
+  id               BigInt    @id @default(autoincrement())
   role             UserRole  @default(GUEST)
   email            String    @unique @db.VarChar(255)
   emailActivatedAt DateTime?
@@ -32,7 +32,7 @@ model User {
   phone            String?   @db.VarChar(16)
   passwordHash     String    @db.VarChar(72) // bcrypt
   loggedAt         DateTime?
-  imageId          BigInt?   @db.UnsignedBigInt
+  imageId          BigInt?
 
   isSim   Boolean @default(false)
   isClean Boolean @default(false)
@@ -57,11 +57,11 @@ enum JwtType {
 }
 
 model Jwt {
-  id           BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  id           BigInt   @id @default(autoincrement())
   type         JwtType
   uid          String   @unique @db.VarChar(32)
   expirationAt DateTime
-  userId       BigInt?  @db.UnsignedBigInt
+  userId       BigInt?
   meta         Json?
 
   createdAt DateTime @default(now())
@@ -74,7 +74,7 @@ model Jwt {
 }
 
 model Setting {
-  id    BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  id    BigInt @id @default(autoincrement())
   name  String @unique @db.VarChar(512)
   value Json   @db.Json
 
@@ -107,8 +107,8 @@ model Task {
 }
 
 model Image {
-  id           BigInt @id @default(autoincrement()) @db.UnsignedBigInt
-  ipfsObjectId BigInt @db.UnsignedBigInt
+  id           BigInt @id @default(autoincrement())
+  ipfsObjectId BigInt
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -129,7 +129,7 @@ enum IpfsObjectLocation {
 }
 
 model IpfsObject {
-  id       BigInt             @id @default(autoincrement()) @db.UnsignedBigInt
+  id       BigInt             @id @default(autoincrement())
   sha256   String             @db.VarChar(64)
   location IpfsObjectLocation @default(S3_IPFS)
   mime     String             @db.VarChar(255) // mime type
@@ -153,9 +153,9 @@ model IpfsObject {
 }
 
 model IpfsObjectThumb {
-  id                BigInt @id @default(autoincrement()) @db.UnsignedBigInt
-  orgIpfsObjectId   BigInt @db.UnsignedBigInt
-  thumbIpfsObjectId BigInt @db.UnsignedBigInt
+  id                BigInt @id @default(autoincrement())
+  orgIpfsObjectId   BigInt
+  thumbIpfsObjectId BigInt
   thumbName         String @db.VarChar(32)
 
   OrgObject   IpfsObject @relation("Org", fields: [orgIpfsObjectId], references: [id])

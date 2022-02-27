@@ -1,49 +1,47 @@
-import { ClusterAppType } from "@share/modules/cluster-app/cluster-app.types";
-import { IpfsRangesService } from "@share/modules/ipfs_ranges/ipfs_ranges.service";
+import { ClusterAppType } from '@share/modules/env/env.service';
+import { IpfsRangesService } from '@share/modules/ipfs_ranges/ipfs_ranges.service';
 
-import * as fs from "fs-extra";
-import * as path from "path";
-import * as YAML from "json-to-pretty-yaml";
-import { AppStatus } from "./cluster.types";
-import { EnvService } from "@share/modules/env/env.service";
+import * as fs from 'fs-extra';
+import * as path from 'path';
+import * as YAML from 'json-to-pretty-yaml';
+import { AppStatus } from './cluster.types';
+import { EnvService } from '@share/modules/env/env.service';
 
-const PATH_TRAEFIK_DIR = path.resolve("./traefik");
-const PATH_CLUSTER_TRAEFIK_CONF = path.resolve(PATH_TRAEFIK_DIR, "traefik.yml");
-const PATH_TRAEFIK_PROVIDER_CONF = path.resolve(
-  PATH_TRAEFIK_DIR,
-  "provider.yml"
-);
-const PATH_TRAEFIK_ACME_JSON = path.resolve(PATH_TRAEFIK_DIR, "acme.json");
+const TRAEFIK_DIR = path.resolve('./traefik');
+const TRAEFIK_PROVIDERS_DIR = path.resolve(TRAEFIK_DIR, 'providers');
+const TRAEFIK_CONF = path.resolve(TRAEFIK_DIR, 'traefik.yml');
+const TRAEFIK_PROVIDER_WEB = path.resolve(TRAEFIK_PROVIDERS_DIR, 'web.yml');
+const TRAEFIK_PROVIDER_LIVE = path.resolve(TRAEFIK_PROVIDERS_DIR, 'live.yml');
+const TRAEFIK_ACME_JSON = path.resolve(TRAEFIK_DIR, 'acme.json');
 
-const EpWeb = "EpWeb";
-const EpWebS = "EpWebS";
-const EpRtmp = "EpRtmp";
-const LEResolver = "letsEncrypt";
+const EpWeb = 'EpWeb';
+const EpWebS = 'EpWebS';
+const EpRtmp = 'EpRtmp';
+const LEResolver = 'letsEncrypt';
 
 export class TraefikConfig {
   private webApps: AppStatus[];
   private ioApps: AppStatus[];
-  private liveApps: AppStatus[];
-  private webrtcApps: AppStatus[];
   private hexRanges: string[];
 
-  private hostMain = "dashboard.jesusstream.com";
-  private hostCdn = "cdn.jesusstream.com";
+  private hostMain = 'dashboard.jesusstream.com';
+  private hostCdn = 'cdn.jesusstream.com';
   private portHttp = 80;
   private portHttps = 443;
-  private portRtmp = 1935;
   private acmeEnabled = false;
-  private acmeEmail = "chris@chrisjukes.ca";
+  private acmeEmail = 'chris@chrisjukes.ca';
+  private isWeb = false;
 
   constructor(
     private env: EnvService,
     clusterApps: AppStatus[],
-    private ipfsRanges: IpfsRangesService
+    private ipfsRanges: IpfsRangesService,
   ) {
     this.groupClusterApps(clusterApps);
 
-    this.hostMain = env.TRAEFIK_HOST_MAIN;
-    this.hostCdn = env.TRAEFIK_HOST_CDN;
+    this.isWeb = env.TRAEFIK_ENDPOINTS.indexOf('web') !== -1;
+
+    this.hostMain = env.TRAEFIK_DOMAIN_WEB;
     this.acmeEnabled = env.TRAEFIK_ACME_ENABLED;
     this.acmeEmail = env.TRAEFIK_ACME_EMAIL;
   }
@@ -51,13 +49,6 @@ export class TraefikConfig {
   private groupClusterApps(clusterApps: AppStatus[]) {
     clusterApps = clusterApps.filter((app) => !!app.status);
     this.webApps = clusterApps.filter((app) => app.type === ClusterAppType.Web);
-    this.ioApps = clusterApps.filter((app) => app.type === ClusterAppType.IO);
-    this.liveApps = clusterApps.filter(
-      (app) => app.type === ClusterAppType.Live
-    );
-    this.webrtcApps = clusterApps.filter(
-      (app) => app.type === ClusterAppType.WebRtc
-    );
   }
 
   private initIpfsRanges() {
@@ -74,13 +65,10 @@ export class TraefikConfig {
         [EpWebS]: {
           address: `:${this.portHttps}`,
         },
-        [EpRtmp]: {
-          address: `:${this.portRtmp}`,
-        },
       },
       providers: {
         file: {
-          filename: PATH_TRAEFIK_PROVIDER_CONF,
+          directory: TRAEFIK_PROVIDERS_DIR,
           watch: true,
         },
       },
@@ -94,7 +82,7 @@ export class TraefikConfig {
             [LEResolver]: {
               acme: {
                 email: this.acmeEmail,
-                storage: PATH_TRAEFIK_ACME_JSON,
+                storage: TRAEFIK_ACME_JSON,
                 httpChallenge: {
                   entryPoint: EpWeb,
                 },
@@ -108,8 +96,8 @@ export class TraefikConfig {
     return traefikConfig;
   }
 
-  private getTraefikProviderWeb() {
-    const getServices = () => {
+  private getTraefikWebProvider() {
+    const getWebServices = () => {
       const srvWeb = () => {
         return {
           loadBalancer: {
@@ -142,27 +130,6 @@ export class TraefikConfig {
           },
         };
       };
-      const srvLiveData = () => {
-        return {
-          loadBalancer: {
-            servers: this.liveApps.map((w) => {
-              return { url: `http://${w.host}:${w.portHttp}/` };
-            }),
-          },
-        };
-      };
-      const srvWebrtc = () => {
-        return {
-          loadBalancer: {
-            servers: this.webrtcApps.map((w) => {
-              return { url: `http://${w.host}:${w.portHttp}/` };
-            }),
-            sticky: {
-              cookie: true,
-            },
-          },
-        };
-      };
 
       let services = {};
       srvWebSha256(services);
@@ -171,14 +138,12 @@ export class TraefikConfig {
         ...{
           web: srvWeb(),
           io: srvIO(),
-          webrtc: srvWebrtc(),
-          live_data: srvLiveData(),
         },
       };
       return services;
     };
 
-    const getRouters = () => {
+    const getWebRouters = () => {
       const routers = {};
 
       for (const index in this.webApps) {
@@ -192,32 +157,32 @@ export class TraefikConfig {
         };
       }
 
-      routers["live_data"] = {
+      routers['live_data'] = {
         entryPoints: EpWebS,
         rule: `Host(\`${this.hostMain}\`)` + ` && PathPrefix(\`/live\`)`,
         service: `live_data`,
       };
 
-      routers["io"] = {
+      routers['io'] = {
         entryPoints: EpWebS,
         rule: `Host(\`${this.hostMain}\`)` + ` && PathPrefix(\`/socket.io\`)`,
         service: `io`,
       };
 
-      routers["webrtc"] = {
+      routers['webrtc'] = {
         entryPoints: EpWebS,
         rule:
           `Host(\`${this.hostMain}\`)` + ` && PathPrefix(\`/wrtc2rtmp.io\`)`,
         service: `webrtc`,
       };
 
-      routers["web"] = {
+      routers['web'] = {
         entryPoints: EpWebS,
         rule: `Host(\`${this.hostMain}\`)`,
         service: `web`,
       };
 
-      routers["plyaer"] = {
+      routers['plyaer'] = {
         entryPoints: EpWebS,
         rule: `Host(\`${this.hostCdn}\`) && PathPrefix(\`/player\`)`,
         service: `web`,
@@ -240,79 +205,30 @@ export class TraefikConfig {
       return routers;
     };
 
-    const traefikProviderHttp = {
-      // middlewares: {},
-      services: getServices(),
-      routers: getRouters(),
+    const traefikProviderWeb = {
+      http: {
+        services: getWebServices(),
+        routers: getWebRouters(),
+      },
     };
 
-    return traefikProviderHttp;
-  }
-
-  private getTraefikProviderTcp() {
-    const getServices = () => {
-      const srvLiveRtmp = () => {
-        return {
-          loadBalancer: {
-            servers: this.liveApps.map((w) => {
-              return { address: `${w.host}:${w.portRtmp}` };
-            }),
-          },
-        };
-      };
-
-      const services = {
-        live_rtmp: srvLiveRtmp(),
-      };
-      return services;
-    };
-
-    const getRouters = () => {
-      const routers = {};
-
-      routers["live_rtmp"] = {
-        entryPoints: EpRtmp,
-        rule: `HostSNI(\`*\`)`,
-        service: `live_rtmp`,
-      };
-
-      return routers;
-    };
-
-    const traefikProviderTcp = {
-      services: getServices(),
-      routers: getRouters(),
-    };
-
-    return traefikProviderTcp;
-  }
-
-  private getTraefikProvider() {
-    const traefikProvider = {
-      http: this.getTraefikProviderWeb(),
-      tcp: this.getTraefikProviderTcp(),
-    };
-
-    return traefikProvider;
+    return traefikProviderWeb;
   }
 
   public async generateTraefikConfig() {
     this.initIpfsRanges();
 
+    await fs.mkdirs(TRAEFIK_DIR);
+    await fs.mkdirs(TRAEFIK_PROVIDERS_DIR);
+
     const traefikConfig = this.getTraefikConfig();
-    const traefikProvider = this.getTraefikProvider();
+    await fs.writeFile(TRAEFIK_CONF, YAML.stringify(traefikConfig));
+    console.log(`traefik config created: ${TRAEFIK_CONF}`);
 
-    await fs.mkdirs(PATH_TRAEFIK_DIR);
-    await fs.writeFile(
-      PATH_CLUSTER_TRAEFIK_CONF,
-      YAML.stringify(traefikConfig)
-    );
-    await fs.writeFile(
-      PATH_TRAEFIK_PROVIDER_CONF,
-      YAML.stringify(traefikProvider)
-    );
-
-    console.log(`traefik config created: ${PATH_CLUSTER_TRAEFIK_CONF}`);
-    console.log(`traefik file provider created: ${PATH_TRAEFIK_PROVIDER_CONF}`);
+    if (this.isWeb) {
+      const providerWeb = this.getTraefikWebProvider();
+      await fs.writeFile(TRAEFIK_PROVIDER_WEB, YAML.stringify(providerWeb));
+      console.log(`traefik web provider created: ${TRAEFIK_PROVIDER_WEB}`);
+    }
   }
 }

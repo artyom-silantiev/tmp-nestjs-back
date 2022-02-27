@@ -1,13 +1,13 @@
-import { Bs58Service } from "@share/modules/common/bs58.service";
-import { JwtDbService } from "@db/services/jwt-db.service";
-import { Injectable } from "@nestjs/common";
-import { Jwt, JwtType } from "@prisma/client";
-import * as jwt from "jsonwebtoken";
-import { EnvService } from "../env/env.service";
+import { Bs58Service } from '@share/modules/common/bs58.service';
+import { JwtDbService } from '@db/services/jwt-db.service';
+import { Injectable } from '@nestjs/common';
+import { Jwt, JwtType } from '@prisma/client';
+import * as jwt from 'jsonwebtoken';
+import { EnvService } from '../env/env.service';
 
 export enum UserActivationType {
-  signup = "signup",
-  emailChange = "emailChange",
+  signup = 'signup',
+  emailChange = 'emailChange',
 }
 
 export type UserActivationMeta =
@@ -30,9 +30,9 @@ export class JwtUserActivationService {
   constructor(
     private envService: EnvService,
     private bs58Service: Bs58Service,
-    private jwtDb: JwtDbService
+    private jwtDb: JwtDbService,
   ) {
-    this.SECRET = envService.JWT_ACTIVATION_SECRET;
+    this.SECRET = envService.SECRET_JWT_ACTIVATION;
     this.TTL_SEC = envService.JWT_ACTIVATION_TTL_SEC;
   }
 
@@ -44,7 +44,7 @@ export class JwtUserActivationService {
     } as JwtUserActivationPayload;
     const ttlSec = this.TTL_SEC;
     const token = jwt.sign(payload, this.SECRET, {
-      expiresIn: this.TTL_SEC + "s",
+      expiresIn: this.TTL_SEC + 's',
     });
 
     const expirationTsMs = Math.floor(Date.now() + ttlSec * 1000);
@@ -54,7 +54,7 @@ export class JwtUserActivationService {
       userId,
       uid,
       expirationAt,
-      metaData
+      metaData,
     );
 
     return { token, uid, jwtRow };
@@ -69,7 +69,7 @@ export class JwtUserActivationService {
       const payload = this.verify(token);
       const jwtRow = (await this.jwtDb.getLiveJwt(
         JwtType.USER_ACTIVATION,
-        payload.uid
+        payload.uid,
       )) as Jwt & { meta: UserActivationMeta };
       if (!jwtRow) {
         return null;

@@ -1,9 +1,9 @@
-import { Injectable } from "@nestjs/common";
-import { Bs58Service } from "@share/modules/common/bs58.service";
-import * as jwt from "jsonwebtoken";
-import { EnvService } from "../env/env.service";
-import { JwtType } from "@prisma/client";
-import { JwtDbService } from "@db/services/jwt-db.service";
+import { Injectable } from '@nestjs/common';
+import { Bs58Service } from '@share/modules/common/bs58.service';
+import * as jwt from 'jsonwebtoken';
+import { EnvService } from '../env/env.service';
+import { JwtType } from '@prisma/client';
+import { JwtDbService } from '@db/services/jwt-db.service';
 
 export class JwtUserAuthPayload {
   sub: string;
@@ -18,9 +18,9 @@ export class JwtUserAuthService {
   constructor(
     private envService: EnvService,
     private bs58Service: Bs58Service,
-    private jwtDb: JwtDbService
+    private jwtDb: JwtDbService,
   ) {
-    this.SECRET = envService.JWT_AUTH_SECRET;
+    this.SECRET = envService.SECRET_JWT_AUTH;
     this.TTL_SEC = envService.JWT_AUTH_TTL_SEC;
   }
 
@@ -32,7 +32,7 @@ export class JwtUserAuthService {
     } as JwtUserAuthPayload;
     const ttlSec = this.TTL_SEC;
     const token = jwt.sign(payload, this.SECRET, {
-      expiresIn: ttlSec + "s",
+      expiresIn: ttlSec + 's',
     });
 
     const expirationTsMs = Math.floor(Date.now() + ttlSec * 1000);
@@ -41,7 +41,7 @@ export class JwtUserAuthService {
       JwtType.USER_AUTH,
       userId,
       uid,
-      expirationAt
+      expirationAt,
     );
 
     return { uid, token, jwtRow };
@@ -56,7 +56,7 @@ export class JwtUserAuthService {
       const payload = this.verify(token);
       const jwtRow = await this.jwtDb.getLiveJwt(
         JwtType.USER_AUTH,
-        payload.uid
+        payload.uid,
       );
       if (!jwtRow) {
         return null;

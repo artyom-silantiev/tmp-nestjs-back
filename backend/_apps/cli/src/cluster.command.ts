@@ -4,7 +4,7 @@ import {
   AppMessage,
   ClusterAppService,
 } from '@share/modules/cluster-app/cluster-app.service';
-import { ClusterAppType } from '@share/modules/cluster-app/cluster-app.types';
+import { ClusterAppType } from '@share/modules/env/env.service';
 import { RedisService } from '@share/modules/redis/redis.service';
 import { createDeferred } from '@share/helpers';
 import * as _ from 'lodash';

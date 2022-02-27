@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { createNodeRedisClient, WrappedNodeRedisClient } from 'handy-redis';
-import { ClusterAppType } from '../cluster-app/cluster-app.types';
+import { ClusterAppType } from '@share/modules/env/env.service';
 import { EnvService } from '../env/env.service';
 
 @Injectable()

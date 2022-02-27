@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { Bs58Service } from '../common/bs58.service';
 import { EnvService } from '../env/env.service';
 import { RedisService } from '../redis/redis.service';
-import { ClusterAppType } from './cluster-app.types';
+import { ClusterAppType } from '@share/modules/env/env.service';
 import * as fs from 'fs-extra';
 import { EventEmitter } from 'events';
 

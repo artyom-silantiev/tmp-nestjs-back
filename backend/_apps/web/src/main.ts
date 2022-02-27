@@ -11,7 +11,7 @@ import * as fs from 'fs-extra';
 import { RedisIoAdapter } from '@share/redis-io-adapter';
 import { PrismaService } from '@db/prisma.service';
 import { ClusterAppService } from '@share/modules/cluster-app/cluster-app.service';
-import { ClusterAppType } from '@share/modules/cluster-app/cluster-app.types';
+import { ClusterAppType } from '@share/modules/env/env.service';
 import { ClusterAppModule } from '@share/modules/cluster-app/cluster-app.module';
 import { IpfsModule } from '@share/modules/ipfs/ipfs.module';
 import { IpfsIndexService } from '@share/modules/ipfs/ipfs-index.service';

@@ -1,9 +1,9 @@
-import { Bs58Service } from "@share/modules/common/bs58.service";
-import { JwtDbService } from "@db/services/jwt-db.service";
-import { Injectable } from "@nestjs/common";
-import { JwtType } from "@prisma/client";
-import * as jwt from "jsonwebtoken";
-import { EnvService } from "../env/env.service";
+import { Bs58Service } from '@share/modules/common/bs58.service';
+import { JwtDbService } from '@db/services/jwt-db.service';
+import { Injectable } from '@nestjs/common';
+import { JwtType } from '@prisma/client';
+import * as jwt from 'jsonwebtoken';
+import { EnvService } from '../env/env.service';
 
 export class JwtUserRecoveryPayload {
   userId: string;
@@ -18,9 +18,9 @@ export class JwtUserRecoveryService {
   constructor(
     private envService: EnvService,
     private bs58Service: Bs58Service,
-    private jwtDb: JwtDbService
+    private jwtDb: JwtDbService,
   ) {
-    this.SECRET = envService.JWT_RECOVERY_SECRET;
+    this.SECRET = envService.SECRET_JWT_RECOVERY;
     this.TTL_SEC = envService.JWT_RECOVERY_TTL_SEC;
   }
 
@@ -32,7 +32,7 @@ export class JwtUserRecoveryService {
     } as JwtUserRecoveryPayload;
     const ttlSec = this.TTL_SEC;
     const token = jwt.sign(payload, this.SECRET, {
-      expiresIn: ttlSec + "s",
+      expiresIn: ttlSec + 's',
     });
 
     const expirationTsMs = Math.floor(Date.now() + ttlSec * 1000);
@@ -41,7 +41,7 @@ export class JwtUserRecoveryService {
       JwtType.USER_RECOVERY,
       userId,
       uid,
-      expirationAt
+      expirationAt,
     );
 
     return { token, uid, jwtRow };
@@ -56,7 +56,7 @@ export class JwtUserRecoveryService {
       const payload = this.verify(token);
       const jwtRow = await this.jwtDb.getLiveJwt(
         JwtType.USER_RECOVERY,
-        payload.uid
+        payload.uid,
       );
       if (!jwtRow) {
         return null;

@@ -27,6 +27,7 @@ services:
   s3:
     container_name: s3
     image: minio/minio
+    command: server /data
     ports:
       - '9000:9000'
     volumes:
@@ -34,4 +35,3 @@ services:
     environment:
       MINIO_ACCESS_KEY: S3_ACCESS_KEY
       MINIO_SECRET_KEY: S3_SECRET_KEY
-    command: server /data

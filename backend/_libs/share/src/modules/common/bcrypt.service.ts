@@ -7,7 +7,7 @@ export class BcryptService {
   constructor(private envService: EnvService) {}
 
   async generatePasswordHash(passwordText: string, passwordSalt?: string) {
-    passwordSalt = passwordSalt || this.envService.PASSWORD_SALT;
+    passwordSalt = passwordSalt || this.envService.SECRET_PASSWORD_SALT;
     passwordText += passwordSalt;
     return await bcrypt.hash(passwordText, 10);
   }
@@ -17,7 +17,7 @@ export class BcryptService {
     passwordHash: string,
     passwordSalt?: string,
   ) {
-    passwordSalt = passwordSalt || this.envService.PASSWORD_SALT;
+    passwordSalt = passwordSalt || this.envService.SECRET_PASSWORD_SALT;
     passwordText += passwordSalt;
     return bcrypt.compare(passwordText, passwordHash);
   }
