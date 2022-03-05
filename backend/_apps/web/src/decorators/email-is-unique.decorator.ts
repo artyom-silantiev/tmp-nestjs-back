@@ -5,9 +5,12 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { RequestContext, REQUEST_CONTEXT } from '../user-context.interceptor';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@db/prisma.service';
+import {
+  RequestContext,
+  REQUEST_CONTEXT,
+} from '@share/apphooks/validator/user-context.interceptor';
 
 type EmailIsUniquewOptions = null | {
   selfCheck: boolean;

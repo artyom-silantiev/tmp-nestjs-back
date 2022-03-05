@@ -3,7 +3,7 @@ import { IoAdapter } from '@nestjs/platform-socket.io';
 import { RedisClient } from 'redis';
 import { ServerOptions } from 'socket.io';
 import { createAdapter } from 'socket.io-redis';
-import { EnvService } from './modules/env/env.service';
+import { EnvService } from '../env/env.service';
 
 export class RedisIoAdapter extends IoAdapter {
   constructor(private app: INestApplication) {

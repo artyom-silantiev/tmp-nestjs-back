@@ -4,7 +4,6 @@ import { MediaType } from '@prisma/client';
 import { EnvService } from '../env/env.service';
 import { IpfsCacheService } from '../ipfs/ipfs-cache.service';
 import { IpfsStorageService } from '../ipfs/ipfs-storage.service';
-import { ClearMediaFileService } from './clear-media-file.service';
 import { UserService } from '@db/services/user.service';
 
 @Injectable()

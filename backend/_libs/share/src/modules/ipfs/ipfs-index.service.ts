@@ -1,16 +1,20 @@
-import { Injectable } from "@nestjs/common";
-import { IpfsStorageService } from "./ipfs-storage.service";
-import { IpfsCacheService } from "./ipfs-cache.service";
-import { IpfsOmsService } from "./ipfs-oms.service";
-import { EnvService } from "../env/env.service";
-import { Bs58Service } from "@share/modules/common/bs58.service";
-import { Image, IpfsObject } from "@prisma/client";
-import { StandardResult } from "@share/standard-result.class";
-import { ImageService } from "@db/services/image.service";
+import { Injectable } from '@nestjs/common';
+import { IpfsStorageService } from './ipfs-storage.service';
+import { IpfsCacheService } from './ipfs-cache.service';
+import { IpfsOmsService } from './ipfs-oms.service';
+import { EnvService } from '../env/env.service';
+import { Bs58Service } from '@share/modules/common/bs58.service';
+import { Image, IpfsObject } from '@prisma/client';
+import { StandardResult } from '@share/standard-result.class';
+import { ImageService } from '@db/services/image.service';
 
-import * as _ from "lodash";
-import * as path from "path";
-import * as fs from "fs-extra";
+import * as _ from 'lodash';
+import * as path from 'path';
+import * as fs from 'fs-extra';
+
+export interface IpfsInitOptions {
+  withIpfsCache?: boolean;
+}
 
 @Injectable()
 export class IpfsIndexService {
@@ -20,13 +24,15 @@ export class IpfsIndexService {
     private imageService: ImageService,
     private ipfsStorage: IpfsStorageService,
     private ipfsCache: IpfsCacheService,
-    private ipfsOms: IpfsOmsService
+    private ipfsOms: IpfsOmsService,
   ) {}
 
-  async init(useIpfsCache = false) {
+  async init(options?: IpfsInitOptions) {
+    options = options || {};
+
     await this.ipfsStorage.init();
 
-    if (useIpfsCache) {
+    if (options.withIpfsCache) {
       await this.ipfsCache.init();
     }
   }
@@ -35,7 +41,7 @@ export class IpfsIndexService {
     const stdRes = new StandardResult<Image>();
 
     const ipfsObjectRes = await this.ipfsOms.createIpfsObjectFromFile(
-      imageFile
+      imageFile,
     );
 
     let code = 201;

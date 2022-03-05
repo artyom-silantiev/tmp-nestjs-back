@@ -25,7 +25,7 @@ import { ClusterAppModule } from '@share/modules/cluster-app/cluster-app.module'
   controllers: [],
   providers: [JwtUserAuthService, EmailIsUniqueRule],
 })
-export class ServerModule {
+export class WebModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)

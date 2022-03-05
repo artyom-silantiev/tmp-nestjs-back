@@ -1,15 +1,15 @@
-import { Injectable } from "@nestjs/common";
-import * as path from "path";
-import * as _ from "lodash";
-import * as fs from "fs-extra";
-import { EnvService, NodeEnvType } from "../env/env.service";
-import { IpfsObjectService } from "@db/services/ipfs-object.service";
-import { StandardResult } from "@share/standard-result.class";
-import { IpfsObject } from "@prisma/client";
-import { IpfsStorageService } from "./ipfs-storage.service";
+import { Injectable } from '@nestjs/common';
+import * as path from 'path';
+import * as _ from 'lodash';
+import * as fs from 'fs-extra';
+import { EnvService, NodeEnvType } from '../env/env.service';
+import { IpfsObjectService } from '@db/services/ipfs-object.service';
+import { StandardResult } from '@share/standard-result.class';
+import { IpfsObject } from '@prisma/client';
+import { IpfsStorageService } from './ipfs-storage.service';
 
 export interface CacheItemMeta {
-  type: "IMAGE" | "VIDEO";
+  type: 'IMAGE' | 'VIDEO';
   sha256: string;
   mime: string;
   size: number;
@@ -35,7 +35,7 @@ export class CacheItem {
     pathFile: string,
     pathMeta: string,
     meta: CacheItemMeta,
-    private ipfsCacheService: IpfsCacheService
+    private ipfsCacheService: IpfsCacheService,
   ) {
     this.pathFile = pathFile;
     this.pathMeta = pathMeta;
@@ -44,10 +44,10 @@ export class CacheItem {
 
   getHeaders() {
     return {
-      "Cache-Control": "public, immutable",
-      "Content-Type": this.meta.mime,
-      "Content-Length": this.meta.size,
-      "Last-Modified": new Date(this.meta.mtime).toUTCString(),
+      'Cache-Control': 'public, immutable',
+      'Content-Type': this.meta.mime,
+      'Content-Length': this.meta.size,
+      'Last-Modified': new Date(this.meta.mtime).toUTCString(),
       ETag: this.meta.sha256,
     };
   }
@@ -85,25 +85,19 @@ export class IpfsCacheService {
   totalSize = 0;
   clearCacheIsActive = false;
   clearCacheResolves = [] as ((value: unknown) => void)[];
-  cacheDir = "";
 
   constructor(
     private env: EnvService,
     private ipfsService: IpfsObjectService,
-    private ipfsStorage: IpfsStorageService
-  ) {
-    this.cacheDir = path.resolve(
-      env.IPFS_CACHE_DIR,
-      env.NODE_APP_INDEX.toString()
-    );
-  }
+    private ipfsStorage: IpfsStorageService,
+  ) {}
 
   async init() {
     if (this.isInit) {
       false;
     }
 
-    await fs.mkdirs(this.cacheDir);
+    await fs.mkdirs(this.env.IPFS_CACHE_DIR);
     await this.scanItems();
 
     this.isInit = true;
@@ -118,12 +112,12 @@ export class IpfsCacheService {
       if (lstat.isDirectory()) {
         await this.scanDir(path.resolve(dir, file));
       } else if (lstat.isFile()) {
-        const cacheItemPathToMeta = path.resolve(dir, file + ".json");
+        const cacheItemPathToMeta = path.resolve(dir, file + '.json');
 
-        if (!_.endsWith(file, ".json")) {
+        if (!_.endsWith(file, '.json')) {
           await this.putCacheItemFromFiles(
             cacheItemPathToFile,
-            cacheItemPathToMeta
+            cacheItemPathToMeta,
           );
         }
       }
@@ -131,13 +125,17 @@ export class IpfsCacheService {
   }
 
   async scanItems() {
-    await this.scanDir(this.cacheDir);
+    await this.scanDir(this.env.IPFS_CACHE_DIR);
   }
 
   private getCacheItemPaths(sha256: string) {
     const suffix = sha256.substr(0, this.env.IPFS_CACHE_DIR_SUFFIX_LENGTH);
-    const cacheItemPathToFile = path.resolve(this.cacheDir, suffix, sha256);
-    const cacheItemPathToMeta = cacheItemPathToFile + ".json";
+    const cacheItemPathToFile = path.resolve(
+      this.env.IPFS_CACHE_DIR,
+      suffix,
+      sha256,
+    );
+    const cacheItemPathToMeta = cacheItemPathToFile + '.json';
     return [cacheItemPathToFile, cacheItemPathToMeta];
   }
 
@@ -145,7 +143,7 @@ export class IpfsCacheService {
     sha256: string,
     pathToFile: string,
     pathToMeta: string,
-    metaData: CacheItemMeta
+    metaData: CacheItemMeta,
   ) {
     const cacheItem = new CacheItem(pathToFile, pathToMeta, metaData, this);
     this.items[sha256] = cacheItem;
@@ -155,7 +153,7 @@ export class IpfsCacheService {
   }
 
   private async checkPrevDir(pathToFile: string) {
-    const prevDirPath = pathToFile.replace(/^(.*)\/\w*$/, "$1");
+    const prevDirPath = pathToFile.replace(/^(.*)\/\w*$/, '$1');
     await fs.mkdirs(prevDirPath);
   }
 
@@ -201,7 +199,7 @@ export class IpfsCacheService {
       this.getCacheItemPaths(sha256);
     cacheItem = await this.putCacheItemFromFiles(
       cacheItemPathToFile,
-      cacheItemPathToMeta
+      cacheItemPathToMeta,
     );
 
     return cacheItem;
@@ -219,7 +217,7 @@ export class IpfsCacheService {
 
   public async updateMetaFileBySha256(sha256: string) {
     const getIpfsObjectRes = await this.ipfsService.getIpfsObjectBySha256Hash(
-      sha256
+      sha256,
     );
     if (getIpfsObjectRes.isBad) {
       return false;
@@ -231,7 +229,7 @@ export class IpfsCacheService {
 
   private async putCacheItemFromFiles(
     cacheItemPathToFile: string,
-    cacheItemPathToMeta: string
+    cacheItemPathToMeta: string,
   ): Promise<CacheItem | null> {
     try {
       const metaExists = await fs.stat(cacheItemPathToMeta);
@@ -241,11 +239,11 @@ export class IpfsCacheService {
         return null;
       }
 
-      const sha256 = cacheItemPathToFile.replace(/^.*\/(.*)$/, "$1");
+      const sha256 = cacheItemPathToFile.replace(/^.*\/(.*)$/, '$1');
       const stat = await fs.stat(cacheItemPathToFile);
 
       const metaData = (await fs.readJSON(
-        cacheItemPathToMeta
+        cacheItemPathToMeta,
       )) as CacheItemMeta;
       if (metaData.size !== stat.size) {
         await fs.remove(cacheItemPathToFile);
@@ -257,7 +255,7 @@ export class IpfsCacheService {
         sha256,
         cacheItemPathToFile,
         cacheItemPathToMeta,
-        metaData
+        metaData,
       );
     } catch (error) {
       return null;
@@ -276,30 +274,30 @@ export class IpfsCacheService {
     const downloadObjectRes =
       await this.ipfsStorage.s3Client.objectDownloadToFile(
         sha256,
-        cacheItemPathToFile
+        cacheItemPathToFile,
       );
     if (downloadObjectRes.isBad) {
       return stdRes.mergeBad(downloadObjectRes);
     }
 
     const metaData = await this.putMetaDataByIpfsObjectAndReturnMetaData(
-      ipfsObject
+      ipfsObject,
     );
 
     const cacheItem = this.putCacheObject(
       sha256,
       cacheItemPathToFile,
       cacheItemPathToMeta,
-      metaData
+      metaData,
     );
     return stdRes.setData(cacheItem);
   }
 
   private async putMetaDataByIpfsObjectAndReturnMetaData(
-    ipfsObject: IpfsObject
+    ipfsObject: IpfsObject,
   ) {
     const [cacheItemPathToFile, cacheItemPathToMeta] = this.getCacheItemPaths(
-      ipfsObject.sha256
+      ipfsObject.sha256,
     );
 
     const metaData = {
@@ -312,19 +310,19 @@ export class IpfsCacheService {
       mtime: ipfsObject.updatedAt,
     } as CacheItemMeta;
 
-    if (ipfsObject.type === "IMAGE" && !ipfsObject.isThumb) {
+    if (ipfsObject.type === 'IMAGE' && !ipfsObject.isThumb) {
       const thumbs = {} as { [thumbName: string]: string };
 
       const ipfsObjectThumbs = await this.ipfsService.getThumbs(ipfsObject);
       for (const ipfsObjectThumb of ipfsObjectThumbs) {
         const thumbIpfsObject = await this.ipfsService.getIpfsObjectById(
-          ipfsObjectThumb.thumbIpfsObjectId
+          ipfsObjectThumb.thumbIpfsObjectId,
         );
         if (!thumbIpfsObject) {
-          console.error("no ipfs item for thumb");
+          console.error('no ipfs item for thumb');
           continue;
         }
-        thumbs[ipfsObjectThumb.thumbName + ""] = thumbIpfsObject.sha256;
+        thumbs[ipfsObjectThumb.thumbName + ''] = thumbIpfsObject.sha256;
       }
 
       metaData.thumbs = thumbs;
@@ -333,7 +331,7 @@ export class IpfsCacheService {
     try {
       await fs.writeJSON(cacheItemPathToMeta, metaData);
     } catch (error) {
-      console.error(new Error("no access to meta file!!!"));
+      console.error(new Error('no access to meta file!!!'));
     }
 
     return metaData;
@@ -420,7 +418,7 @@ export class IpfsCacheService {
       }
 
       if (this.env.NODE_ENV === NodeEnvType.development) {
-        console.log("clear cache result", result);
+        console.log('clear cache result', result);
       }
 
       return result;
