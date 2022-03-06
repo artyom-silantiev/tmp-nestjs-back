@@ -9,7 +9,7 @@ import { IpfsObject } from '@prisma/client';
 import { IpfsStorageService } from './ipfs-storage.service';
 
 export interface CacheItemMeta {
-  type: 'IMAGE' | 'VIDEO';
+  type: 'IMAGE' | 'VIDEO' | 'AUDIO';
   sha256: string;
   mime: string;
   size: number;
@@ -31,12 +31,9 @@ export class CacheItem {
   head = 0; // head count
   get = 0; // get requests count
 
-  constructor(
-    pathFile: string,
-    pathMeta: string,
-    meta: CacheItemMeta,
-    private ipfsCacheService: IpfsCacheService,
-  ) {
+  static ipfsCacheService: IpfsCacheService;
+
+  constructor(pathFile: string, pathMeta: string, meta: CacheItemMeta) {
     this.pathFile = pathFile;
     this.pathMeta = pathMeta;
     this.meta = meta;
@@ -65,7 +62,7 @@ export class CacheItem {
   statsEmitGet() {
     this.get++;
     this.processEnd();
-    this.ipfsCacheService.clearCachePass();
+    CacheItem.ipfsCacheService.clearCachePass();
   }
 
   processStart() {
@@ -97,6 +94,7 @@ export class IpfsCacheService {
       false;
     }
 
+    CacheItem.ipfsCacheService = this;
     await fs.mkdirs(this.env.IPFS_CACHE_DIR);
     await this.scanItems();
 
@@ -145,7 +143,7 @@ export class IpfsCacheService {
     pathToMeta: string,
     metaData: CacheItemMeta,
   ) {
-    const cacheItem = new CacheItem(pathToFile, pathToMeta, metaData, this);
+    const cacheItem = new CacheItem(pathToFile, pathToMeta, metaData);
     this.items[sha256] = cacheItem;
     this.totalItems++;
     this.totalSize += cacheItem.meta.size;

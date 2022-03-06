@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { IpfsStorageService } from './ipfs-storage.service';
 import { IpfsCacheService } from './ipfs-cache.service';
-import { IpfsOmsService } from './ipfs-oms.service';
+import { IpfsOutputService } from './ipfs-output.service';
 import { EnvService } from '../env/env.service';
 import { Bs58Service } from '@share/modules/common/bs58.service';
 import { Image, IpfsObject } from '@prisma/client';
@@ -17,14 +17,14 @@ export interface IpfsInitOptions {
 }
 
 @Injectable()
-export class IpfsIndexService {
+export class IpfsInputService {
   constructor(
     private env: EnvService,
     private bs58: Bs58Service,
     private imageService: ImageService,
     private ipfsStorage: IpfsStorageService,
     private ipfsCache: IpfsCacheService,
-    private ipfsOms: IpfsOmsService,
+    private ipfsOms: IpfsOutputService,
   ) {}
 
   async init(options?: IpfsInitOptions) {

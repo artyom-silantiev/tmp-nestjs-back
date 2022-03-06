@@ -7,7 +7,7 @@ import {
   Res,
   StreamableFile,
 } from '@nestjs/common';
-import { IpfsOmsService } from '@share/modules/ipfs/ipfs-oms.service';
+import { IpfsOutputService } from '@share/modules/ipfs/ipfs-output.service';
 import { Response, Request } from 'express';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
@@ -32,7 +32,7 @@ export class BySha256AndArgsDto {
 @ApiTags('sha256/ (Ipfs by sha256)')
 @Controller()
 export class IpfsController {
-  constructor(private ipfsOms: IpfsOmsService) {}
+  constructor(private ipfsOutput: IpfsOutputService) {}
 
   parseSha256Param(sha256Param: string, query: { [key: string]: string }) {
     let ipfsRequest: IpfsRequest;
@@ -136,9 +136,8 @@ export class IpfsController {
     const query = req.query as { [key: string]: string };
     const ipfsRequest = this.parseSha256Param(sha256Param, query);
 
-    const getIpfsCachItemRes = await this.ipfsOms.getIpfsCacheItemByIpfsRequest(
-      ipfsRequest,
-    );
+    const getIpfsCachItemRes =
+      await this.ipfsOutput.getIpfsCacheItemByIpfsRequest(ipfsRequest);
     if (getIpfsCachItemRes.isBad) {
       console.error(getIpfsCachItemRes.errData);
       if (getIpfsCachItemRes.data) {
@@ -173,9 +172,8 @@ export class IpfsController {
     const query = req.query as { [key: string]: string };
     const ipfsRequest = this.parseSha256Param(sha256Param, query);
 
-    const getIpfsCachItemRes = await this.ipfsOms.getIpfsCacheItemByIpfsRequest(
-      ipfsRequest,
-    );
+    const getIpfsCachItemRes =
+      await this.ipfsOutput.getIpfsCacheItemByIpfsRequest(ipfsRequest);
     if (getIpfsCachItemRes.isBad) {
       console.error(getIpfsCachItemRes.errData);
       if (getIpfsCachItemRes.data) {
@@ -213,9 +211,8 @@ export class IpfsController {
       query,
     );
 
-    const getIpfsCachItemRes = await this.ipfsOms.getIpfsCacheItemByIpfsRequest(
-      ipfsRequest,
-    );
+    const getIpfsCachItemRes =
+      await this.ipfsOutput.getIpfsCacheItemByIpfsRequest(ipfsRequest);
     if (getIpfsCachItemRes.isBad) {
       console.error(getIpfsCachItemRes.errData);
       if (getIpfsCachItemRes.data) {
@@ -253,9 +250,8 @@ export class IpfsController {
       query,
     );
 
-    const getIpfsCachItemRes = await this.ipfsOms.getIpfsCacheItemByIpfsRequest(
-      ipfsRequest,
-    );
+    const getIpfsCachItemRes =
+      await this.ipfsOutput.getIpfsCacheItemByIpfsRequest(ipfsRequest);
     if (getIpfsCachItemRes.isBad) {
       console.error(getIpfsCachItemRes.errData);
       if (getIpfsCachItemRes.data) {

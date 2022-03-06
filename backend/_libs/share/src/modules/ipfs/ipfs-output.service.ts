@@ -1,22 +1,22 @@
-import { Injectable } from "@nestjs/common";
-import * as path from "path";
-import * as _ from "lodash";
-import * as fs from "fs-extra";
-import * as sharp from "sharp";
-import IpfsRequest, { ThumbParam } from "./ipfs_request";
-import { StandardResult } from "@share/standard-result.class";
-import { CacheItem, IpfsCacheService } from "./ipfs-cache.service";
-import { IpfsObjectService } from "@db/services/ipfs-object.service";
-import { EnvService } from "../env/env.service";
-import { Bs58Service } from "@share/modules/common/bs58.service";
-import { IpfsObject, MediaType } from "@prisma/client";
-import { IpfsStorageService } from "./ipfs-storage.service";
-import { HelpersService } from "@share/modules/common/helpers.service";
-import { FFmpegService } from "@share/services/ffmpeg.service";
-import { PrismaService } from "@db/prisma.service";
+import { Injectable } from '@nestjs/common';
+import * as path from 'path';
+import * as _ from 'lodash';
+import * as fs from 'fs-extra';
+import * as sharp from 'sharp';
+import IpfsRequest, { ThumbParam } from './ipfs_request';
+import { StandardResult } from '@share/standard-result.class';
+import { CacheItem, IpfsCacheService } from './ipfs-cache.service';
+import { IpfsObjectService } from '@db/services/ipfs-object.service';
+import { EnvService } from '../env/env.service';
+import { Bs58Service } from '@share/modules/common/bs58.service';
+import { IpfsObject, MediaType } from '@prisma/client';
+import { IpfsStorageService } from './ipfs-storage.service';
+import { HelpersService } from '@share/modules/common/helpers.service';
+import { FFmpegService } from '@share/services/ffmpeg.service';
+import { PrismaService } from '@db/prisma.service';
 
 @Injectable()
-export class IpfsOmsService {
+export class IpfsOutputService {
   constructor(
     private env: EnvService,
     private helpers: HelpersService,
@@ -25,7 +25,7 @@ export class IpfsOmsService {
     private prisma: PrismaService,
     private ipfsService: IpfsObjectService,
     private ipfsCache: IpfsCacheService,
-    private ipfsStorage: IpfsStorageService
+    private ipfsStorage: IpfsStorageService,
   ) {}
 
   async getIpfsCacheItemByIpfsRequest(ipfsRequest: IpfsRequest) {
@@ -42,14 +42,14 @@ export class IpfsOmsService {
       stdRes.setData(orgCacheItem);
     } else {
       const getIpfsObjectRes = await this.ipfsService.getIpfsObjectBySha256Hash(
-        sha256
+        sha256,
       );
       if (getIpfsObjectRes.isBad) {
         return stdRes.mergeBad(getIpfsObjectRes);
       }
 
       const loadCacheItemRes = await this.ipfsCache.loadCacheItemByIpfsObject(
-        getIpfsObjectRes.data
+        getIpfsObjectRes.data,
       );
       if (loadCacheItemRes.isBad) {
         return stdRes.mergeBad(loadCacheItemRes);
@@ -64,7 +64,7 @@ export class IpfsOmsService {
   }
 
   public async getCacheItem(
-    ipfsRequest: IpfsRequest
+    ipfsRequest: IpfsRequest,
   ): Promise<StandardResult<CacheItem>> {
     let cacheItem = null as CacheItem | null;
     const stdRes = new StandardResult<CacheItem>();
@@ -77,33 +77,33 @@ export class IpfsOmsService {
     cacheItem = getCacheItemRes.data;
 
     if (ipfsRequest.type) {
-      if (ipfsRequest.type === "image" && cacheItem.meta.type !== "IMAGE") {
-        return stdRes.setCode(404).setErrData("not found");
+      if (ipfsRequest.type === 'image' && cacheItem.meta.type !== 'IMAGE') {
+        return stdRes.setCode(404).setErrData('not found');
       } else if (
-        ipfsRequest.type === "video" &&
-        cacheItem.meta.type !== "VIDEO"
+        ipfsRequest.type === 'video' &&
+        cacheItem.meta.type !== 'VIDEO'
       ) {
-        return stdRes.setCode(404).setErrData("not found");
+        return stdRes.setCode(404).setErrData('not found');
       }
     }
 
     if (ipfsRequest.thumb && cacheItem.meta.thumbs) {
-      if (cacheItem.meta.type !== "IMAGE") {
+      if (cacheItem.meta.type !== 'IMAGE') {
         cacheItem.processEnd();
         return stdRes
           .setCode(406)
-          .setErrData("thumbs size param for not thumbs allow object");
+          .setErrData('thumbs size param for not thumbs allow object');
       }
 
       const thumb = ipfsRequest.thumb;
-      if (thumb.type === "width") {
+      if (thumb.type === 'width') {
         thumb.name = IpfsRequest.parseThumbSize(
           parseInt(thumb.name),
           cacheItem.meta.width,
-          this.env.IPFS_CACHE_MIN_THUMB_LOG_SIZE
+          this.env.IPFS_CACHE_MIN_THUMB_LOG_SIZE,
         );
-      } else if (thumb.type === "name") {
-        if (thumb.name === "fullhd") {
+      } else if (thumb.type === 'name') {
+        if (thumb.name === 'fullhd') {
           if (cacheItem.meta.width >= 1920 || cacheItem.meta.height >= 1920) {
             // noting
           } else {
@@ -117,7 +117,7 @@ export class IpfsOmsService {
 
       if (thumbSha256) {
         const getThubCacheItemRes = await this.getCacheItemBySha256(
-          thumbSha256
+          thumbSha256,
         );
         if (getThubCacheItemRes.isGood) {
           return stdRes.mergeGood(getThubCacheItemRes);
@@ -126,7 +126,7 @@ export class IpfsOmsService {
 
       const createNewThumbRes = await this.createNewThumbForCacheItem(
         cacheItem,
-        thumb
+        thumb,
       );
       if (createNewThumbRes.isBad) {
         return stdRes.mergeBad(createNewThumbRes);
@@ -148,13 +148,13 @@ export class IpfsOmsService {
         name: string;
       };
       noValidation?: boolean;
-    }
+    },
   ) {
     const stdRes = new StandardResult<IpfsObject>(201);
     const fileSha256Hash = await this.helpers.getFileSha256(filePath);
 
     const getIpfsObjRes = await this.ipfsService.getIpfsObjectBySha256Hash(
-      fileSha256Hash
+      fileSha256Hash,
     );
     if (getIpfsObjRes.isGood) {
       await fs.remove(filePath);
@@ -163,7 +163,7 @@ export class IpfsOmsService {
 
     const fileInfo = await this.helpers.getFileInfo(filePath);
     const mime = fileInfo.mime;
-    const contentType = _.startsWith(mime, "image/")
+    const contentType = _.startsWith(mime, 'image/')
       ? MediaType.IMAGE
       : MediaType.VIDEO;
     const fstat = await fs.stat(filePath);
@@ -194,7 +194,7 @@ export class IpfsOmsService {
 
     const objectUploadRes = await this.ipfsStorage.s3Client.objectUpload(
       filePath,
-      fileSha256Hash
+      fileSha256Hash,
     );
     if (objectUploadRes.isBad) {
       return stdRes.mergeBad(objectUploadRes);
@@ -207,7 +207,7 @@ export class IpfsOmsService {
       if (contentType !== MediaType.IMAGE) {
         return stdRes
           .setCode(500)
-          .setErrData("bad org content type for create thumb");
+          .setErrData('bad org content type for create thumb');
       }
 
       const thumbIpfsObject = await this.prisma.ipfsObject.create({
@@ -250,7 +250,7 @@ export class IpfsOmsService {
 
   private async createNewThumbForCacheItem(
     orgCacheItem: CacheItem,
-    thumb: ThumbParam
+    thumb: ThumbParam,
   ): Promise<StandardResult<CacheItem>> {
     const stdRes = new StandardResult<CacheItem>(201);
 
@@ -258,23 +258,23 @@ export class IpfsOmsService {
     const getOrgIpfsObjectRes =
       await this.ipfsService.getIpfsObjectBySha256Hash(orgSha256);
     if (getOrgIpfsObjectRes.isBad) {
-      return stdRes.setCode(404).setErrData("");
+      return stdRes.setCode(404).setErrData('');
     }
 
     const tempNewThumbImageFile = path.resolve(
       this.env.DIR_TEMP_FILES,
-      this.bs58.uuid() + ".thumb.jpg"
+      this.bs58.uuid() + '.thumb.jpg',
     );
     const image = sharp(orgCacheItem.pathFile);
     const metadata = await image.metadata();
 
-    if (thumb.type === "width") {
+    if (thumb.type === 'width') {
       await image
         .resize(parseInt(thumb.name))
         .jpeg({ quality: 50 })
         .toFile(tempNewThumbImageFile);
-    } else if (thumb.type === "name") {
-      if (thumb.name === "fullhd") {
+    } else if (thumb.type === 'name') {
+      if (thumb.name === 'fullhd') {
         if (metadata.height > metadata.width) {
           await image
             .resize({ height: 1920 })
@@ -297,7 +297,7 @@ export class IpfsOmsService {
           name: thumb.name,
         },
         noValidation: true,
-      }
+      },
     );
     if (createThumbIpfsObjectRes.isBad) {
       return stdRes.mergeBad(createThumbIpfsObjectRes);
@@ -310,7 +310,7 @@ export class IpfsOmsService {
     await this.ipfsCache.updateMetaFileBySha256(orgSha256);
 
     const getNewThumbCacheItem = await this.getCacheItemBySha256(
-      createThumbIpfsObjectRes.data.sha256
+      createThumbIpfsObjectRes.data.sha256,
     );
     if (getNewThumbCacheItem.isBad) {
       return stdRes.mergeBad(getNewThumbCacheItem);

@@ -3,8 +3,10 @@ export type ThumbParam = {
   name: string | null;
 };
 
+export type IpfsRequestType = 'video' | 'image' | 'audio';
+
 export default class IpfsRequest {
-  type = null as 'video' | 'image' | null;
+  type = null as IpfsRequestType | null;
   format = null as string | null;
   sha256: string;
   thumb: ThumbParam;
@@ -12,7 +14,7 @@ export default class IpfsRequest {
   constructor(
     sha256: string,
     params?: {
-      type?: 'video' | 'image' | null;
+      type?: IpfsRequestType | null;
       format?: string | null;
       thumb?: ThumbParam;
     },
