@@ -28,7 +28,7 @@ export class CacheItem {
   processes = 0;
 
   // stats
-  head = 0; // head count
+  head = 0; // head requests count
   get = 0; // get requests count
 
   static ipfsCacheService: IpfsCacheService;
@@ -320,7 +320,7 @@ export class IpfsCacheService {
           console.error('no ipfs item for thumb');
           continue;
         }
-        thumbs[ipfsObjectThumb.thumbName + ''] = thumbIpfsObject.sha256;
+        thumbs[ipfsObjectThumb.thumbName] = thumbIpfsObject.sha256;
       }
 
       metaData.thumbs = thumbs;
