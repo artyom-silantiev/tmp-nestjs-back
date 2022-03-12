@@ -64,8 +64,13 @@ export class RedisService {
     getClusterAppKey(appType: ClusterAppType, appUid: string) {
       return `CApp:${appType}:${appUid}`;
     },
-    getLocalFileCachKey(localFileRequest: LocalFilesRequest) {
-      return '';
+    getLocalFileCachKey(lfReq: LocalFilesRequest) {
+      let locaFileCache = 'LocalFile:';
+      locaFileCache = lfReq.sha256;
+      if (lfReq.thumb) {
+        locaFileCache += ':' + lfReq.thumb.name;
+      }
+      return locaFileCache;
     },
   };
 }

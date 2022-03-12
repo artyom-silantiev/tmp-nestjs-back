@@ -106,8 +106,14 @@ model Task {
   @@index([isActive])
 }
 
+enum ImageStorage {
+  IpfsObject
+  LocalFile
+}
+
 model Image {
-  id           BigInt  @id @default(autoincrement())
+  id           BigInt       @id @default(autoincrement())
+  storage      ImageStorage
   ipfsObjectId BigInt?
   localFileId  BigInt?
 

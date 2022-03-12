@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import * as _ from 'lodash';
-import * as path from 'path';
 import { LocalFilesRequest } from './local_files_request';
 import { StandardResult } from '@share/standard-result.class';
 import { EnvService } from '../env/env.service';
@@ -9,6 +7,8 @@ import { LocalFile, MediaType } from '@prisma/client';
 import { LocalFileService } from '@db/services/local-file.service';
 import { RedisService } from '../redis/redis.service';
 import { PrismaService } from '@db/prisma.service';
+import * as _ from 'lodash';
+import * as path from 'path';
 
 export type LocalFileMeta = {
   absPathToFile: string;
@@ -44,8 +44,10 @@ export class LocalFilesOutputService {
 
     const cacheLocalFileMetaRaw = await redisClient.get(localFileCacheKey);
     if (cacheLocalFileMetaRaw) {
-      const cacheLocalFile = JSON.parse(cacheLocalFileMetaRaw) as LocalFileMeta;
-      return stdRes.setData(cacheLocalFile);
+      const cacheLocalFileMeta = JSON.parse(
+        cacheLocalFileMetaRaw,
+      ) as LocalFileMeta;
+      return stdRes.setData(cacheLocalFileMeta);
     }
 
     const localFileRes = await this.localFileService.getLocalFileBySha256Hash(
@@ -131,7 +133,7 @@ export class LocalFilesOutputService {
 
     await redisClient.set(localFileCacheKey, JSON.stringify(localFileMeta), [
       'EX',
-      3600,
+      300,
     ]);
 
     return stdRes.setData(localFileMeta);

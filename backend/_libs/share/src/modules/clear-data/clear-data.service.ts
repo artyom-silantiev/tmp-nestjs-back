@@ -1,10 +1,11 @@
 import { PrismaService } from '@db/prisma.service';
 import { Injectable } from '@nestjs/common';
-import { MediaType } from '@prisma/client';
+import { ImageStorage, MediaType } from '@prisma/client';
 import { EnvService } from '../env/env.service';
 import { IpfsCacheService } from '../ipfs/ipfs-cache.service';
 import { IpfsStorageService } from '../ipfs/ipfs-storage.service';
-import { UserService } from '@db/services/user.service';
+import * as fs from 'fs-extra';
+import * as path from 'path';
 
 @Injectable()
 export class ClearDataService {
@@ -57,6 +58,7 @@ export class ClearDataService {
       },
       include: {
         IpfsObject: true,
+        LocalFile: true,
       },
     });
 
@@ -66,7 +68,11 @@ export class ClearDataService {
       },
     });
 
-    await this.tryDeleteIpfsObjectById(image.IpfsObject.id);
+    if (image.storage === ImageStorage.IpfsObject) {
+      await this.tryDeleteIpfsObjectById(image.IpfsObject.id);
+    } else {
+      await this.tryDeleteLocalFileById(image.LocalFile.id);
+    }
   }
 
   async tryDeleteIpfsObjectById(
@@ -145,6 +151,91 @@ export class ClearDataService {
     await this.prisma.ipfsObject.delete({
       where: {
         id: ipfsObject.id,
+      },
+    });
+  }
+
+  async tryDeleteLocalFileById(
+    localFileId: bigint,
+    params?: {
+      ignoreImageId?: bigint;
+      ignoreThumbOrgId?: bigint;
+    },
+  ) {
+    const localFile = await this.prisma.localFile.findFirst({
+      where: {
+        id: localFileId,
+      },
+      include: {
+        Images: true,
+        ThumbsAsOrg: {
+          where: {
+            orgLocalFileId: {
+              not: localFileId,
+            },
+          },
+        },
+      },
+    });
+
+    let localFileImages = localFile.Images ? localFile.Images : [];
+    if (params && params.ignoreImageId) {
+      localFileImages = localFileImages.filter(
+        (v) => v.id !== params.ignoreImageId,
+      );
+    }
+
+    let localFilesThumbsOrg = localFile.ThumbsAsOrg
+      ? localFile.ThumbsAsOrg
+      : [];
+    if (params && params.ignoreThumbOrgId) {
+      localFilesThumbsOrg = localFilesThumbsOrg.filter(
+        (v) => v.id !== params.ignoreThumbOrgId,
+      );
+    }
+
+    if (localFileImages.length > 0 || localFilesThumbsOrg.length > 0) {
+      return false;
+    }
+
+    // delete thumbs ...
+    if (localFile.type === MediaType.IMAGE && !localFile.isThumb) {
+      const localFileThumbs = await this.prisma.localFileThumb.findMany({
+        where: {
+          orgLocalFileId: localFile.id,
+        },
+      });
+
+      for (const localFileThumb of localFileThumbs) {
+        await this.tryDeleteLocalFileById(localFileThumb.thumbLocalFileId, {
+          ignoreThumbOrgId: localFile.id,
+        });
+      }
+
+      await this.prisma.localFileThumb.deleteMany({
+        where: {
+          orgLocalFileId: localFile.id,
+        },
+      });
+    }
+
+    if (localFile.isThumb) {
+      await this.prisma.localFileThumb.deleteMany({
+        where: {
+          thumbLocalFileId: localFile.id,
+        },
+      });
+    }
+
+    const absPathToFile = path.resolve(
+      this.env.DIR_LOCAL_FILES,
+      localFile.pathToFile,
+    );
+    await fs.remove(absPathToFile);
+
+    await this.prisma.localFile.delete({
+      where: {
+        id: localFile.id,
       },
     });
   }

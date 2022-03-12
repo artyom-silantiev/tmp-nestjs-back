@@ -16,6 +16,7 @@ import {
   LocalFilesOutputService,
 } from '@share/modules/local_files/local_files-output.service';
 import * as fs from 'fs-extra';
+import { LocalFilesRequest } from '@share/modules/local_files/local_files_request';
 
 export class BySha256ParamDto {
   @IsString()
@@ -39,25 +40,25 @@ export class LocalFilesController {
   constructor(private localFilesOutput: LocalFilesOutputService) {}
 
   parseSha256Param(sha256Param: string, query: { [key: string]: string }) {
-    let ipfsRequest: IpfsRequest;
+    let localFilesRequest: LocalFilesRequest;
 
     let match = sha256Param.match(/^([0-9a-f]*)(\.(\w+))$/);
     if (match) {
       const sha256 = match[1];
-      ipfsRequest = new IpfsRequest(sha256);
-      ipfsRequest.format = match[3];
+      localFilesRequest = new LocalFilesRequest(sha256);
+      localFilesRequest.format = match[3];
     }
 
     match = sha256Param.match(/^([0-9a-f]*)(\:(\d+))?$/);
-    if (!ipfsRequest && match) {
+    if (!localFilesRequest && match) {
       const sha256 = match[1];
 
-      ipfsRequest = new IpfsRequest(sha256);
+      localFilesRequest = new LocalFilesRequest(sha256);
 
       if (match[3]) {
         const temp = match[3];
         if (!Number.isNaN(temp)) {
-          ipfsRequest.thumb = {
+          localFilesRequest.thumb = {
             type: 'width',
             name: temp,
           };
@@ -66,34 +67,34 @@ export class LocalFilesController {
     }
 
     match = sha256Param.match(/^([0-9a-f]*)(\:(fullhd))?$/);
-    if (!ipfsRequest && match) {
+    if (!localFilesRequest && match) {
       const sha256 = match[1];
-      ipfsRequest = new IpfsRequest(sha256);
+      localFilesRequest = new LocalFilesRequest(sha256);
       if (match[3]) {
-        ipfsRequest.thumb = {
+        localFilesRequest.thumb = {
           type: 'name',
           name: match[3],
         };
       }
     }
 
-    if (!ipfsRequest) {
-      ipfsRequest = new IpfsRequest(sha256Param);
+    if (!localFilesRequest) {
+      localFilesRequest = new LocalFilesRequest(sha256Param);
     }
 
     if (query.w) {
-      ipfsRequest.thumb = {
+      localFilesRequest.thumb = {
         type: 'width',
         name: query.w,
       };
     } else if (query.n) {
-      ipfsRequest.thumb = {
+      localFilesRequest.thumb = {
         type: 'name',
         name: query.n,
       };
     }
 
-    return ipfsRequest;
+    return localFilesRequest;
   }
 
   getIpfsObjectBySha256AndArgsAndQuery(
