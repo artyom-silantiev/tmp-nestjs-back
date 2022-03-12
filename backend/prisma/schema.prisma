@@ -107,14 +107,16 @@ model Task {
 }
 
 model Image {
-  id           BigInt @id @default(autoincrement())
-  ipfsObjectId BigInt
+  id           BigInt  @id @default(autoincrement())
+  ipfsObjectId BigInt?
+  localFileId  BigInt?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // relations
-  IpfsObject IpfsObject @relation(fields: [ipfsObjectId], references: [id])
+  IpfsObject IpfsObject? @relation(fields: [ipfsObjectId], references: [id])
+  LocalFile  LocalFile?  @relation(fields: [localFileId], references: [id])
   Users      User[]
 }
 
@@ -129,13 +131,14 @@ enum IpfsObjectLocation {
 }
 
 model IpfsObject {
-  id       BigInt             @id @default(autoincrement())
-  sha256   String             @db.VarChar(64)
-  location IpfsObjectLocation @default(S3_IPFS)
-  mime     String             @db.VarChar(255) // mime type
-  size     Int // bytes size
-  width    Int // image or video width
-  height   Int // image or video height
+  id          BigInt             @id @default(autoincrement())
+  sha256      String             @db.VarChar(64)
+  location    IpfsObjectLocation @default(S3_IPFS)
+  mime        String             @db.VarChar(255) // mime type
+  size        Int // bytes size
+  width       Int? // image or video width
+  height      Int? // image or video height
+  durationSec Int? // for video or audio
 
   type     MediaType
   isThumb  Boolean   @default(false)
@@ -163,4 +166,41 @@ model IpfsObjectThumb {
 
   @@unique([orgIpfsObjectId, thumbName])
   @@index([orgIpfsObjectId])
+}
+
+model LocalFile {
+  id          BigInt @id @default(autoincrement())
+  sha256      String @db.VarChar(64)
+  mime        String @db.VarChar(255) // mime type
+  size        Int // bytes size
+  width       Int? // for image or video width
+  height      Int? // for image or video height
+  durationSec Int? // for video or audio
+  pathToFile  String @db.VarChar(255)
+
+  type     MediaType
+  isThumb  Boolean   @default(false)
+  isBanned Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Images        Image[]
+  ThumbsAsOrg   LocalFileThumb[] @relation("OrgLocalFile")
+  ThumbsAsThumb LocalFileThumb[] @relation("ThumbLocalFile")
+
+  @@index([sha256])
+}
+
+model LocalFileThumb {
+  id               BigInt @id @default(autoincrement())
+  orgLocalFileId   BigInt
+  thumbLocalFileId BigInt
+  thumbName        String @db.VarChar(32)
+
+  OrgLocalFile   LocalFile @relation("OrgLocalFile", fields: [orgLocalFileId], references: [id])
+  ThumbLocalFile LocalFile @relation("ThumbLocalFile", fields: [thumbLocalFileId], references: [id])
+
+  @@unique([orgLocalFileId, thumbName])
+  @@index([thumbLocalFileId])
 }

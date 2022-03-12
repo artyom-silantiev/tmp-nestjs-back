@@ -95,7 +95,7 @@ export class IpfsCacheService {
     }
 
     CacheItem.ipfsCacheService = this;
-    await fs.mkdirs(this.env.IPFS_CACHE_DIR);
+    await fs.mkdirs(this.env.DIR_IPFS_CACHE);
     await this.scanItems();
 
     this.isInit = true;
@@ -123,13 +123,13 @@ export class IpfsCacheService {
   }
 
   async scanItems() {
-    await this.scanDir(this.env.IPFS_CACHE_DIR);
+    await this.scanDir(this.env.DIR_IPFS_CACHE);
   }
 
   private getCacheItemPaths(sha256: string) {
     const suffix = sha256.substr(0, this.env.IPFS_CACHE_DIR_SUFFIX_LENGTH);
     const cacheItemPathToFile = path.resolve(
-      this.env.IPFS_CACHE_DIR,
+      this.env.DIR_IPFS_CACHE,
       suffix,
       sha256,
     );

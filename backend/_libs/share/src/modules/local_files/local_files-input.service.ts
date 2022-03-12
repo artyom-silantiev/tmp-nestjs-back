@@ -1,59 +1,42 @@
 import { Injectable } from '@nestjs/common';
-import { IpfsStorageService } from './ipfs-storage.service';
-import { IpfsCacheService } from './ipfs-cache.service';
 import { EnvService } from '../env/env.service';
 import { Bs58Service } from '@share/modules/common/bs58.service';
-import { Image, IpfsObject } from '@prisma/client';
+import { Image, LocalFile } from '@prisma/client';
 import { StandardResult } from '@share/standard-result.class';
 import { ImageService } from '@db/services/image.service';
-
 import * as _ from 'lodash';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import { IpfsMakeService } from './ipfs-make.service';
-
-export interface IpfsInitOptions {
-  withIpfsCache?: boolean;
-}
+import { LocalFilesMakeService } from './local_files-make.service';
 
 @Injectable()
-export class IpfsInputService {
+export class LocalFilesInputService {
   constructor(
     private env: EnvService,
     private bs58: Bs58Service,
     private imageService: ImageService,
-    private ipfsStorage: IpfsStorageService,
-    private ipfsCache: IpfsCacheService,
-    private ipfsMake: IpfsMakeService,
+    private localFilesMake: LocalFilesMakeService,
   ) {}
 
-  async init(options?: IpfsInitOptions) {
-    options = options || {};
-
-    await this.ipfsStorage.init();
-
-    if (options.withIpfsCache) {
-      await this.ipfsCache.init();
-    }
-  }
+  async init() {}
 
   async uploadImageByFile(imageFile: string) {
     const stdRes = new StandardResult<Image>();
 
-    const ipfsObjectRes = await this.ipfsMake.createIpfsObjectFromFile(
+    const localFileRes = await this.localFilesMake.createLocalFileByFile(
       imageFile,
     );
 
     let code = 201;
-    let ipfsObject: IpfsObject;
-    if (ipfsObjectRes.isGood) {
-      code = ipfsObjectRes.code;
-      ipfsObject = ipfsObjectRes.data;
+    let localFile: LocalFile;
+    if (localFileRes.isGood) {
+      code = localFileRes.code;
+      localFile = localFileRes.data;
     } else {
-      return stdRes.setCode(code).setErrData({ errors: ipfsObjectRes.errData });
+      return stdRes.setCode(code).setErrData({ errors: localFileRes.errData });
     }
 
-    const image = await this.imageService.createByIpfsObject(ipfsObject);
+    const image = await this.imageService.createByLocalFile(localFile);
 
     return stdRes.setCode(code).setData(image);
   }

@@ -1,20 +1,19 @@
-import { Injectable } from "@nestjs/common";
-import * as path from "path";
-import * as _ from "lodash";
-import { Bs58Service } from "@share/modules/common/bs58.service";
-import { EnvService } from "../env/env.service";
-import * as multihash from "multihashes";
-import { StandardResult } from "@share/standard-result.class";
+import { Injectable } from '@nestjs/common';
+import * as _ from 'lodash';
+import { Bs58Service } from '@share/modules/common/bs58.service';
+import { EnvService } from '../env/env.service';
+import * as multihash from 'multihashes';
+import { StandardResult } from '@share/standard-result.class';
 
-const minBs58Prefix = "NLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51";
-const maxBs58Prefix = "fZy5bvk7a3DQAjCbGNtmrPXWkyVvPrdnZMyBZ5q5ieKG";
+const minBs58Prefix = 'NLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51';
+const maxBs58Prefix = 'fZy5bvk7a3DQAjCbGNtmrPXWkyVvPrdnZMyBZ5q5ieKG';
 
 @Injectable()
 export class IpfsRangesService {
   constructor(private env: EnvService, private bs58: Bs58Service) {}
 
   private makeUnique(str) {
-    return _.uniq(str).join("");
+    return _.uniq(str).join('');
   }
 
   private generatePrefixses(prefix: string, maxPrefix: string, prfs: string[]) {
@@ -27,14 +26,14 @@ export class IpfsRangesService {
 
     function prfsPush(prfs, prefix) {
       for (let i = 0; i < prefZeros; i++) {
-        prefix = "0" + prefix;
+        prefix = '0' + prefix;
       }
       prfs.push(prefix);
       return prfs;
     }
 
     if (prefix.length === maxPrefix.length) {
-      while (prefix[0] === "0" && maxPrefix[0] === "0") {
+      while (prefix[0] === '0' && maxPrefix[0] === '0') {
         prefix = prefix.substr(1, prefix.length);
         maxPrefix = maxPrefix.substr(1, maxPrefix.length);
         prefZeros++;
@@ -50,7 +49,7 @@ export class IpfsRangesService {
 
       let tempPrefix = prefix;
       while (tempPrefix.length < maxPrefix.length) {
-        tempPrefix = tempPrefix + "0";
+        tempPrefix = tempPrefix + '0';
       }
       tempPrefixInt = parseInt(tempPrefix, 16);
       maxPrefixInt = parseInt(maxPrefix, 16);
@@ -68,11 +67,11 @@ export class IpfsRangesService {
         return prfsPush(prfs, maxPrefix);
       }
 
-      if (prefix === "0") {
+      if (prefix === '0') {
         const charMax = maxPrefix[0];
 
         if (prefix === charMax) {
-          return prfsGen("00");
+          return prfsGen('00');
         } else {
           prfsPush(prfs, prefix);
 
@@ -83,7 +82,7 @@ export class IpfsRangesService {
             prfsPush(prfs, i.toString(16));
           }
 
-          prefix = charMaxInt.toString(16) + "0";
+          prefix = charMaxInt.toString(16) + '0';
           return prfsGen(prefix);
         }
       }
@@ -110,7 +109,7 @@ export class IpfsRangesService {
           prfsPush(prfs, prefix);
         }
 
-        while (prefix[prefix.length - 1] === "f") {
+        while (prefix[prefix.length - 1] === 'f') {
           prefix = prefix.substr(0, prefix.length - 1);
         }
 
@@ -119,13 +118,13 @@ export class IpfsRangesService {
           prefix.substr(0, prefix.length - 1) +
           (parseInt(char, 16) + 1).toString(16);
 
-        if (this.makeUnique(nextPrefix) === "") {
-          nextPrefix = "f";
+        if (this.makeUnique(nextPrefix) === '') {
+          nextPrefix = 'f';
         }
 
         if (
-          this.makeUnique(nextPrefix) === "f" &&
-          this.makeUnique(maxPrefix) === "f"
+          this.makeUnique(nextPrefix) === 'f' &&
+          this.makeUnique(maxPrefix) === 'f'
         ) {
           return prfsPush(prfs, nextPrefix);
         }
@@ -141,7 +140,7 @@ export class IpfsRangesService {
           nextPrefix === maxPrefix.substr(0, nextPrefix.length) &&
           maxPrefix.length > nextPrefix.length
         ) {
-          nextPrefix = nextPrefix + "0";
+          nextPrefix = nextPrefix + '0';
         }
 
         return prfsGen(nextPrefix);
@@ -150,15 +149,15 @@ export class IpfsRangesService {
         for (let i = charInt + 1; i < charMaxInt; i++) {
           prfsPush(prfs, prefPrefix + i.toString(16));
         }
-        const nextPrefix = prefPrefix + charMaxInt.toString(16) + "0";
+        const nextPrefix = prefPrefix + charMaxInt.toString(16) + '0';
 
         if (
-          this.makeUnique(nextPrefix) === "f0" &&
-          this.makeUnique(maxPrefix) === "f"
+          this.makeUnique(nextPrefix) === 'f0' &&
+          this.makeUnique(maxPrefix) === 'f'
         ) {
-          let endPrefix = "";
+          let endPrefix = '';
           for (let i = 0; i < nextPrefix.length - 1; i++) {
-            endPrefix += "f";
+            endPrefix += 'f';
           }
           return prfsPush(prfs, endPrefix);
         }
@@ -173,7 +172,7 @@ export class IpfsRangesService {
   private bs58RangeToHexPrefixses(
     index: number,
     bs58Range: string[],
-    hexChars: number
+    hexChars: number,
   ) {
     const fullBs58Len = 44;
 
@@ -186,7 +185,7 @@ export class IpfsRangesService {
       if (minBs58 === minPref) {
         return minBs58Prefix[len];
       } else {
-        return "1";
+        return '1';
       }
     }
 
@@ -196,27 +195,27 @@ export class IpfsRangesService {
       if (maxBs58 === maxPref) {
         return maxBs58Prefix[len];
       } else {
-        return "z";
+        return 'z';
       }
     }
 
     while (minBs58.length < fullBs58Len) {
       minBs58 = minBs58 + getNextMinSumbol(minBs58);
     }
-    minBs58 = "Qm" + minBs58;
+    minBs58 = 'Qm' + minBs58;
 
     while (maxBs58.length < fullBs58Len) {
       maxBs58 = maxBs58 + getNextMaxSumbol(maxBs58);
     }
-    maxBs58 = "Qm" + maxBs58;
+    maxBs58 = 'Qm' + maxBs58;
 
     const minBs58Buf = multihash.fromB58String(minBs58);
     let minHex = Buffer.from(minBs58Buf.slice(2, minBs58Buf.length)).toString(
-      "hex"
+      'hex',
     );
     const maxBs58Buf = multihash.fromB58String(maxBs58);
     let maxHex = Buffer.from(maxBs58Buf.slice(2, maxBs58Buf.length)).toString(
-      "hex"
+      'hex',
     );
 
     minHex = minHex.substr(0, hexChars);
@@ -227,13 +226,13 @@ export class IpfsRangesService {
       minInt++;
       minHex = minInt.toString(16);
       while (minHex.length < hexChars) {
-        minHex = "0" + minHex;
+        minHex = '0' + minHex;
       }
     }
 
     let inputMinHex = minHex;
     if (index === 0) {
-      inputMinHex = "0";
+      inputMinHex = '0';
     }
 
     const allHexPrefixses = this.generatePrefixses(inputMinHex, maxHex, []);
@@ -249,13 +248,13 @@ export class IpfsRangesService {
     }
     */
 
-    return allHexPrefixses.join("|");
+    return allHexPrefixses.join('|');
   }
 
   private generateBs58AndHexRanges(
     bs58Size: number,
     hexChars: number,
-    nodesCount: number
+    nodesCount: number,
   ) {
     const stdRes = new StandardResult<{
       bs58Regexs: string[];
@@ -312,9 +311,9 @@ export class IpfsRangesService {
 
     for (let index = 0; index < bs58Ranges.length; index++) {
       const bs58Range = bs58Ranges[index];
-      bs58Regexs.push("(" + bs58Range.join("|") + ")");
+      bs58Regexs.push('(' + bs58Range.join('|') + ')');
       hexsRegexs.push(
-        "(" + this.bs58RangeToHexPrefixses(index, bs58Range, hexChars) + ")"
+        '(' + this.bs58RangeToHexPrefixses(index, bs58Range, hexChars) + ')',
       );
     }
 
@@ -339,7 +338,7 @@ export class IpfsRangesService {
     const rangesRes = this.generateBs58AndHexRanges(
       bs58Size,
       hexChars,
-      nodesCount
+      nodesCount,
     );
 
     if (rangesRes.isGood) {

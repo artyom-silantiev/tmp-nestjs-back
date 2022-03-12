@@ -1,6 +1,6 @@
-import { Injectable } from "@nestjs/common";
-import { PrismaService } from "../prisma.service";
-import { Image, IpfsObject, User } from "@prisma/client";
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma.service';
+import { Image, IpfsObject, LocalFile, User } from '@prisma/client';
 
 export type ImageRow = Image & {
   IpfsObject?: IpfsObject;
@@ -11,10 +11,20 @@ export type ImageRow = Image & {
 export class ImageService {
   constructor(private prisma: PrismaService) {}
 
-  async create(ipfsObject: IpfsObject) {
+  async createByIpfsObject(ipfsObject: IpfsObject) {
     const image = await this.prisma.image.create({
       data: {
         ipfsObjectId: ipfsObject.id,
+      },
+    });
+
+    return image;
+  }
+
+  async createByLocalFile(localFile: LocalFile) {
+    const image = await this.prisma.image.create({
+      data: {
+        localFileId: localFile.id,
       },
     });
 

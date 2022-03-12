@@ -24,11 +24,15 @@ export class FFmpegService {
     } as {
       format: ffmpeg.FfprobeFormat;
       videoStreams?: ffmpeg.FfprobeStream[];
+      audioStreams?: ffmpeg.FfprobeStream[];
       chapters: any[];
     };
 
     const videoStreams = probeFile.streams.filter(
       (v) => v.codec_type === 'video',
+    );
+    const audioStreams = probeFile.streams.filter(
+      (v) => v.codec_type === 'audio',
     );
     result.videoStreams = videoStreams;
 
