@@ -8,10 +8,10 @@ import { ClusterAppType } from '@share/modules/env/env.service';
 import { RedisService } from '@share/modules/redis/redis.service';
 import { createDeferred } from '@share/helpers';
 import * as _ from 'lodash';
-import { IpfsRangesService } from '@share/modules/ipfs_ranges/ipfs_ranges.service';
 import { EnvService } from '@share/modules/env/env.service';
 import { AppStatus } from './cluster.types';
 import { TraefikConfig } from './traefik-config.class';
+import { IpfsRangesService } from '@share/modules/ipfs/ipfs-ranges.service';
 @Injectable()
 export class ClusterCommand {
   private cheksAppsResolves = {} as {
@@ -123,7 +123,6 @@ export class ClusterCommand {
         type: appStatus.type,
         host: appStatus.host,
         portHttp: appStatus.portHttp,
-        portRtmp: appStatus.portRtmp || null,
         status: appStatus.status,
       });
     }

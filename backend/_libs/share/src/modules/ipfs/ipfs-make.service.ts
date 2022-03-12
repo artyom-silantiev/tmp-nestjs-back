@@ -12,16 +12,15 @@ import { Bs58Service } from '@share/modules/common/bs58.service';
 import { IpfsObject, MediaType } from '@prisma/client';
 import { IpfsStorageService } from './ipfs-storage.service';
 import { HelpersService } from '@share/modules/common/helpers.service';
-import { FFmpegService } from '@share/services/ffmpeg.service';
 import { PrismaService } from '@db/prisma.service';
 import { IpfsOutputService } from './ipfs-output.service';
+import { getMediaContentProbe } from '@share/ffmpeg';
 
 @Injectable()
 export class IpfsMakeService {
   constructor(
     private env: EnvService,
     private helpers: HelpersService,
-    private ffmpeg: FFmpegService,
     private bs58: Bs58Service,
     private prisma: PrismaService,
     private ipfsService: IpfsObjectService,
@@ -76,13 +75,13 @@ export class IpfsMakeService {
       width = imageInfo.width;
       height = imageInfo.height;
     } else if (contentType === MediaType.AUDIO) {
-      const fileProbe = await this.ffmpeg.getMediaContentProbe(tempFile);
+      const fileProbe = await getMediaContentProbe(tempFile);
       const stream = fileProbe.audioStreams[0];
 
       size = fileProbe.format.size;
       duration = parseFloat(stream.duration);
     } else if (contentType === MediaType.VIDEO) {
-      const fileProbe = await this.ffmpeg.getMediaContentProbe(tempFile);
+      const fileProbe = await getMediaContentProbe(tempFile);
       const stream = fileProbe.videoStreams[0];
 
       size = fileProbe.format.size;

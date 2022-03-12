@@ -100,13 +100,13 @@ export class IpfsOutputService {
         }
       }
 
-      cacheItem.processEnd();
       const thumbSha256 = cacheItem.meta.thumbs[thumb.name];
 
       if (thumbSha256) {
         const getThubCacheItemRes = await this.getCacheItemBySha256(
           thumbSha256,
         );
+        cacheItem.processEnd();
         if (getThubCacheItemRes.isGood) {
           return stdRes.mergeGood(getThubCacheItemRes);
         }
@@ -116,6 +116,7 @@ export class IpfsOutputService {
         cacheItem,
         thumb,
       );
+      cacheItem.processEnd();
       if (createNewThumbRes.isBad) {
         return stdRes.mergeBad(createNewThumbRes);
       }

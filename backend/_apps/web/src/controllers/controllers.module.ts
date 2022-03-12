@@ -15,10 +15,10 @@ import { UserCommonController } from './api/user/common.controller';
 import { ApiCommonController } from './api/api-common.controller';
 
 import { PaginationService } from '@share/services/pagination.service';
-import { FFmpegService } from '@share/services/ffmpeg.service';
 import { CommonSerivce } from './common.service';
 import { RedisModule } from '@share/modules/redis/redis.module';
 import { ClusterAppModule } from '@share/modules/cluster-app/cluster-app.module';
+import { LocalFilesController } from './local_files.controller';
 
 @Module({
   imports: [
@@ -31,16 +31,22 @@ import { ClusterAppModule } from '@share/modules/cluster-app/cluster-app.module'
     JwtModule,
     ClearDataModule,
   ],
-  providers: [PaginationService, FFmpegService, CommonSerivce],
+  providers: [PaginationService, CommonSerivce],
   controllers: [
     // /*
     CommonController,
 
-    // HEAD /sha256/:sha256Parma
-    // GET /sha256/:sha256Parma
-    // HEAD /sha256/:sha256Parma/:args
-    // GET /sha256/:sha256Parma/:args
+    // HEAD /ipfs/sha256/:sha256Parma
+    // GET /ipfs/sha256/:sha256Parma
+    // HEAD /ipfs/sha256/:sha256Parma/:args
+    // GET /ipfs/sha256/:sha256Parma/:args
     IpfsController,
+
+    // HEAD /local_files/sha256/:sha256Parma
+    // GET /local_files/sha256/:sha256Parma
+    // HEAD /local_files/sha256/:sha256Parma/:args
+    // GET /local_files/sha256/:sha256Parma/:args
+    LocalFilesController,
 
     // /api*
     ApiCommonController,

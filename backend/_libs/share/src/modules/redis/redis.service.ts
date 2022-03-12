@@ -1,7 +1,8 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { createNodeRedisClient, WrappedNodeRedisClient } from 'handy-redis';
 import { ClusterAppType } from '@share/modules/env/env.service';
 import { EnvService } from '../env/env.service';
+import { LocalFilesRequest } from '../local_files/local_files_request';
 
 @Injectable()
 export class RedisService {
@@ -63,33 +64,8 @@ export class RedisService {
     getClusterAppKey(appType: ClusterAppType, appUid: string) {
       return `CApp:${appType}:${appUid}`;
     },
-    getJwtUserCacheKey(userId: string) {
-      return `jwtUser:${userId}`;
-    },
-    getPlayerEntityCacheKey(entityCode: string) {
-      return `playerEntity:${entityCode}`;
-    },
-    getFastGeoCacheKey(geoKey: string) {
-      return `fastGeoCache:${geoKey}`;
-    },
-    getPlayerMediaInfoCacheKey(mediaEntityCode: string) {
-      return `playerMediaInfo:${mediaEntityCode}`;
-    },
-    getPlayerStatsDumpsHKey() {
-      return 'playerStatsDumps';
-    },
-    getStatsPeriodOfDayKey(dayDate: string) {
-      // dayDate example: 2022-01-22
-      return `statsPeriodOfDay:${dayDate}`;
-    },
-    getGeoCityCacheKey(cityId: string) {
-      return `geoCityView:${cityId}`;
-    },
-    getGeoCountryCacheKey(cityId: string) {
-      return `geoCountryView:${cityId}`;
-    },
-    getUserCacheKey(userId: string) {
-      return `geoUserView:${userId}`;
+    getLocalFileCachKey(localFileRequest: LocalFilesRequest) {
+      return '';
     },
   };
 }

@@ -57,7 +57,7 @@ export class EnvService {
 
   DIR_TEMP_FILES = toPath(E.DIR_TEMP_FILES, './data/nodes/{NAF}/temp');
   DIR_IPFS_CACHE = toPath(E.DIR_IPFS_CACHE, './data/nodes/{NAF}/ipfs_cache');
-  DIR_LOCAL_FILES = toPath(E.DIR_LOCAL_FILES, './data/nodes/{NAF}/local_files');
+  DIR_LOCAL_FILES = toPath(E.DIR_LOCAL_FILES, './data/local_files');
   DIR_FRONT_APP_MAIN = toPath(E.DIR_FRONT_APP_MAIN, './data/frontends/main');
   DIR_ASSETS_PUBLIC = toPath(E.DIR_ASSETS_PUBLIC, './assets/public');
 
@@ -94,17 +94,18 @@ export class EnvService {
   IPFS_CACHE_MAX_ITEMS = toInt(E.IPFS_HOT_CACHE_MAX_ITEMS, 1000);
   IPFS_CACHE_MAX_SIZE = toInt(E.IPFS_CACHE_MAX_SIZE, 1024 * 1024 * 2048); // 2048 mb
   IPFS_IMAGE_MAX_SIZE = toInt(E.IPFS_IMAGE_MAX_SIZE, 1024 * 1024 * 8); // 8mb
-  IPFS_IMAGE_ALLOW_MIME_TYPES = toArrayStrings(E.IPFS_IMAGE_ALLOW_MIME_TYPES, ',', ['image/jpeg', 'image/png', 'image/webp']);
-  IPFS_AUDIO_MAX_SIZE = toInt(E.IPFS_VIDEO_MAX_SIZE, 1024 * 1024 * 20); // 20mb
-  IPFS_AUDIO_ALLOW_MIME_TYPES = toArrayStrings(E.IPFS_VIDEO_ALLOW_MIME_TYPES, ',', ['audio/mp3']);
+  IPFS_IMAGE_ALLOW_MIME_TYPES = toArrayStrings(E.IPFS_IMAGE_ALLOW_MIME_TYPES, ',', ['image/jpeg', 'image/png']);
+  IPFS_AUDIO_MAX_SIZE = toInt(E.IPFS_AUDIO_MAX_SIZE, 1024 * 1024 * 20); // 20mb
+  IPFS_AUDIO_ALLOW_MIME_TYPES = toArrayStrings(E.IPFS_AUDIO_ALLOW_MIME_TYPES, ',', ['audio/mp3']);
   IPFS_VIDEO_MAX_SIZE = toInt(E.IPFS_VIDEO_MAX_SIZE, 1024 * 1024 * 20); // 20mb
   IPFS_VIDEO_ALLOW_MIME_TYPES = toArrayStrings(E.IPFS_VIDEO_ALLOW_MIME_TYPES, ',', ['video/mp4']);
 
   // LOCAL_FILES
-  LOCAL_FILES_IMAGE_MAX_SIZE = toInt(E.LOCAL_FILE_IMAGE_MAX_SIZE, 1024 * 1024 * 8); // 8mb
-  LOCAL_FILES_ALLOW_MIME_TYPES = toArrayStrings(E.LOCAL_FILES_ALLOW_MIME_TYPES, ',', ['image/jpeg', 'image/png', 'image/webp']);
-  LOCAL_FILES_AUDIO_MAX_SIZE = toInt(E.IPFS_VIDEO_MAX_SIZE, 1024 * 1024 * 20); // 20mb
-  LOCAL_FILES_AUDIO_ALLOW_MIME_TYPES = toArrayStrings(E.IPFS_VIDEO_ALLOW_MIME_TYPES, ',', ['audio/mp3']);
+  LOCAL_FILES_CACHE_MIN_THUMB_LOG_SIZE = toInt(E.LOCAL_FILES_CACHE_MIN_THUMB_LOG_SIZE, 5);
+  LOCAL_FILES_IMAGE_MAX_SIZE = toInt(E.LOCAL_FILES_IMAGE_MAX_SIZE, 1024 * 1024 * 8); // 8mb
+  LOCAL_FILES_ALLOW_MIME_TYPES = toArrayStrings(E.LOCAL_FILES_ALLOW_MIME_TYPES, ',', ['image/jpeg', 'image/png']);
+  LOCAL_FILES_AUDIO_MAX_SIZE = toInt(E.LOCAL_FILES_AUDIO_MAX_SIZE, 1024 * 1024 * 20); // 20mb
+  LOCAL_FILES_AUDIO_ALLOW_MIME_TYPES = toArrayStrings(E.LOCAL_FILES_AUDIO_ALLOW_MIME_TYPES, ',', ['audio/mp3']);
   LOCAL_FILES_VIDEO_MAX_SIZE = toInt(E.LOCAL_FILES_VIDEO_MAX_SIZE, 1024 * 1024 * 20); // 20mb
   LOCAL_FILES_VIDEO_ALLOW_MIME_TYPES = toArrayStrings(E.LOCAL_FILES_VIDEO_ALLOW_MIME_TYPES, ',', ['video/mp4']);
 

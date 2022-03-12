@@ -11,8 +11,9 @@ import * as sharp from 'sharp';
 import * as fs from 'fs-extra';
 import { HelpersService } from '../common/helpers.service';
 import { LocalFileService } from '@db/services/local-file.service';
-import { FFmpegService } from '@share/services/ffmpeg.service';
 import { PrismaService } from '@db/prisma.service';
+import { ThumbParam } from './local_files_request';
+import { getMediaContentProbe } from '@share/ffmpeg';
 
 @Injectable()
 export class LocalFilesMakeService {
@@ -20,7 +21,6 @@ export class LocalFilesMakeService {
     private env: EnvService,
     private bs58: Bs58Service,
     private prisma: PrismaService,
-    private ffmpeg: FFmpegService,
     private helpers: HelpersService,
     private localFileService: LocalFileService,
   ) {}
@@ -70,13 +70,13 @@ export class LocalFilesMakeService {
       width = imageInfo.width;
       height = imageInfo.height;
     } else if (contentType === MediaType.AUDIO) {
-      const fileProbe = await this.ffmpeg.getMediaContentProbe(tempFile);
+      const fileProbe = await getMediaContentProbe(tempFile);
       const stream = fileProbe.audioStreams[0];
 
       size = fileProbe.format.size;
       duration = parseFloat(stream.duration);
     } else if (contentType === MediaType.VIDEO) {
-      const fileProbe = await this.ffmpeg.getMediaContentProbe(tempFile);
+      const fileProbe = await getMediaContentProbe(tempFile);
       const stream = fileProbe.videoStreams[0];
 
       size = fileProbe.format.size;
@@ -103,10 +103,12 @@ export class LocalFilesMakeService {
     const month = now.format('MM');
     const day = now.format('DD');
     const locaFiles = this.env.DIR_LOCAL_FILES;
-    const dirForFile = path.resolve(locaFiles, year, month, day);
-    const pathToFile = path.resolve(dirForFile, fileSha256Hash);
-    await fs.mkdirs(dirForFile);
-    await fs.move(tempFile, pathToFile);
+    const locDirForFile = path.join(year, month, day);
+    const absDirForFile = path.resolve(locaFiles, locDirForFile);
+    const locPathToFile = path.join(locDirForFile, fileSha256Hash);
+    const absPathToFile = path.resolve(absDirForFile, fileSha256Hash);
+    await fs.mkdirs(absDirForFile);
+    await fs.move(tempFile, absPathToFile);
     await fs.remove(tempFile);
 
     let localFile: LocalFile;
@@ -119,7 +121,7 @@ export class LocalFilesMakeService {
           width,
           height,
           durationSec: Math.floor(duration),
-          pathToFile,
+          pathToFile: locPathToFile,
           type: contentType,
           isThumb: true,
         },
@@ -143,13 +145,68 @@ export class LocalFilesMakeService {
           width,
           height,
           durationSec: Math.floor(duration),
-          pathToFile,
+          pathToFile: locPathToFile,
           type: contentType,
         },
       });
     }
 
     stdRes.setData(localFile);
+    return stdRes;
+  }
+
+  async createNewThumbForLocalFile(
+    orgLocalFile: LocalFile,
+    thumb: ThumbParam,
+  ): Promise<StandardResult<LocalFile>> {
+    const stdRes = new StandardResult<LocalFile>(201);
+
+    const tempNewThumbImageFile = path.resolve(
+      this.env.DIR_TEMP_FILES,
+      this.bs58.uuid() + '.thumb.jpg',
+    );
+    const image = sharp(orgLocalFile.pathToFile);
+    const metadata = await image.metadata();
+
+    if (thumb.type === 'width') {
+      await image
+        .resize(parseInt(thumb.name))
+        .jpeg({ quality: 50 })
+        .toFile(tempNewThumbImageFile);
+    } else if (thumb.type === 'name') {
+      if (thumb.name === 'fullhd') {
+        if (metadata.height > metadata.width) {
+          await image
+            .resize({ height: 1920 })
+            .jpeg({ quality: 50 })
+            .toFile(tempNewThumbImageFile);
+        } else {
+          await image
+            .resize({ width: 1920 })
+            .jpeg({ quality: 50 })
+            .toFile(tempNewThumbImageFile);
+        }
+      }
+    }
+
+    const createThumbLocalFileRes = await this.createLocalFileByFile(
+      tempNewThumbImageFile,
+      {
+        thumbData: {
+          orgLocalFileId: orgLocalFile.id,
+          name: thumb.name,
+        },
+        noValidation: true,
+      },
+    );
+    if (createThumbLocalFileRes.isBad) {
+      return stdRes.mergeBad(createThumbLocalFileRes);
+    }
+
+    await fs.remove(tempNewThumbImageFile);
+
+    stdRes.mergeGood(createThumbLocalFileRes);
+
     return stdRes;
   }
 }
