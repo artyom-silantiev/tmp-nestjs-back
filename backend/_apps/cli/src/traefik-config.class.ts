@@ -1,5 +1,5 @@
 import { ClusterAppType } from '@share/modules/env/env.service';
-import { IpfsRangesService } from '@share/modules/ipfs_ranges/ipfs_ranges.service';
+import { IpfsRangesService } from '@share/modules/ipfs/ipfs-ranges.service';
 
 import * as fs from 'fs-extra';
 import * as path from 'path';
