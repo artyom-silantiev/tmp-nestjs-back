@@ -19,7 +19,7 @@
     "build:web": "nest build",
     "start:web": "npx nest start",
     "start:web:dev": "npx nest start --debug --watch",
-    "start:web:prod": "node dist/apps/web/main"
+    "start:web:prod": "node dist/_apps/web/main"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.6.1",

@@ -19,11 +19,13 @@ import { CommonSerivce } from './common.service';
 import { RedisModule } from '@share/modules/redis/redis.module';
 import { ClusterAppModule } from '@share/modules/cluster-app/cluster-app.module';
 import { LocalFilesController } from './local_files.controller';
+import { LocalFilesModule } from '@share/modules/local_files/local_files.module';
 
 @Module({
   imports: [
     RedisModule,
     DbModule,
+    LocalFilesModule,
     IpfsModule,
     ClusterAppModule,
     AuthModule,
