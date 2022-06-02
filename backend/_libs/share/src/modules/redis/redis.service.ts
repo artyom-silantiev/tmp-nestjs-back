@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { createNodeRedisClient, WrappedNodeRedisClient } from 'handy-redis';
-import { ClusterAppType } from '@share/modules/env/env.service';
 import { LocalFilesRequest } from '../local_files/local_files_request';
-import { useEnv } from '@share/env/env';
+import { ClusterAppType, useEnv } from '@share/env/env';
 
 @Injectable()
 export class RedisService {

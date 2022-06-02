@@ -1,8 +1,7 @@
 import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
 import { RedisService } from '../redis/redis.service';
-import { ClusterAppType } from '@share/modules/env/env.service';
 import { EventEmitter } from 'events';
-import { useEnv } from '@share/env/env';
+import { ClusterAppType, useEnv } from '@share/env/env';
 import { useBs58 } from '@share/bs58';
 
 export type AppMessage = {
