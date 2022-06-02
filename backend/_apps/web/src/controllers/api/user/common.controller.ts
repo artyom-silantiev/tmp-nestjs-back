@@ -21,9 +21,7 @@ import {
   UserChangeEmailDto,
   UserChangePasswordDto,
   UserCurrentPutDto,
-  UserGeoDto,
 } from './common.dto';
-import { Prisma } from '@prisma/client';
 import { AuthService } from '@share/modules/auth/auth.service';
 import {
   JwtUserActivationService,
@@ -33,11 +31,11 @@ import { SendEmailService } from '@share/modules/app-mailer/send-email.service';
 import { ExErrors } from '@share/ex_errors.type';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { EnvService } from '@share/modules/env/env.service';
-import { IpfsIndexService } from '@share/modules/ipfs/ipfs-index.service';
 import { ClearDataService } from '@share/modules/clear-data/clear-data.service';
 import { Response } from 'express';
 import { PrismaService } from '@db/prisma.service';
-import { UserGeo, UserService, UserViewType } from '@db/services/user.service';
+import { UserService, UserViewType } from '@db/services/user.service';
+import { IpfsInputService } from '@share/modules/ipfs/ipfs-input.service';
 
 @ApiTags('api/user')
 @Controller('/api/user')
@@ -45,8 +43,8 @@ import { UserGeo, UserService, UserViewType } from '@db/services/user.service';
 export class UserCommonController {
   constructor(
     private env: EnvService,
-    private ipfsIndex: IpfsIndexService,
     private prisma: PrismaService,
+    private ipfsInput: IpfsInputService,
     private userService: UserService,
     private authService: AuthService,
     private mailer: SendEmailService,
@@ -240,7 +238,7 @@ export class UserCommonController {
     });
     const oldImage = user.imageId;
 
-    const uploadImageRes = await this.ipfsIndex.uploadImageByMulter(imageFile);
+    const uploadImageRes = await this.ipfsInput.uploadImageByMulter(imageFile);
     if (uploadImageRes.isBad) {
       console.error(uploadImageRes.errData);
       throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);

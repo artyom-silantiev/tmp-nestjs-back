@@ -55,6 +55,9 @@ export class RedisService {
   }
 
   keys = {
+    getJwtUserCacheKey(userId: string) {
+      return `userJwc:${userId}`;
+    },
     getAppChanName(appUid: string) {
       return `${appUid}@app`;
     },
