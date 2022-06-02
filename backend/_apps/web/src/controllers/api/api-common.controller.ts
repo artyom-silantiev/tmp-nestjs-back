@@ -1,11 +1,11 @@
-import { EnvService } from '@share/modules/env/env.service';
 import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { useEnv } from '@share/env/env';
 
 @ApiTags('api/')
 @Controller('/api')
 export class ApiCommonController {
-  constructor(private env: EnvService) {}
+  private env = useEnv();
 
   @Get('/configs')
   @ApiOperation({

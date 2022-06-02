@@ -1,6 +1,5 @@
 import { DbModule } from '@db/db.module';
 import { Module } from '@nestjs/common';
-import { EnvModule } from '../env/env.module';
 import { IpfsCacheService } from './ipfs-cache.service';
 import { IpfsInputService } from './ipfs-input.service';
 import { IpfsOutputService } from './ipfs-output.service';
@@ -10,7 +9,7 @@ import { CommonModule } from '../common/common.module';
 import { IpfsMakeService } from './ipfs-make.service';
 
 @Module({
-  imports: [EnvModule, CommonModule, S3Module, DbModule],
+  imports: [CommonModule, S3Module, DbModule],
   providers: [
     IpfsMakeService,
     IpfsInputService,

@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { EnvService } from '../env/env.service';
 import { LocalFile, MediaType } from '@prisma/client';
 import { StandardResult } from '@share/standard-result.class';
 
@@ -14,11 +13,13 @@ import { ThumbParam } from './local_files_request';
 import { getMediaContentProbe } from '@share/ffmpeg';
 import { Bs58 } from '@share/bs58';
 import { getFileInfo, getFileSha256 } from '@share/helpers';
+import { useEnv } from '@share/env/env';
 
 @Injectable()
 export class LocalFilesMakeService {
+  private env = useEnv();
+
   constructor(
-    private env: EnvService,
     private prisma: PrismaService,
     private localFileService: LocalFileService,
   ) {}

@@ -4,8 +4,8 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as YAML from 'json-to-pretty-yaml';
 import { AppStatus } from './cluster.types';
-import { EnvService } from '@share/modules/env/env.service';
 import { IpfsRanges } from '@share/modules/ipfs/ipfs-ranges';
+import { useEnv } from '@share/env/env';
 
 const TRAEFIK_DIR = path.resolve('./traefik');
 const TRAEFIK_PROVIDERS_DIR = path.resolve(TRAEFIK_DIR, 'providers');
@@ -19,6 +19,8 @@ const EpRtmp = 'EpRtmp';
 const LEResolver = 'letsEncrypt';
 
 export class TraefikConfig {
+  private env = useEnv();
+
   private webApps: AppStatus[];
   private ioApps: AppStatus[];
   private hexRanges: string[];
@@ -31,14 +33,14 @@ export class TraefikConfig {
   private acmeEmail = 'chris@chrisjukes.ca';
   private isWeb = false;
 
-  constructor(private env: EnvService, clusterApps: AppStatus[]) {
+  constructor(clusterApps: AppStatus[]) {
     this.groupClusterApps(clusterApps);
 
-    this.isWeb = env.TRAEFIK_ENDPOINTS.indexOf('web') !== -1;
+    this.isWeb = this.env.TRAEFIK_ENDPOINTS.indexOf('web') !== -1;
 
-    this.hostMain = env.TRAEFIK_DOMAIN_WEB;
-    this.acmeEnabled = env.TRAEFIK_ACME_ENABLED;
-    this.acmeEmail = env.TRAEFIK_ACME_EMAIL;
+    this.hostMain = this.env.TRAEFIK_DOMAIN_WEB;
+    this.acmeEnabled = this.env.TRAEFIK_ACME_ENABLED;
+    this.acmeEmail = this.env.TRAEFIK_ACME_EMAIL;
   }
 
   private groupClusterApps(clusterApps: AppStatus[]) {

@@ -1,16 +1,17 @@
 import { PrismaService } from '@db/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { ImageStorage, MediaType } from '@prisma/client';
-import { EnvService } from '../env/env.service';
 import { IpfsCacheService } from '../ipfs/ipfs-cache.service';
 import { IpfsStorageService } from '../ipfs/ipfs-storage.service';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import { useEnv } from '@share/env/env';
 
 @Injectable()
 export class ClearDataService {
+  private env = useEnv();
+
   constructor(
-    private env: EnvService,
     private prisma: PrismaService,
     private ipfsCache: IpfsCacheService,
     private ipfsStorage: IpfsStorageService,

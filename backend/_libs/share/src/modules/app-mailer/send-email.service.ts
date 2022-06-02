@@ -1,13 +1,14 @@
-import { Injectable } from "@nestjs/common";
-import { EnvService } from "../env/env.service";
-import { AppMailerService } from "./app-mailer.service";
-import { I18nRequestScopeService } from "nestjs-i18n";
+import { Injectable } from '@nestjs/common';
+import { AppMailerService } from './app-mailer.service';
+import { I18nRequestScopeService } from 'nestjs-i18n';
+import { useEnv } from '@share/env/env';
 
 @Injectable()
 export class SendEmailService {
+  private env = useEnv();
+
   constructor(
     private readonly mailer: AppMailerService,
-    private readonly env: EnvService,
-    private readonly i18n: I18nRequestScopeService
+    private readonly i18n: I18nRequestScopeService,
   ) {}
 }

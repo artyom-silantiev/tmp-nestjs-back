@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import * as path from 'path';
 import * as _ from 'lodash';
 import * as fs from 'fs-extra';
-import { EnvService, NodeEnvType } from '../env/env.service';
 import { IpfsObjectService } from '@db/services/ipfs-object.service';
 import { StandardResult } from '@share/standard-result.class';
 import { IpfsObject } from '@prisma/client';
 import { IpfsStorageService } from './ipfs-storage.service';
+import { NodeEnvType, useEnv } from '@share/env/env';
 
 export interface CacheItemMeta {
   type: 'IMAGE' | 'VIDEO' | 'AUDIO';
@@ -76,6 +76,8 @@ export class CacheItem {
 
 @Injectable()
 export class IpfsCacheService {
+  private env = useEnv();
+
   isInit = false;
   items = {} as { [sha256: string]: CacheItem };
   totalItems = 0;
@@ -84,7 +86,6 @@ export class IpfsCacheService {
   clearCacheResolves = [] as ((value: unknown) => void)[];
 
   constructor(
-    private env: EnvService,
     private ipfsService: IpfsObjectService,
     private ipfsStorage: IpfsStorageService,
   ) {}

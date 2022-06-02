@@ -2,8 +2,8 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import * as aws from 'aws-sdk';
 import { StandardResult } from '@share/standard-result.class';
 import * as fs from 'fs-extra';
-import { EnvService } from '../env/env.service';
 import { S3 } from 'aws-sdk';
+import { useEnv } from '@share/env/env';
 
 export type S3ClientParams = {
   isLocal: boolean;
@@ -238,11 +238,10 @@ export class S3Client {
 
 @Injectable()
 export class S3Service implements OnModuleInit {
+  private env = useEnv();
   private baseS3: aws.S3;
   private ipfsS3Client: S3Client;
   private isInit = false;
-
-  constructor(private env: EnvService) {}
 
   onModuleInit() {
     this.init();

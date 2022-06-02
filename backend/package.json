@@ -15,7 +15,7 @@
     "cli:seeder": "CLI_PATH=_apps/cli/src/cli.ts nestjs-command seeder",
     "cli:cluster:list": "CLI_PATH=apps/cli/src/cli.ts nestjs-command cluster:list",
     "cli:cluster:update_traefik_config": "CLI_PATH=apps/cli/src/cli.ts nestjs-command cluster:update_traefik_config",
-    "SERVER": "echo 'server block'",
+    "WEB": "echo 'WEB block'",
     "build:web": "nest build",
     "start:web": "npx nest start",
     "start:web:dev": "npx nest start --debug --watch",

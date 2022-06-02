@@ -1,17 +1,15 @@
-import { TaskService } from "@db/services/task.service";
-import { ISendMailOptions, MailerService } from "@nestjs-modules/mailer";
-import { Injectable } from "@nestjs/common";
-import { TaskType } from "@prisma/client";
-import * as path from "path";
-import { EnvService, SendEmailType } from "../env/env.service";
+import { TaskService } from '@db/services/task.service';
+import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
+import { Injectable } from '@nestjs/common';
+import { TaskType } from '@prisma/client';
+import { SendEmailType, useEnv } from '@share/env/env';
+import * as path from 'path';
 
 @Injectable()
 export class AppMailerService {
-  constructor(
-    private env: EnvService,
-    private task: TaskService,
-    private mailer: MailerService
-  ) {}
+  private env = useEnv();
+
+  constructor(private task: TaskService, private mailer: MailerService) {}
 
   async sendEmailNow(params: ISendMailOptions) {
     return await this.mailer.sendMail(params);
@@ -25,10 +23,10 @@ export class AppMailerService {
     if (params.template) {
       params.template = path.join(
         process.cwd(),
-        "assets",
-        "views",
-        "email",
-        params.template
+        'assets',
+        'views',
+        'email',
+        params.template,
       );
     }
 

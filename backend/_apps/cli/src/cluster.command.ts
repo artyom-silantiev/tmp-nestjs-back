@@ -8,17 +8,17 @@ import { ClusterAppType } from '@share/modules/env/env.service';
 import { RedisService } from '@share/modules/redis/redis.service';
 import { createDeferred } from '@share/helpers';
 import * as _ from 'lodash';
-import { EnvService } from '@share/modules/env/env.service';
 import { AppStatus } from './cluster.types';
 import { TraefikConfig } from './traefik-config.class';
+import { useEnv } from '@share/env/env';
 @Injectable()
 export class ClusterCommand {
+  private env = useEnv();
   private cheksAppsResolves = {} as {
     [appUid: string]: (boolean) => void;
   };
 
   constructor(
-    private env: EnvService,
     private cliClusterApp: ClusterAppService,
     private redis: RedisService,
   ) {}
@@ -151,7 +151,7 @@ export class ClusterCommand {
 
     console.table(clusterApps);
 
-    const traefikConfig = new TraefikConfig(this.env, clusterApps);
+    const traefikConfig = new TraefikConfig(clusterApps);
     await traefikConfig.generateTraefikConfig();
 
     process.exit(0);

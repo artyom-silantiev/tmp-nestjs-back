@@ -1,5 +1,4 @@
 import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
-import { EnvModule } from '@share/modules/env/env.module';
 import { StaticContentModule } from './modules/static-content.module';
 import { ControllersModule } from './controllers/controllers.module';
 import { AuthMiddleware } from '@share/modules/auth/auth.middleware';
@@ -14,7 +13,6 @@ import { ClusterAppModule } from '@share/modules/cluster-app/cluster-app.module'
 @Module({
   imports: [
     CommonModule,
-    EnvModule,
     DbModule,
     ClusterAppModule,
     ControllersModule,

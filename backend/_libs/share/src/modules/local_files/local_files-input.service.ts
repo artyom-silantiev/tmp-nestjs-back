@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { EnvService } from '../env/env.service';
 import { Image, LocalFile } from '@prisma/client';
 import { StandardResult } from '@share/standard-result.class';
 import { ImageService } from '@db/services/image.service';
@@ -8,11 +7,13 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import { LocalFilesMakeService } from './local_files-make.service';
 import { Bs58 } from '@share/bs58';
+import { useEnv } from '@share/env/env';
 
 @Injectable()
 export class LocalFilesInputService {
+  private env = useEnv();
+
   constructor(
-    private env: EnvService,
     private imageService: ImageService,
     private localFilesMake: LocalFilesMakeService,
   ) {}

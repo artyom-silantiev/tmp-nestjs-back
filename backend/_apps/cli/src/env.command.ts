@@ -1,16 +1,16 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { EnvService, NodeEnvType } from '@share/modules/env/env.service';
+import { NodeEnvType } from '@share/modules/env/env.service';
 import * as prompts from 'prompts';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import { Bs58 } from '@share/bs58';
-
+import { Env, useEnv } from '@share/env/env';
 @Injectable()
 export class EnvCommand {
-  constructor(private env: EnvService) {}
+  private env = useEnv();
 
-  private getEnvLines(env: EnvService) {
+  private getEnvLines(env: Env) {
     let curKeyPrefix = '';
     const lines = [] as string[];
     for (const envKey of Object.keys(env)) {
@@ -39,9 +39,9 @@ export class EnvCommand {
     command: 'env:print_default',
   })
   async envPrintDefault() {
-    const env = this.env.getDefaultEnv();
+    const envDefault = this.env.getDefaultEnv();
 
-    const envLines = this.getEnvLines(env);
+    const envLines = this.getEnvLines(envDefault);
     for (const line of envLines) {
       console.log(line);
     }
@@ -49,7 +49,7 @@ export class EnvCommand {
     process.exit(0);
   }
 
-  private async envSetupBase(env: EnvService) {
+  private async envSetupBase(env: Env) {
     console.log('base env params...');
     const res = await prompts([
       {
@@ -74,14 +74,14 @@ export class EnvCommand {
     console.log();
   }
 
-  private async envSetupSecrets(env: EnvService) {
+  private async envSetupSecrets(env: Env) {
     env.SECRET_PASSWORD_SALT = Bs58.getRandomBs58String(32);
     env.SECRET_JWT_AUTH = Bs58.getRandomBs58String(32);
     env.SECRET_JWT_ACTIVATION = Bs58.getRandomBs58String(32);
     env.SECRET_JWT_RECOVERY = Bs58.getRandomBs58String(32);
   }
 
-  private async envSetupDb(env: EnvService) {
+  private async envSetupDb(env: Env) {
     console.log('db env params...');
     const res = await prompts([
       {
@@ -94,7 +94,7 @@ export class EnvCommand {
         type: 'number',
         name: 'dbPort',
         message: 'What DB port?',
-        initial: '5432',
+        initial: '3306',
       },
       {
         type: 'text',
@@ -115,14 +115,13 @@ export class EnvCommand {
         initial: 'root',
       },
     ]);
-    // DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres?schema=public
-    const dbUrl = `postgresql://${res.dbUser}:${res.dbPass}@${res.dbHost}:${res.dbPort}/postgres?schema=${res.dbName}`;
+    const dbUrl = `mysql://${res.dbUser}:${res.dbPass}@${res.dbHost}:${res.dbPort}/${res.dbName}`;
     env.DATABASE_URL = dbUrl;
 
     console.log();
   }
 
-  private async envSetupDns(env: EnvService) {
+  private async envSetupDns(env: Env) {
     console.log();
     console.log('dns env params...');
 
@@ -163,7 +162,7 @@ export class EnvCommand {
     console.log();
   }
 
-  private async envSetupRedis(env: EnvService) {
+  private async envSetupRedis(env: Env) {
     console.log();
     console.log('redis env params...');
     const res = await prompts([
@@ -193,7 +192,7 @@ export class EnvCommand {
     console.log();
   }
 
-  private async envSetupAwsS3(env: EnvService) {
+  private async envSetupAwsS3(env: Env) {
     console.log('aws/s3 env params...');
     const res = await prompts([
       {

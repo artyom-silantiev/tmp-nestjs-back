@@ -1,7 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { IpfsStorageService } from './ipfs-storage.service';
 import { IpfsCacheService } from './ipfs-cache.service';
-import { EnvService } from '../env/env.service';
 import { Image, IpfsObject } from '@prisma/client';
 import { StandardResult } from '@share/standard-result.class';
 import { ImageService } from '@db/services/image.service';
@@ -11,6 +10,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import { IpfsMakeService } from './ipfs-make.service';
 import { Bs58 } from '@share/bs58';
+import { useEnv } from '@share/env/env';
 
 export interface IpfsInitOptions {
   withIpfsCache?: boolean;
@@ -18,8 +18,9 @@ export interface IpfsInitOptions {
 
 @Injectable()
 export class IpfsInputService {
+  private env = useEnv();
+
   constructor(
-    private env: EnvService,
     private imageService: ImageService,
     private ipfsStorage: IpfsStorageService,
     private ipfsCache: IpfsCacheService,

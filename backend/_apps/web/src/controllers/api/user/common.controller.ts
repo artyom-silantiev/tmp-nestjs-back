@@ -4,7 +4,6 @@ import {
   Get,
   HttpException,
   HttpStatus,
-  Param,
   Post,
   Put,
   Request,
@@ -30,19 +29,20 @@ import {
 import { SendEmailService } from '@share/modules/app-mailer/send-email.service';
 import { ExErrors } from '@share/ex_errors.type';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { EnvService } from '@share/modules/env/env.service';
 import { ClearDataService } from '@share/modules/clear-data/clear-data.service';
 import { Response } from 'express';
 import { PrismaService } from '@db/prisma.service';
 import { UserService, UserViewType } from '@db/services/user.service';
 import { IpfsInputService } from '@share/modules/ipfs/ipfs-input.service';
+import { useEnv } from '@share/env/env';
 
 @ApiTags('api/user')
 @Controller('/api/user')
 @ACL()
 export class UserCommonController {
+  private env = useEnv();
+
   constructor(
-    private env: EnvService,
     private prisma: PrismaService,
     private ipfsInput: IpfsInputService,
     private userService: UserService,

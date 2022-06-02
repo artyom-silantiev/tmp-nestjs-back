@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { useEnv } from '@share/env/env';
 import * as bcrypt from 'bcrypt';
-import { EnvService } from '../env/env.service';
 
 @Injectable()
 export class BcryptService {
-  constructor(private envService: EnvService) {}
+  private env = useEnv();
+
+  constructor() {}
 
   async generatePasswordHash(passwordText: string, passwordSalt?: string) {
-    passwordSalt = passwordSalt || this.envService.SECRET_PASSWORD_SALT;
+    passwordSalt = passwordSalt || this.env.SECRET_PASSWORD_SALT;
     passwordText += passwordSalt;
     return await bcrypt.hash(passwordText, 10);
   }
@@ -17,7 +19,7 @@ export class BcryptService {
     passwordHash: string,
     passwordSalt?: string,
   ) {
-    passwordSalt = passwordSalt || this.envService.SECRET_PASSWORD_SALT;
+    passwordSalt = passwordSalt || this.env.SECRET_PASSWORD_SALT;
     passwordText += passwordSalt;
     return bcrypt.compare(passwordText, passwordHash);
   }

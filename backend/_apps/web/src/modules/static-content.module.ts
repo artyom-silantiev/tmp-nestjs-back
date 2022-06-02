@@ -1,17 +1,18 @@
-import { EnvService } from '@share/modules/env/env.service';
 import { DynamicModule, Module } from '@nestjs/common';
 import {
   ServeStaticModule,
   ServeStaticModuleOptions,
 } from '@nestjs/serve-static';
+import { useEnv } from '@share/env/env';
 import * as fs from 'fs-extra';
 
 @Module({})
 export class StaticContentModule {
   static register(): DynamicModule {
     return ServeStaticModule.forRootAsync({
-      inject: [EnvService],
-      useFactory: async (env: EnvService) => {
+      useFactory: async () => {
+        const env = useEnv();
+
         console.log(env.DIR_ASSETS_PUBLIC);
 
         const options = [

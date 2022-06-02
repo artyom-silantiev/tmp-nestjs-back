@@ -7,7 +7,6 @@ import { ThumbParam } from './ipfs_request';
 import { StandardResult } from '@share/standard-result.class';
 import { CacheItem, IpfsCacheService } from './ipfs-cache.service';
 import { IpfsObjectService } from '@db/services/ipfs-object.service';
-import { EnvService } from '../env/env.service';
 import { IpfsObject, MediaType } from '@prisma/client';
 import { IpfsStorageService } from './ipfs-storage.service';
 import { PrismaService } from '@db/prisma.service';
@@ -15,11 +14,13 @@ import { IpfsOutputService } from './ipfs-output.service';
 import { getMediaContentProbe } from '@share/ffmpeg';
 import { Bs58 } from '@share/bs58';
 import { getFileInfo, getFileSha256 } from '@share/helpers';
+import { useEnv } from '@share/env/env';
 
 @Injectable()
 export class IpfsMakeService {
+  private env = useEnv();
+
   constructor(
-    private env: EnvService,
     private prisma: PrismaService,
     private ipfsService: IpfsObjectService,
     private ipfsCache: IpfsCacheService,

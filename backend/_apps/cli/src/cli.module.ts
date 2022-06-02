@@ -1,7 +1,6 @@
 import { CommandModule } from 'nestjs-command';
 import { IpfsModule } from '@share/modules/ipfs/ipfs.module';
 import { Module } from '@nestjs/common';
-import { EnvModule } from '@share/modules/env/env.module';
 import { DbModule } from '@db/db.module';
 import { RedisModule } from '@share/modules/redis/redis.module';
 import { CommonModule } from '@share/modules/common/common.module';
@@ -15,7 +14,6 @@ import { SeederCommand } from './seeder.command';
   imports: [
     CommandModule,
     CommonModule,
-    EnvModule,
     RedisModule,
     DbModule,
     ClusterAppModule,
