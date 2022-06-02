@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { User, Prisma, UserRole, Jwt, Setting } from '@prisma/client';
-import { BcryptService } from '@share/modules/common/bcrypt.service';
 import * as lodash from 'lodash';
 import { Enumerable } from '@share/support.types';
 import { ImageRow } from './image.service';
-import { Bs58 } from '@share/bs58';
+import { useBcrypt } from '@share/bcrypt';
+import { useBs58 } from '@share/bs58';
 
 export type UserRow = User & {
   Image?: ImageRow;
@@ -99,10 +99,10 @@ export class UserFetchBuilder {
 
 @Injectable()
 export class UserService {
-  constructor(
-    private prisma: PrismaService,
-    private bcryptService: BcryptService,
-  ) {}
+  private bcrypt = useBcrypt();
+  private bs58 = useBs58();
+
+  constructor(private prisma: PrismaService) {}
 
   toView(model: UserRow, type: UserViewType = UserViewType.PUBLIC): UserView {
     return UserView.getByModel(model, type);
@@ -129,10 +129,8 @@ export class UserService {
   }
 
   async generatePassword(password?: string) {
-    password = password || Bs58.getRandomBs58String(12);
-    const passwordHash = await this.bcryptService.generatePasswordHash(
-      password,
-    );
+    password = password || this.bs58.getRandomBs58String(12);
+    const passwordHash = await this.bcrypt.generatePasswordHash(password);
 
     return { password, passwordHash };
   }
@@ -236,9 +234,7 @@ export class UserService {
   }
 
   async changePassword(userId: bigint, password: string) {
-    const passwordHash = await this.bcryptService.generatePasswordHash(
-      password,
-    );
+    const passwordHash = await this.bcrypt.generatePasswordHash(password);
 
     await this.update({
       where: {

@@ -5,7 +5,7 @@ import * as os from 'os';
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const bs58 = basex(ALPHABET);
 
-class _Bs58 {
+class Bs58 {
   private pid: number;
   private addressInt = 0;
 
@@ -85,4 +85,8 @@ class _Bs58 {
   }
 }
 
-export const Bs58 = new _Bs58();
+const _bs58 = new Bs58();
+
+export function useBs58() {
+  return _bs58;
+}

@@ -7,12 +7,10 @@ import { JwtUserAuthService } from '@share/modules/jwt/jwt-user-auth.service';
 import { I18NextModule } from '@share/modules/i18next';
 import { EmailIsUniqueRule } from './decorators/email-is-unique.decorator';
 import { DbModule } from '@db/db.module';
-import { CommonModule } from '@share/modules/common/common.module';
 import { ClusterAppModule } from '@share/modules/cluster-app/cluster-app.module';
 
 @Module({
   imports: [
-    CommonModule,
     DbModule,
     ClusterAppModule,
     ControllersModule,

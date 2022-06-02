@@ -1,9 +1,7 @@
-import { Injectable } from '@nestjs/common';
 import { useEnv } from '@share/env/env';
 import * as bcrypt from 'bcrypt';
 
-@Injectable()
-export class BcryptService {
+class Bcrypt {
   private env = useEnv();
 
   constructor() {}
@@ -23,4 +21,9 @@ export class BcryptService {
     passwordText += passwordSalt;
     return bcrypt.compare(passwordText, passwordHash);
   }
+}
+
+const _bcrypt = new Bcrypt();
+export function useBcrypt() {
+  return _bcrypt;
 }

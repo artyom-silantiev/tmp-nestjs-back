@@ -4,8 +4,10 @@ import { NodeEnvType } from '@share/modules/env/env.service';
 import * as prompts from 'prompts';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { Bs58 } from '@share/bs58';
 import { Env, useEnv } from '@share/env/env';
+import { useBs58 } from '@share/bs58';
+
+const bs58 = useBs58();
 @Injectable()
 export class EnvCommand {
   private env = useEnv();
@@ -75,10 +77,10 @@ export class EnvCommand {
   }
 
   private async envSetupSecrets(env: Env) {
-    env.SECRET_PASSWORD_SALT = Bs58.getRandomBs58String(32);
-    env.SECRET_JWT_AUTH = Bs58.getRandomBs58String(32);
-    env.SECRET_JWT_ACTIVATION = Bs58.getRandomBs58String(32);
-    env.SECRET_JWT_RECOVERY = Bs58.getRandomBs58String(32);
+    env.SECRET_PASSWORD_SALT = bs58.getRandomBs58String(32);
+    env.SECRET_JWT_AUTH = bs58.getRandomBs58String(32);
+    env.SECRET_JWT_ACTIVATION = bs58.getRandomBs58String(32);
+    env.SECRET_JWT_RECOVERY = bs58.getRandomBs58String(32);
   }
 
   private async envSetupDb(env: Env) {

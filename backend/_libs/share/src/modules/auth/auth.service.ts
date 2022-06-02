@@ -1,21 +1,22 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { User } from "@prisma/client";
-import { JwtUserAuthService } from "@share/modules/jwt/jwt-user-auth.service";
-import { BcryptService } from "@share/modules/common/bcrypt.service";
-import { RedisService } from "@share/modules/redis/redis.service";
-import { JwtUser } from "./types";
-import { ExErrors } from "@share/ex_errors.type";
-import { PrismaService } from "@db/prisma.service";
-import { UserService } from "@db/services/user.service";
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { User } from '@prisma/client';
+import { JwtUserAuthService } from '@share/modules/jwt/jwt-user-auth.service';
+import { RedisService } from '@share/modules/redis/redis.service';
+import { JwtUser } from './types';
+import { ExErrors } from '@share/ex_errors.type';
+import { PrismaService } from '@db/prisma.service';
+import { UserService } from '@db/services/user.service';
+import { useBcrypt } from '@share/bcrypt';
 
 @Injectable()
 export class AuthService {
+  private bcrypt = useBcrypt();
+
   constructor(
     private redisService: RedisService,
     private prismaService: PrismaService,
     private userService: UserService,
-    private bcrypteService: BcryptService,
-    private jwtUserAuth: JwtUserAuthService
+    private jwtUserAuth: JwtUserAuthService,
   ) {}
 
   async passwordCheck(userId: bigint, password: string) {
@@ -24,12 +25,12 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new Error("user not found");
+      throw new Error('user not found');
     }
 
-    const compareResult = await this.bcrypteService.compare(
+    const compareResult = await this.bcrypt.compare(
       password,
-      user.passwordHash
+      user.passwordHash,
     );
     if (compareResult) {
       return true;
@@ -46,18 +47,18 @@ export class AuthService {
     if (!user) {
       throw new HttpException(
         ExErrors.Users.PasswordWrongOrNotFound,
-        HttpStatus.NOT_FOUND
+        HttpStatus.NOT_FOUND,
       );
     }
 
-    const compareResult = await this.bcrypteService.compare(
+    const compareResult = await this.bcrypt.compare(
       password,
-      user.passwordHash
+      user.passwordHash,
     );
     if (!compareResult) {
       throw new HttpException(
         ExErrors.Users.PasswordWrongOrNotFound,
-        HttpStatus.BAD_REQUEST
+        HttpStatus.BAD_REQUEST,
       );
     }
 
@@ -91,14 +92,14 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new Error("User not found!");
+      throw new Error('User not found!');
     }
 
     const jwtUser = {
       userId: user.id.toString(),
       role: user.role,
     };
-    await redisClient.set(cacheKey, JSON.stringify(jwtUser), ["EX", 3600]);
+    await redisClient.set(cacheKey, JSON.stringify(jwtUser), ['EX', 3600]);
 
     return Object.assign(new JwtUser(), jwtUser);
   }

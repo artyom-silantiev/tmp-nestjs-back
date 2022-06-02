@@ -3,7 +3,6 @@ import { IpfsModule } from '@share/modules/ipfs/ipfs.module';
 import { Module } from '@nestjs/common';
 import { DbModule } from '@db/db.module';
 import { RedisModule } from '@share/modules/redis/redis.module';
-import { CommonModule } from '@share/modules/common/common.module';
 import { DbFixCommand } from './db-fix.command';
 import { ClusterCommand } from './cluster.command';
 import { ClusterAppModule } from '@share/modules/cluster-app/cluster-app.module';
@@ -13,7 +12,6 @@ import { SeederCommand } from './seeder.command';
 @Module({
   imports: [
     CommandModule,
-    CommonModule,
     RedisModule,
     DbModule,
     ClusterAppModule,

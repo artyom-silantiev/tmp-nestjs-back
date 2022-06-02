@@ -1,12 +1,11 @@
-import { DbModule } from "@db/db.module";
-import { Module } from "@nestjs/common";
-import { JwtUserActivationService } from "./jwt-user-activation.service";
-import { JwtUserAuthService } from "./jwt-user-auth.service";
-import { JwtUserRecoveryService } from "./jwt-user-recovery.service";
-import { CommonModule } from "../common/common.module";
+import { DbModule } from '@db/db.module';
+import { Module } from '@nestjs/common';
+import { JwtUserActivationService } from './jwt-user-activation.service';
+import { JwtUserAuthService } from './jwt-user-auth.service';
+import { JwtUserRecoveryService } from './jwt-user-recovery.service';
 
 @Module({
-  imports: [CommonModule, DbModule],
+  imports: [DbModule],
   providers: [
     JwtUserAuthService,
     JwtUserActivationService,

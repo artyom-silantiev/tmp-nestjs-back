@@ -5,10 +5,9 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@share/modules/jwt/jwt.module';
 import { DbModule } from '@db/db.module';
 import { RedisModule } from '../redis/redis.module';
-import { CommonModule } from '../common/common.module';
 
 @Module({
-  imports: [CommonModule, RedisModule, DbModule, PassportModule, JwtModule],
+  imports: [RedisModule, DbModule, PassportModule, JwtModule],
   providers: [AuthService, LocalStrategy],
   exports: [AuthService],
 })

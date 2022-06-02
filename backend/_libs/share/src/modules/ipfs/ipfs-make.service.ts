@@ -12,13 +12,14 @@ import { IpfsStorageService } from './ipfs-storage.service';
 import { PrismaService } from '@db/prisma.service';
 import { IpfsOutputService } from './ipfs-output.service';
 import { getMediaContentProbe } from '@share/ffmpeg';
-import { Bs58 } from '@share/bs58';
 import { getFileInfo, getFileSha256 } from '@share/helpers';
 import { useEnv } from '@share/env/env';
+import { useBs58 } from '@share/bs58';
 
 @Injectable()
 export class IpfsMakeService {
   private env = useEnv();
+  private bs58 = useBs58();
 
   constructor(
     private prisma: PrismaService,
@@ -166,7 +167,7 @@ export class IpfsMakeService {
 
     const tempNewThumbImageFile = path.resolve(
       this.env.DIR_TEMP_FILES,
-      Bs58.uuid() + '.thumb.jpg',
+      this.bs58.uuid() + '.thumb.jpg',
     );
     const image = sharp(orgCacheItem.pathFile);
     const metadata = await image.metadata();

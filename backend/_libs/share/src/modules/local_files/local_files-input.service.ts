@@ -6,12 +6,13 @@ import * as _ from 'lodash';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { LocalFilesMakeService } from './local_files-make.service';
-import { Bs58 } from '@share/bs58';
 import { useEnv } from '@share/env/env';
+import { useBs58 } from '@share/bs58';
 
 @Injectable()
 export class LocalFilesInputService {
   private env = useEnv();
+  private bs58 = useBs58();
 
   constructor(
     private imageService: ImageService,
@@ -42,7 +43,7 @@ export class LocalFilesInputService {
   }
 
   async uploadImageByMulter(imageFile: Express.Multer.File) {
-    const tempName = Bs58.uuid();
+    const tempName = this.bs58.uuid();
     const tempFile = path.resolve(this.env.DIR_TEMP_FILES, tempName);
     await fs.writeFile(tempFile, imageFile.buffer);
     return this.uploadImageByFile(tempFile);

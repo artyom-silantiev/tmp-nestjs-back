@@ -2,8 +2,8 @@ import { JwtDbService } from '@db/services/jwt-db.service';
 import { Injectable } from '@nestjs/common';
 import { Jwt, JwtType } from '@prisma/client';
 import * as jwt from 'jsonwebtoken';
-import { Bs58 } from '@share/bs58';
 import { useEnv } from '@share/env/env';
+import { useBs58 } from '@share/bs58';
 
 export enum UserActivationType {
   signup = 'signup',
@@ -25,6 +25,7 @@ export class JwtUserActivationPayload {
 @Injectable()
 export class JwtUserActivationService {
   private env = useEnv();
+  private bs58 = useBs58();
 
   private SECRET: string;
   private TTL_SEC: number;
@@ -35,7 +36,7 @@ export class JwtUserActivationService {
   }
 
   async create(userId: bigint, metaData: UserActivationMeta) {
-    const uid = Bs58.uuid();
+    const uid = this.bs58.uuid();
     const payload = {
       userId: userId.toString(),
       uid,
