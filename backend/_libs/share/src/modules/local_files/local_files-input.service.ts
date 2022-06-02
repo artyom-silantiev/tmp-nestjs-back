@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { EnvService } from '../env/env.service';
-import { Bs58Service } from '@share/modules/common/bs58.service';
 import { Image, LocalFile } from '@prisma/client';
 import { StandardResult } from '@share/standard-result.class';
 import { ImageService } from '@db/services/image.service';
@@ -8,12 +7,12 @@ import * as _ from 'lodash';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { LocalFilesMakeService } from './local_files-make.service';
+import { Bs58 } from '@share/bs58';
 
 @Injectable()
 export class LocalFilesInputService {
   constructor(
     private env: EnvService,
-    private bs58: Bs58Service,
     private imageService: ImageService,
     private localFilesMake: LocalFilesMakeService,
   ) {}
@@ -42,7 +41,7 @@ export class LocalFilesInputService {
   }
 
   async uploadImageByMulter(imageFile: Express.Multer.File) {
-    const tempName = this.bs58.uuid();
+    const tempName = Bs58.uuid();
     const tempFile = path.resolve(this.env.DIR_TEMP_FILES, tempName);
     await fs.writeFile(tempFile, imageFile.buffer);
     return this.uploadImageByFile(tempFile);

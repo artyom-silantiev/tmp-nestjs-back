@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import * as _ from 'lodash';
 import IpfsRequest, { ThumbParam } from './ipfs_request';
 import { StandardResult } from '@share/standard-result.class';
@@ -13,6 +13,7 @@ export class IpfsOutputService {
     private env: EnvService,
     private ipfsService: IpfsObjectService,
     private ipfsCache: IpfsCacheService,
+    @Inject(forwardRef(() => IpfsMakeService))
     private ipfsMake: IpfsMakeService,
   ) {}
 

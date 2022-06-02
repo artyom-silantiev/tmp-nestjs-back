@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { IpfsObject, Image } from '@prisma/client';
-import { Bs58Service } from '@share/modules/common/bs58.service';
 import { StandardResult } from '@share/standard-result.class';
 
 export type IpfsObjectRow = IpfsObject & {
@@ -12,10 +11,7 @@ export type IpfsObjectRow = IpfsObject & {
 
 @Injectable()
 export class IpfsObjectService {
-  constructor(
-    private prisma: PrismaService,
-    private bs58Service: Bs58Service,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async getIpfsObjectById(id: bigint) {
     const ipfsObject = await this.prisma.ipfsObject.findFirst({

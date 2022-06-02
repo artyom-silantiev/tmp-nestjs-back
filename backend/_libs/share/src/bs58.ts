@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common';
 import * as basex from 'base-x';
 import * as os from 'os';
 
@@ -6,8 +5,7 @@ import * as os from 'os';
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const bs58 = basex(ALPHABET);
 
-@Injectable()
-export class Bs58Service {
+class _Bs58 {
   private pid: number;
   private addressInt = 0;
 
@@ -86,3 +84,5 @@ export class Bs58Service {
     return res;
   }
 }
+
+export const Bs58 = new _Bs58();

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { EnvService } from '../env/env.service';
-import { Bs58Service } from '@share/modules/common/bs58.service';
 import { LocalFile, MediaType } from '@prisma/client';
 import { StandardResult } from '@share/standard-result.class';
 
@@ -9,19 +8,18 @@ import * as _ from 'lodash';
 import * as path from 'path';
 import * as sharp from 'sharp';
 import * as fs from 'fs-extra';
-import { HelpersService } from '../common/helpers.service';
 import { LocalFileService } from '@db/services/local-file.service';
 import { PrismaService } from '@db/prisma.service';
 import { ThumbParam } from './local_files_request';
 import { getMediaContentProbe } from '@share/ffmpeg';
+import { Bs58 } from '@share/bs58';
+import { getFileInfo, getFileSha256 } from '@share/helpers';
 
 @Injectable()
 export class LocalFilesMakeService {
   constructor(
     private env: EnvService,
-    private bs58: Bs58Service,
     private prisma: PrismaService,
-    private helpers: HelpersService,
     private localFileService: LocalFileService,
   ) {}
 
@@ -36,7 +34,7 @@ export class LocalFilesMakeService {
     },
   ) {
     const stdRes = new StandardResult<LocalFile>();
-    const fileSha256Hash = await this.helpers.getFileSha256(tempFile);
+    const fileSha256Hash = await getFileSha256(tempFile);
 
     const getLocalFileRes =
       await this.localFileService.getLocalFileBySha256Hash(fileSha256Hash);
@@ -45,7 +43,7 @@ export class LocalFilesMakeService {
       return stdRes.setCode(208).setData(getLocalFileRes.data);
     }
 
-    const fileInfo = await this.helpers.getFileInfo(tempFile);
+    const fileInfo = await getFileInfo(tempFile);
     const mime = fileInfo.mime;
     const fstat = await fs.stat(tempFile);
 
@@ -163,7 +161,7 @@ export class LocalFilesMakeService {
 
     const tempNewThumbImageFile = path.resolve(
       this.env.DIR_TEMP_FILES,
-      this.bs58.uuid() + '.thumb.jpg',
+      Bs58.uuid() + '.thumb.jpg',
     );
     const image = sharp(orgLocalFile.pathToFile);
     const metadata = await image.metadata();

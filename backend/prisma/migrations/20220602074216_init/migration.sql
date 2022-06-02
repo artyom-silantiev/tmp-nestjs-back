@@ -8,6 +8,9 @@ CREATE TYPE "JwtType" AS ENUM ('USER_AUTH', 'USER_ACTIVATION', 'USER_RECOVERY');
 CREATE TYPE "TaskType" AS ENUM ('SEND_EMAIL');
 
 -- CreateEnum
+CREATE TYPE "ImageStorage" AS ENUM ('IpfsObject', 'LocalFile');
+
+-- CreateEnum
 CREATE TYPE "MediaType" AS ENUM ('IMAGE', 'VIDEO', 'AUDIO');
 
 -- CreateEnum
@@ -89,6 +92,7 @@ CREATE TABLE "Task" (
 -- CreateTable
 CREATE TABLE "Image" (
     "id" BIGSERIAL NOT NULL,
+    "storage" "ImageStorage" NOT NULL,
     "ipfsObjectId" BIGINT,
     "localFileId" BIGINT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

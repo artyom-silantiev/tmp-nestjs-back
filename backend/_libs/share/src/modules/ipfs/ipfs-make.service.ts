@@ -8,20 +8,18 @@ import { StandardResult } from '@share/standard-result.class';
 import { CacheItem, IpfsCacheService } from './ipfs-cache.service';
 import { IpfsObjectService } from '@db/services/ipfs-object.service';
 import { EnvService } from '../env/env.service';
-import { Bs58Service } from '@share/modules/common/bs58.service';
 import { IpfsObject, MediaType } from '@prisma/client';
 import { IpfsStorageService } from './ipfs-storage.service';
-import { HelpersService } from '@share/modules/common/helpers.service';
 import { PrismaService } from '@db/prisma.service';
 import { IpfsOutputService } from './ipfs-output.service';
 import { getMediaContentProbe } from '@share/ffmpeg';
+import { Bs58 } from '@share/bs58';
+import { getFileInfo, getFileSha256 } from '@share/helpers';
 
 @Injectable()
 export class IpfsMakeService {
   constructor(
     private env: EnvService,
-    private helpers: HelpersService,
-    private bs58: Bs58Service,
     private prisma: PrismaService,
     private ipfsService: IpfsObjectService,
     private ipfsCache: IpfsCacheService,
@@ -40,7 +38,7 @@ export class IpfsMakeService {
     },
   ) {
     const stdRes = new StandardResult<IpfsObject>(201);
-    const fileSha256Hash = await this.helpers.getFileSha256(tempFile);
+    const fileSha256Hash = await getFileSha256(tempFile);
 
     const getIpfsObjRes = await this.ipfsService.getIpfsObjectBySha256Hash(
       fileSha256Hash,
@@ -50,7 +48,7 @@ export class IpfsMakeService {
       return stdRes.setCode(208).setData(getIpfsObjRes.data);
     }
 
-    const fileInfo = await this.helpers.getFileInfo(tempFile);
+    const fileInfo = await getFileInfo(tempFile);
     const mime = fileInfo.mime;
     const fstat = await fs.stat(tempFile);
 
@@ -167,7 +165,7 @@ export class IpfsMakeService {
 
     const tempNewThumbImageFile = path.resolve(
       this.env.DIR_TEMP_FILES,
-      this.bs58.uuid() + '.thumb.jpg',
+      Bs58.uuid() + '.thumb.jpg',
     );
     const image = sharp(orgCacheItem.pathFile);
     const metadata = await image.metadata();

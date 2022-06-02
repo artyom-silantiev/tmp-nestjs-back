@@ -1,4 +1,5 @@
 module.exports = {
+  nodePath: '/home/artyom/.nvm/versions/node/v16.14.0/bin/node',
   apps: [
     {
       name: 'web',
@@ -9,7 +10,6 @@ module.exports = {
       increment_var: 'NODE_APP_INDEX',
       env: {
         NODE_APP_INDEX: 0,
-        NODE_APP_TYPE: 'web',
         NODE_PORT: 3000,
       },
     },

@@ -1,17 +1,12 @@
-import { Injectable } from '@nestjs/common';
 import * as _ from 'lodash';
-import { Bs58Service } from '@share/modules/common/bs58.service';
-import { EnvService } from '../env/env.service';
 import * as multihash from 'multihashes';
 import { StandardResult } from '@share/standard-result.class';
+import { Bs58 } from '@share/bs58';
 
 const minBs58Prefix = 'NLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51';
 const maxBs58Prefix = 'fZy5bvk7a3DQAjCbGNtmrPXWkyVvPrdnZMyBZ5q5ieKG';
 
-@Injectable()
-export class IpfsRangesService {
-  constructor(private env: EnvService, private bs58: Bs58Service) {}
-
+class _IpfsRanges {
   private makeUnique(str) {
     return _.uniq(str).join('');
   }
@@ -268,8 +263,8 @@ export class IpfsRangesService {
       if (!currentCode) {
         currentCode = minBs58Prefix.substr(0, bs58Size);
       } else {
-        const intCode = this.bs58.toInt(currentCode);
-        currentCode = this.bs58.fromInt(intCode + 1);
+        const intCode = Bs58.toInt(currentCode);
+        currentCode = Bs58.fromInt(intCode + 1);
       }
 
       codes.push(currentCode);
@@ -354,3 +349,5 @@ export class IpfsRangesService {
     return stdRes;
   }
 }
+
+export const IpfsRanges = new _IpfsRanges();

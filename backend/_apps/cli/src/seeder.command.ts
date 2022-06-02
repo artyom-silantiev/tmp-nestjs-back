@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { UserRole } from '@prisma/client';
 import { PrismaService } from '@db/prisma.service';
 import { UserService, UserViewType } from '@db/services/user.service';
-import { SettingService } from '@db/services/setting.service';
 
 interface Seed {
   name: string;
@@ -15,14 +14,13 @@ export class SeederCommand {
   constructor(
     private prisma: PrismaService,
     private userService: UserService,
-    private settingService: SettingService,
   ) {}
 
   @Command({
     command: 'seeder',
   })
   async seeder() {
-    console.log('Запуск !!!')
+    console.log('Запуск !!!');
     const seeds = [
       {
         name: '0001_create_admin',

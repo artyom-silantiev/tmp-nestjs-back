@@ -3,16 +3,19 @@
 Backend system, for the base nestjs project.
 System components:
 
-- server - rest api
+- web - rest api
 
 External components:
 
 ...
 
-## Run for backend dev
+## Run for dev
 
 ```bash
-$ docker-compose up
+docker-compose up -d
+yarn
+yarn devs
+yarn start:web:dev
 ```
 
 ## Deploy for production
@@ -22,25 +25,30 @@ $ docker-compose up
 yarn
 
 # .env file
-$ yarn cli:env:setup
+yarn cli:env:setup
+# or copy from .env.default
+cp .env.default .env
+nano .env # CHECK and EDIT
 
 # [OPTIONAL] if used db, redis, s3 from docker
-$ docker-compose up -d
+docker-compose up -d
 
 # db migrates
-$ yarn migrate_prod
+yarn migrate_prod
 
 # db seeder
-$ yarn cli:seeder
+yarn cli:seeder
 
 # build
-$ yarn build:all
-$ sh build_frontend_main.sh
+yarn build:all
+sh build_frontend_main.sh
 
 # deploy apps
-$ cp pm2.config.default.js pm2.config.js
-$ nano pm2.config.js
-$ pm2 start pm2.config.js
+cp cluster.config.def.js cluster.config.js
+nano cluster.config.js # CHECK and EDIT
+node cluster.js generate_pm2_config
+nano pm2.config.js
+pm2 start pm2.config.js
 
 # traefik (if need)
 $ yarn cli:cluster:list
@@ -51,8 +59,8 @@ $ yarn cli:cluster:update_traefik_config
 ## Build main app
 
 ```bash
-$ cd <this folder>
-$ sh build_frontend_main.sh
+cd <backend dir>
+sh build_frontend_main.sh
 ```
 
 ## Running the app

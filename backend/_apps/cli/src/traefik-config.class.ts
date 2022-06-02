@@ -1,17 +1,16 @@
 import { ClusterAppType } from '@share/modules/env/env.service';
-import { IpfsRangesService } from '@share/modules/ipfs/ipfs-ranges.service';
 
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as YAML from 'json-to-pretty-yaml';
 import { AppStatus } from './cluster.types';
 import { EnvService } from '@share/modules/env/env.service';
+import { IpfsRanges } from '@share/modules/ipfs/ipfs-ranges';
 
 const TRAEFIK_DIR = path.resolve('./traefik');
 const TRAEFIK_PROVIDERS_DIR = path.resolve(TRAEFIK_DIR, 'providers');
 const TRAEFIK_CONF = path.resolve(TRAEFIK_DIR, 'traefik.yml');
 const TRAEFIK_PROVIDER_WEB = path.resolve(TRAEFIK_PROVIDERS_DIR, 'web.yml');
-const TRAEFIK_PROVIDER_LIVE = path.resolve(TRAEFIK_PROVIDERS_DIR, 'live.yml');
 const TRAEFIK_ACME_JSON = path.resolve(TRAEFIK_DIR, 'acme.json');
 
 const EpWeb = 'EpWeb';
@@ -32,11 +31,7 @@ export class TraefikConfig {
   private acmeEmail = 'chris@chrisjukes.ca';
   private isWeb = false;
 
-  constructor(
-    private env: EnvService,
-    clusterApps: AppStatus[],
-    private ipfsRanges: IpfsRangesService,
-  ) {
+  constructor(private env: EnvService, clusterApps: AppStatus[]) {
     this.groupClusterApps(clusterApps);
 
     this.isWeb = env.TRAEFIK_ENDPOINTS.indexOf('web') !== -1;
@@ -52,7 +47,7 @@ export class TraefikConfig {
   }
 
   private initIpfsRanges() {
-    const rangesRes = this.ipfsRanges.generateRanges(2, 3, this.webApps.length);
+    const rangesRes = IpfsRanges.generateRanges(2, 3, this.webApps.length);
     this.hexRanges = rangesRes.data.hexsRegexs;
   }
 

@@ -1,18 +1,14 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import {
-  EnvService,
-  NodeEnvType,
-  toPath,
-} from '@share/modules/env/env.service';
+import { EnvService, NodeEnvType } from '@share/modules/env/env.service';
 import * as prompts from 'prompts';
-import { Bs58Service } from '@share/modules/common/bs58.service';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import { Bs58 } from '@share/bs58';
 
 @Injectable()
 export class EnvCommand {
-  constructor(private env: EnvService, private bs58: Bs58Service) {}
+  constructor(private env: EnvService) {}
 
   private getEnvLines(env: EnvService) {
     let curKeyPrefix = '';
@@ -79,10 +75,10 @@ export class EnvCommand {
   }
 
   private async envSetupSecrets(env: EnvService) {
-    env.SECRET_PASSWORD_SALT = this.bs58.getRandomBs58String(32);
-    env.SECRET_JWT_AUTH = this.bs58.getRandomBs58String(32);
-    env.SECRET_JWT_ACTIVATION = this.bs58.getRandomBs58String(32);
-    env.SECRET_JWT_RECOVERY = this.bs58.getRandomBs58String(32);
+    env.SECRET_PASSWORD_SALT = Bs58.getRandomBs58String(32);
+    env.SECRET_JWT_AUTH = Bs58.getRandomBs58String(32);
+    env.SECRET_JWT_ACTIVATION = Bs58.getRandomBs58String(32);
+    env.SECRET_JWT_RECOVERY = Bs58.getRandomBs58String(32);
   }
 
   private async envSetupDb(env: EnvService) {
@@ -98,7 +94,7 @@ export class EnvCommand {
         type: 'number',
         name: 'dbPort',
         message: 'What DB port?',
-        initial: '3306',
+        initial: '5432',
       },
       {
         type: 'text',
@@ -119,7 +115,8 @@ export class EnvCommand {
         initial: 'root',
       },
     ]);
-    const dbUrl = `mysql://${res.dbUser}:${res.dbPass}@${res.dbHost}:${res.dbPort}/${res.dbName}`;
+    // DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres?schema=public
+    const dbUrl = `postgresql://${res.dbUser}:${res.dbPass}@${res.dbHost}:${res.dbPort}/postgres?schema=${res.dbName}`;
     env.DATABASE_URL = dbUrl;
 
     console.log();
@@ -135,12 +132,6 @@ export class EnvCommand {
         name: 'domainWeb',
         message: 'What web domain name?',
         initial: 'web.example.com',
-      },
-      {
-        type: 'text',
-        name: 'domainLive',
-        message: 'What live domain name?',
-        initial: 'live.example.com',
       },
       {
         type: 'confirm',

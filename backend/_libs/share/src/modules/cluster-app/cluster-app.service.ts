@@ -1,10 +1,9 @@
 import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
-import { Bs58Service } from '../common/bs58.service';
 import { EnvService } from '../env/env.service';
 import { RedisService } from '../redis/redis.service';
 import { ClusterAppType } from '@share/modules/env/env.service';
-import * as fs from 'fs-extra';
 import { EventEmitter } from 'events';
+import { Bs58 } from '@share/bs58';
 
 export type AppMessage = {
   from: string;
@@ -27,14 +26,10 @@ export class ClusterAppService implements OnModuleDestroy {
   private channelName: string;
   emitter = new EventEmitter();
 
-  constructor(
-    private env: EnvService,
-    private redis: RedisService,
-    private bs58: Bs58Service,
-  ) {}
+  constructor(private env: EnvService, private redis: RedisService) {}
 
   async initClusterApp(clusterAppType: ClusterAppType) {
-    this.uid = this.bs58.uuid();
+    this.uid = Bs58.uuid();
     this.type = clusterAppType;
     await this.initRedisPart();
   }

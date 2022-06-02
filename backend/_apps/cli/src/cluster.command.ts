@@ -11,7 +11,6 @@ import * as _ from 'lodash';
 import { EnvService } from '@share/modules/env/env.service';
 import { AppStatus } from './cluster.types';
 import { TraefikConfig } from './traefik-config.class';
-import { IpfsRangesService } from '@share/modules/ipfs/ipfs-ranges.service';
 @Injectable()
 export class ClusterCommand {
   private cheksAppsResolves = {} as {
@@ -22,7 +21,6 @@ export class ClusterCommand {
     private env: EnvService,
     private cliClusterApp: ClusterAppService,
     private redis: RedisService,
-    private ipfsRanges: IpfsRangesService,
   ) {}
 
   private async initCliClusterApp() {
@@ -153,11 +151,7 @@ export class ClusterCommand {
 
     console.table(clusterApps);
 
-    const traefikConfig = new TraefikConfig(
-      this.env,
-      clusterApps,
-      this.ipfsRanges,
-    );
+    const traefikConfig = new TraefikConfig(this.env, clusterApps);
     await traefikConfig.generateTraefikConfig();
 
     process.exit(0);

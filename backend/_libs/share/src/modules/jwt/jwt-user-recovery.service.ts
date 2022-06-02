@@ -1,9 +1,9 @@
-import { Bs58Service } from '@share/modules/common/bs58.service';
 import { JwtDbService } from '@db/services/jwt-db.service';
 import { Injectable } from '@nestjs/common';
 import { JwtType } from '@prisma/client';
 import * as jwt from 'jsonwebtoken';
 import { EnvService } from '../env/env.service';
+import { Bs58 } from '@share/bs58';
 
 export class JwtUserRecoveryPayload {
   userId: string;
@@ -15,17 +15,13 @@ export class JwtUserRecoveryService {
   private SECRET: string;
   private TTL_SEC: number;
 
-  constructor(
-    private envService: EnvService,
-    private bs58Service: Bs58Service,
-    private jwtDb: JwtDbService,
-  ) {
+  constructor(private envService: EnvService, private jwtDb: JwtDbService) {
     this.SECRET = envService.SECRET_JWT_RECOVERY;
     this.TTL_SEC = envService.JWT_RECOVERY_TTL_SEC;
   }
 
   async create(userId: bigint) {
-    const uid = this.bs58Service.uuid();
+    const uid = Bs58.uuid();
     const payload = {
       userId: userId.toString(),
       uid,

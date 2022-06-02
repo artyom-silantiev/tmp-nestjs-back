@@ -1,11 +1,11 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { User, Prisma, UserRole, Jwt, Setting } from '@prisma/client';
 import { BcryptService } from '@share/modules/common/bcrypt.service';
-import { Bs58Service } from '@share/modules/common/bs58.service';
 import * as lodash from 'lodash';
 import { Enumerable } from '@share/support.types';
 import { ImageRow } from './image.service';
+import { Bs58 } from '@share/bs58';
 
 export type UserRow = User & {
   Image?: ImageRow;
@@ -102,7 +102,6 @@ export class UserService {
   constructor(
     private prisma: PrismaService,
     private bcryptService: BcryptService,
-    private bs58Service: Bs58Service,
   ) {}
 
   toView(model: UserRow, type: UserViewType = UserViewType.PUBLIC): UserView {
@@ -130,7 +129,7 @@ export class UserService {
   }
 
   async generatePassword(password?: string) {
-    password = password || this.bs58Service.getRandomBs58String(12);
+    password = password || Bs58.getRandomBs58String(12);
     const passwordHash = await this.bcryptService.generatePasswordHash(
       password,
     );
@@ -156,7 +155,6 @@ export class UserService {
       phone: params.phone,
       firstName: params.firstName,
       lastName: params.lastName,
-      useCategories: true,
     } as Prisma.UserCreateInput;
 
     if (params.role) {
