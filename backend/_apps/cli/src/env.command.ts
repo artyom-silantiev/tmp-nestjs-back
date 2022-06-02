@@ -1,10 +1,9 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
-import { NodeEnvType } from '@share/modules/env/env.service';
 import * as prompts from 'prompts';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { Env, useEnv } from '@share/env/env';
+import { Env, NodeEnvType, useEnv } from '@share/env/env';
 import { useBs58 } from '@share/bs58';
 
 const bs58 = useBs58();

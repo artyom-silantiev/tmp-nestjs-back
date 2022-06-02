@@ -4,13 +4,12 @@ import {
   AppMessage,
   ClusterAppService,
 } from '@share/modules/cluster-app/cluster-app.service';
-import { ClusterAppType } from '@share/modules/env/env.service';
 import { RedisService } from '@share/modules/redis/redis.service';
 import { createDeferred } from '@share/helpers';
 import * as _ from 'lodash';
 import { AppStatus } from './cluster.types';
 import { TraefikConfig } from './traefik-config.class';
-import { useEnv } from '@share/env/env';
+import { ClusterAppType, useEnv } from '@share/env/env';
 @Injectable()
 export class ClusterCommand {
   private env = useEnv();
