@@ -59,7 +59,7 @@ export class IpfsInputService {
     return stdRes.setCode(code).setData(image);
   }
 
-  async uploadImageByMulter(imageFile: Express.Multer.File) {
+  async uploadImageByMulterFile(imageFile: Express.Multer.File) {
     const tempName = this.bs58.uid();
     const tempFile = path.resolve(this.env.DIR_TEMP_FILES, tempName);
     await fs.writeFile(tempFile, imageFile.buffer);

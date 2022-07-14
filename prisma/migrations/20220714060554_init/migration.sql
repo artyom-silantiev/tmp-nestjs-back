@@ -28,7 +28,7 @@ CREATE TABLE "Seed" (
 -- CreateTable
 CREATE TABLE "User" (
     "id" BIGSERIAL NOT NULL,
-    "role" "UserRole" NOT NULL DEFAULT E'GUEST',
+    "role" "UserRole" NOT NULL DEFAULT 'GUEST',
     "email" VARCHAR(255) NOT NULL,
     "emailActivatedAt" TIMESTAMP(3),
     "firstName" VARCHAR(255),
@@ -74,7 +74,7 @@ CREATE TABLE "Setting" (
 -- CreateTable
 CREATE TABLE "Task" (
     "id" BIGSERIAL NOT NULL,
-    "type" "TaskType" NOT NULL DEFAULT E'SEND_EMAIL',
+    "type" "TaskType" NOT NULL DEFAULT 'SEND_EMAIL',
     "data" JSON NOT NULL,
     "attempts" SMALLINT NOT NULL DEFAULT 0,
     "forNodeUid" VARCHAR(32),
@@ -105,7 +105,7 @@ CREATE TABLE "Image" (
 CREATE TABLE "IpfsObject" (
     "id" BIGSERIAL NOT NULL,
     "sha256" VARCHAR(64) NOT NULL,
-    "location" "IpfsObjectLocation" NOT NULL DEFAULT E'S3_IPFS',
+    "location" "IpfsObjectLocation" NOT NULL DEFAULT 'S3_IPFS',
     "mime" VARCHAR(255) NOT NULL,
     "size" INTEGER NOT NULL,
     "width" INTEGER,

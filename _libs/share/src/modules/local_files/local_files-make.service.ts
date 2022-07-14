@@ -109,7 +109,6 @@ export class LocalFilesMakeService {
     const absPathToFile = path.resolve(absDirForFile, fileSha256Hash);
     await fs.mkdirs(absDirForFile);
     await fs.move(tempFile, absPathToFile);
-    await fs.remove(tempFile);
 
     let localFile: LocalFile;
     if (params && params.thumbData) {

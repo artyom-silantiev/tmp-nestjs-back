@@ -238,7 +238,9 @@ export class UserCommonController {
     });
     const oldImage = user.imageId;
 
-    const uploadImageRes = await this.ipfsInput.uploadImageByMulter(imageFile);
+    const uploadImageRes = await this.ipfsInput.uploadImageByMulterFile(
+      imageFile,
+    );
     if (uploadImageRes.isBad) {
       console.error(uploadImageRes.errData);
       throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
