@@ -10,12 +10,15 @@ import { useValidator } from '@share/apphooks/validator/validator.apphook';
 import { useDirs } from '@share/apphooks/dirs.apphook';
 import { ClusterAppType, useEnv } from '@share/env/env';
 import { useStdLogger } from '_libs/share/logger';
+import { useBs58 } from '@share/bs58';
 
 async function bootstrap() {
   const app = await NestFactory.create(WebModule);
   const env = useEnv();
   const logger = useStdLogger();
   console.log('Web ENV:', env);
+
+  const bs58 = useBs58();
 
   await useDirs(env);
   await useRedis(app, {

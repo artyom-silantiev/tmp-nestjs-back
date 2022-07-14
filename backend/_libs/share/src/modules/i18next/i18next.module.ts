@@ -1,27 +1,21 @@
 import { Module } from '@nestjs/common';
 import { I18NextService } from './i18next.service';
-import { I18nModule, I18nJsonParser } from 'nestjs-i18n';
+import { I18nModule, AcceptLanguageResolver } from 'nestjs-i18n';
 import * as path from 'path';
 import { QueryResolver } from './resolver';
-import { useEnv } from '@share/env/env';
 
 @Module({
   imports: [
-    I18nModule.forRootAsync({
-      useFactory: () => {
-        const env = useEnv();
-
-        const i18nPath = path.join(process.cwd(), 'assets', 'i18n/');
-
-        return {
-          fallbackLanguage: 'en',
-          parserOptions: {
-            path: i18nPath,
-          },
-        };
+    I18nModule.forRoot({
+      fallbackLanguage: 'en',
+      loaderOptions: {
+        path: path.join(process.cwd(), 'assets', 'i18n/'),
+        watch: true,
       },
-      parser: I18nJsonParser,
-      resolvers: [{ use: QueryResolver, options: ['lang', 'locale', 'l'] }],
+      resolvers: [
+        { use: QueryResolver, options: ['lang', 'locale', 'l'] },
+        AcceptLanguageResolver,
+      ],
     }),
   ],
   providers: [I18NextService],

@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { createNodeRedisClient, WrappedNodeRedisClient } from 'handy-redis';
 import { LocalFilesRequest } from '../local_files/local_files_request';
 import { ClusterAppType, useEnv } from '@share/env/env';
+import Redis from 'ioredis';
 
 @Injectable()
 export class RedisService {
   private env = useEnv();
-  protected defaultClient: WrappedNodeRedisClient;
-  protected defaultClientSub: WrappedNodeRedisClient;
-  protected clients: { [key: string]: WrappedNodeRedisClient } = {};
+  protected defaultClient: Redis;
+  protected defaultClientSub: Redis;
+  protected clients: { [key: string]: Redis } = {};
 
   public init() {
     if (this.defaultClient) {
@@ -27,10 +27,10 @@ export class RedisService {
   }
 
   protected createClient() {
-    const newClient = createNodeRedisClient(
-      this.env.REDIS_PORT,
-      this.env.REDIS_HOST,
-    );
+    const newClient = new Redis({
+      port: this.env.REDIS_PORT,
+      host: this.env.REDIS_HOST,
+    });
     newClient.select(this.env.REDIS_DB);
     return newClient;
   }

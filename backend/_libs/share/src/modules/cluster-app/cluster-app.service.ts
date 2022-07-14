@@ -31,7 +31,7 @@ export class ClusterAppService implements OnModuleDestroy {
   constructor(private redis: RedisService) {}
 
   async initClusterApp(clusterAppType: ClusterAppType) {
-    this.uid = this.bs58.uuid();
+    this.uid = this.bs58.uid();
     this.type = clusterAppType;
     await this.initRedisPart();
   }
@@ -50,8 +50,10 @@ export class ClusterAppService implements OnModuleDestroy {
       portHttp: this.env.NODE_PORT,
     } as AppInfo;
 
-    await redisClient.hset(appKey, ['info', JSON.stringify(appInfo)]);
-    await redisClient.hset(appKey, ['timestamp', Date.now().toString()]);
+    await redisClient.hset(appKey, {
+      info: JSON.stringify(appInfo),
+      timestamp: Date.now().toString(),
+    });
     await redisClient.expire(appKey, 70);
 
     setInterval(async () => {
@@ -62,12 +64,9 @@ export class ClusterAppService implements OnModuleDestroy {
     const redisSub = this.redis.getClientSub();
     this.channelName = this.redis.keys.getAppChanName(this.uid);
     redisSub.subscribe(this.channelName);
-    redisSub.nodeRedis.on(
-      'message',
-      async (channelName: string, message: string) => {
-        this.parseRedisMessage(channelName, message);
-      },
-    );
+    redisSub.on('message', async (channelName: string, message: string) => {
+      this.parseRedisMessage(channelName, message);
+    });
   }
 
   getUid() {

@@ -24,7 +24,7 @@ export class JwtUserAuthService {
   }
 
   async create(userId: bigint) {
-    const uid = this.bs58.uuid();
+    const uid = this.bs58.uid();
     const payload = {
       sub: userId.toString(),
       uid: uid,

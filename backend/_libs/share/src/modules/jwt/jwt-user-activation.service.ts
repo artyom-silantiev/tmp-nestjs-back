@@ -36,7 +36,7 @@ export class JwtUserActivationService {
   }
 
   async create(userId: bigint, metaData: UserActivationMeta) {
-    const uid = this.bs58.uuid();
+    const uid = this.bs58.uid();
     const payload = {
       userId: userId.toString(),
       uid,

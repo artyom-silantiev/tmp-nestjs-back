@@ -99,7 +99,7 @@ export class AuthService {
       userId: user.id.toString(),
       role: user.role,
     };
-    await redisClient.set(cacheKey, JSON.stringify(jwtUser), ['EX', 3600]);
+    await redisClient.set(cacheKey, JSON.stringify(jwtUser), 'EX', 3600);
 
     return Object.assign(new JwtUser(), jwtUser);
   }

@@ -163,7 +163,7 @@ export class LocalFilesMakeService {
 
     const tempNewThumbImageFile = path.resolve(
       this.env.DIR_TEMP_FILES,
-      this.bs58.uuid() + '.thumb.jpg',
+      this.bs58.uid() + '.thumb.jpg',
     );
     const image = sharp(orgLocalFile.pathToFile);
     const metadata = await image.metadata();

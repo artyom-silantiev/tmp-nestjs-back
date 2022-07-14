@@ -132,10 +132,12 @@ export class LocalFilesOutputService {
       createdAt: localFile.createdAt,
     } as LocalFileMeta;
 
-    await redisClient.set(localFileCacheKey, JSON.stringify(localFileMeta), [
+    await redisClient.set(
+      localFileCacheKey,
+      JSON.stringify(localFileMeta),
       'EX',
       300,
-    ]);
+    );
 
     return stdRes.setData(localFileMeta);
   }

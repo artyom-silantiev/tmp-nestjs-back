@@ -55,15 +55,16 @@ class Bs58 {
   }
 
   toInt(bs58String: string) {
-    const hex = bs58.decode(bs58String).toString('hex');
-    return parseInt(hex, 16);
+    const int = bs58.decode(bs58String).toString();
+    return parseInt(int, 10);
   }
 
   toHex(bs58String: string) {
-    return bs58.decode(bs58String).toString('hex');
+    const int = bs58.decode(bs58String).toString();
+    return parseInt(int, 16);
   }
 
-  uuid(params?: { randChars?: number; cryptoOffset?: number }) {
+  uid(params?: { randChars?: number; cryptoOffset?: number }) {
     params = params || {};
     const randChars = params.randChars || 4;
     const cryptoOffset = params.cryptoOffset || 0;

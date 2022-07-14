@@ -43,7 +43,7 @@ export class LocalFilesInputService {
   }
 
   async uploadImageByMulter(imageFile: Express.Multer.File) {
-    const tempName = this.bs58.uuid();
+    const tempName = this.bs58.uid();
     const tempFile = path.resolve(this.env.DIR_TEMP_FILES, tempName);
     await fs.writeFile(tempFile, imageFile.buffer);
     return this.uploadImageByFile(tempFile);

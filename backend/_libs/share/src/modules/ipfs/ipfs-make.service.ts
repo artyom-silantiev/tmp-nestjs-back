@@ -167,7 +167,7 @@ export class IpfsMakeService {
 
     const tempNewThumbImageFile = path.resolve(
       this.env.DIR_TEMP_FILES,
-      this.bs58.uuid() + '.thumb.jpg',
+      this.bs58.uid() + '.thumb.jpg',
     );
     const image = sharp(orgCacheItem.pathFile);
     const metadata = await image.metadata();

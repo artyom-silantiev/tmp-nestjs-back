@@ -24,7 +24,7 @@ export class JwtUserRecoveryService {
   }
 
   async create(userId: bigint) {
-    const uid = this.bs58.uuid();
+    const uid = this.bs58.uid();
     const payload = {
       userId: userId.toString(),
       uid,
