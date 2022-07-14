@@ -1,5 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { WebModule } from './web.module';
+import { ClusterAppType, useEnv } from '@share/env/env';
+import { useStdLogger } from '_libs/share/logger';
+
 import { useRedis } from '@share/modules/redis/redis.apphook';
 import { useClusterApp } from '@share/modules/cluster-app/cluster-app.apphook';
 import { usePrisma } from '@db/prisma.apphook';
@@ -8,17 +11,12 @@ import { useIpfs } from '@share/modules/ipfs/ipfs.apphook';
 import { useSwagger } from '@share/apphooks/swagger.apphook';
 import { useValidator } from '@share/apphooks/validator/validator.apphook';
 import { useDirs } from '@share/apphooks/dirs.apphook';
-import { ClusterAppType, useEnv } from '@share/env/env';
-import { useStdLogger } from '_libs/share/logger';
-import { useBs58 } from '@share/bs58';
 
 async function bootstrap() {
   const app = await NestFactory.create(WebModule);
   const env = useEnv();
   const logger = useStdLogger();
   console.log('Web ENV:', env);
-
-  const bs58 = useBs58();
 
   await useDirs(env);
   await useRedis(app, {
