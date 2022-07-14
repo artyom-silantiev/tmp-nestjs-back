@@ -7,8 +7,9 @@ import {
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
 
-import { Logger, UsePipes, ValidationPipe } from '@nestjs/common';
+import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
+import { useStdLogger } from '_libs/share/logger';
 
 @UsePipes(new ValidationPipe())
 @WebSocketGateway({ namespace: 'test' })
@@ -18,7 +19,7 @@ export class ExampleGateway
   @WebSocketServer()
   server: Server;
 
-  private logger: Logger = new Logger('WebSocketGateway');
+  private logger = useStdLogger('WebSocketGateway');
 
   afterInit(server: Server) {
     this.logger.log('Init');

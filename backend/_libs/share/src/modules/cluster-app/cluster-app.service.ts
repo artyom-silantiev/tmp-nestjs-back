@@ -1,8 +1,9 @@
-import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
+import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import { RedisService } from '../redis/redis.service';
 import { EventEmitter } from 'events';
 import { ClusterAppType, useEnv } from '@share/env/env';
 import { useBs58 } from '@share/bs58';
+import { useStdLogger } from '_libs/share/logger';
 
 export type AppMessage = {
   from: string;
@@ -20,7 +21,7 @@ export type AppInfo = {
 export class ClusterAppService implements OnModuleDestroy {
   private env = useEnv();
   private bs58 = useBs58();
-  private logger = new Logger('ClusterAppService');
+  private logger = useStdLogger('ClusterAppService');
 
   private uid: string;
   private type: ClusterAppType;

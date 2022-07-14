@@ -4,11 +4,11 @@ import {
   WebSocketServer,
   OnGatewayConnection,
   OnGatewayDisconnect,
-} from "@nestjs/websockets";
-import { Logger } from "@nestjs/common";
-import { Socket, Server } from "socket.io";
+} from '@nestjs/websockets';
+import { Socket, Server } from 'socket.io';
+import { useStdLogger } from '_libs/share/logger';
 
-@WebSocketGateway({ namespace: "gateway" })
+@WebSocketGateway({ namespace: 'gateway' })
 export class FantomGatewayGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -17,10 +17,10 @@ export class FantomGatewayGateway
   @WebSocketServer()
   server: Server;
 
-  private logger: Logger = new Logger("FantomDashboardGateway");
+  private logger = useStdLogger('FantomDashboardGateway');
 
   afterInit(server: Server) {
-    this.logger.debug("Init");
+    this.logger.debug('Init');
   }
 
   handleDisconnect(client: Socket) {

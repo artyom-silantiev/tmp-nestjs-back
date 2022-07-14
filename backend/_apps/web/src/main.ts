@@ -1,6 +1,5 @@
 import { NestFactory } from '@nestjs/core';
 import { WebModule } from './web.module';
-import { Logger } from '@nestjs/common';
 import { useRedis } from '@share/modules/redis/redis.apphook';
 import { useClusterApp } from '@share/modules/cluster-app/cluster-app.apphook';
 import { usePrisma } from '@db/prisma.apphook';
@@ -10,11 +9,12 @@ import { useSwagger } from '@share/apphooks/swagger.apphook';
 import { useValidator } from '@share/apphooks/validator/validator.apphook';
 import { useDirs } from '@share/apphooks/dirs.apphook';
 import { ClusterAppType, useEnv } from '@share/env/env';
+import { useStdLogger } from '_libs/share/logger';
 
 async function bootstrap() {
   const app = await NestFactory.create(WebModule);
   const env = useEnv();
-  const logger = new Logger('WebBootstrap');
+  const logger = useStdLogger();
   console.log('Web ENV:', env);
 
   await useDirs(env);
