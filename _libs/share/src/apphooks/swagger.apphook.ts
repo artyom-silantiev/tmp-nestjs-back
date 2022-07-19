@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { JWTAuthName } from '@share/constans';
 
-export async function useSwagger(app: INestApplication) {
+export async function appUseSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
     .setTitle('API')
     .setDescription(

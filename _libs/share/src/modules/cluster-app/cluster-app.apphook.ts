@@ -3,7 +3,7 @@ import { ClusterAppType } from '@share/env/env';
 import { ClusterAppModule } from './cluster-app.module';
 import { ClusterAppService } from './cluster-app.service';
 
-export async function useClusterApp(
+export async function appUseClusterApp(
   appContext: INestApplicationContext,
   appType: ClusterAppType,
 ) {

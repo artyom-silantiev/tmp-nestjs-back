@@ -2,7 +2,7 @@ import { INestApplicationContext } from '@nestjs/common';
 import { IpfsInputService, IpfsInitOptions } from './ipfs-input.service';
 import { IpfsModule } from './ipfs.module';
 
-export async function useIpfs(
+export async function appUseIpfs(
   appContext: INestApplicationContext,
   options?: IpfsInitOptions,
 ) {

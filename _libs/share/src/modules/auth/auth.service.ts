@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { JwtUserAuthService } from '@share/modules/jwt/jwt-user-auth.service';
-import { RedisService } from '@share/modules/redis/redis.service';
+import { CacheService } from '@share/modules/redis/cache.service';
 import { JwtUser } from './types';
 import { ExErrors } from '@share/ex_errors.type';
 import { PrismaService } from '@db/prisma.service';
@@ -13,7 +13,7 @@ export class AuthService {
   private bcrypt = useBcrypt();
 
   constructor(
-    private redisService: RedisService,
+    private cache: CacheService,
     private prismaService: PrismaService,
     private userService: UserService,
     private jwtUserAuth: JwtUserAuthService,
@@ -76,10 +76,8 @@ export class AuthService {
   async cheackAccessToken(accessToken: string): Promise<JwtUser> {
     const payload = this.jwtUserAuth.verify(accessToken);
 
-    const redisClient = this.redisService.getClient();
     const userId = payload.sub;
-    const cacheKey = this.redisService.keys.getJwtUserCacheKey(userId);
-    const userJwtCache = await redisClient.get(cacheKey);
+    const userJwtCache = await this.cache.cacheJwtUser.get(userId);
     if (userJwtCache) {
       const jwtUser = JSON.parse(userJwtCache);
       return Object.assign(new JwtUser(), jwtUser);
@@ -99,7 +97,7 @@ export class AuthService {
       userId: user.id.toString(),
       role: user.role,
     };
-    await redisClient.set(cacheKey, JSON.stringify(jwtUser), 'EX', 3600);
+    await this.cache.cacheJwtUser.set(userId, jwtUser);
 
     return Object.assign(new JwtUser(), jwtUser);
   }

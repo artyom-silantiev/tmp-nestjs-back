@@ -4,11 +4,12 @@ import { StandardResult } from '@share/standard-result.class';
 import { LocalFilesMakeService } from './local_files-make.service';
 import { LocalFile, MediaType } from '@prisma/client';
 import { LocalFileService } from '@db/services/local-file.service';
-import { RedisService } from '../redis/redis.service';
+import { CacheService } from '../redis/cache.service';
 import { PrismaService } from '@db/prisma.service';
 import * as _ from 'lodash';
 import * as path from 'path';
 import { useEnv } from '@share/env/env';
+import { useRedis } from '../redis/redis';
 
 export type LocalFileMeta = {
   absPathToFile: string;
@@ -28,7 +29,7 @@ export class LocalFilesOutputService {
   private env = useEnv();
 
   constructor(
-    private redis: RedisService,
+    private cache: CacheService,
     private prisma: PrismaService,
     private localFileService: LocalFileService,
     private localFilesMake: LocalFilesMakeService,
@@ -39,11 +40,10 @@ export class LocalFilesOutputService {
   ) {
     const stdRes = new StandardResult<LocalFileMeta>();
     const sha256 = localFilesRequest.sha256;
-    const redisClient = this.redis.getClient();
-    const localFileCacheKey =
-      this.redis.keys.getLocalFileCachKey(localFilesRequest);
 
-    const cacheLocalFileMetaRaw = await redisClient.get(localFileCacheKey);
+    const cacheLocalFileMetaRaw = await this.cache.cacheLocalFile.get(
+      localFilesRequest,
+    );
     if (cacheLocalFileMetaRaw) {
       const cacheLocalFileMeta = JSON.parse(
         cacheLocalFileMetaRaw,
@@ -132,12 +132,7 @@ export class LocalFilesOutputService {
       createdAt: localFile.createdAt,
     } as LocalFileMeta;
 
-    await redisClient.set(
-      localFileCacheKey,
-      JSON.stringify(localFileMeta),
-      'EX',
-      300,
-    );
+    await this.cache.cacheLocalFile.set(localFilesRequest, localFileMeta);
 
     return stdRes.setData(localFileMeta);
   }

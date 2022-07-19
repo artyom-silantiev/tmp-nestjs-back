@@ -15,7 +15,10 @@ export class RedisIoAdapter extends IoAdapter {
 
     const redisUrl = `redis://${env.REDIS_HOST}:${env.REDIS_PORT}`;
 
-    const pubClient = createClient({ url: redisUrl });
+    const pubClient = createClient({
+      url: redisUrl,
+      database: env.REDIS_DB + 1,
+    });
     const subClient = pubClient.duplicate();
     const redisAdapter = createAdapter({ pubClient, subClient });
 
