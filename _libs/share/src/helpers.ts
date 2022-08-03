@@ -99,7 +99,7 @@ export function getRandomString(len?) {
 }
 
 export function getUid() {
-  return Date.now().toString(36) + '.' + this.getRandomString();
+  return Date.now().toString(36) + '.' + getRandomString();
 }
 
 export function shuffle(array: Array<any>) {
@@ -165,6 +165,6 @@ export function durationFormat (value: number | string) {
 */
 
 export async function getFileSha256(filePath: string): Promise<string> {
-  await this.sleep(200);
+  await sleep(200);
   return hasha.fromFile(filePath, { algorithm: 'sha256' });
 }

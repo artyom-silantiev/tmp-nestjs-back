@@ -1,11 +1,8 @@
 import { INestApplicationContext } from '@nestjs/common';
-import { IpfsInputService, IpfsInitOptions } from './ipfs-input.service';
+import { IpfsInputService } from './ipfs-input.service';
 import { IpfsModule } from './ipfs.module';
 
-export async function appUseIpfs(
-  appContext: INestApplicationContext,
-  options?: IpfsInitOptions,
-) {
+export async function appUseIpfs(appContext: INestApplicationContext) {
   const ipfsInput = appContext.select(IpfsModule).get(IpfsInputService);
-  await ipfsInput.init(options);
+  await ipfsInput.init();
 }

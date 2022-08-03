@@ -11,10 +11,6 @@ import { IpfsMakeService } from './ipfs-make.service';
 import { useEnv } from '@share/env/env';
 import { useBs58 } from '@share/bs58';
 
-export interface IpfsInitOptions {
-  withIpfsCache?: boolean;
-}
-
 @Injectable()
 export class IpfsInputService {
   private env = useEnv();
@@ -28,14 +24,9 @@ export class IpfsInputService {
     private ipfsMake: IpfsMakeService,
   ) {}
 
-  async init(options?: IpfsInitOptions) {
-    options = options || {};
-
+  async init() {
     await this.ipfsStorage.init();
-
-    if (options.withIpfsCache) {
-      await this.ipfsCache.init();
-    }
+    await this.ipfsCache.init();
   }
 
   async uploadImageByFile(imageFile: string) {
