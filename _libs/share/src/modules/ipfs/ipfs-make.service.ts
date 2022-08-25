@@ -12,9 +12,9 @@ import { IpfsStorageService } from './ipfs-storage.service';
 import { PrismaService } from '@db/prisma.service';
 import { IpfsOutputService } from './ipfs-output.service';
 import { getMediaContentProbe } from '@share/ffmpeg';
-import { getFileInfo, getFileSha256 } from '@share/helpers';
-import { useEnv } from '@share/env/env';
-import { useBs58 } from '@share/bs58';
+import { getMimeFromPath, getFileSha256 } from '@share/helpers';
+import { useEnv } from '@share/composables/env/env';
+import { useBs58 } from '@share/composables/bs58';
 
 @Injectable()
 export class IpfsMakeService {
@@ -50,8 +50,7 @@ export class IpfsMakeService {
       return stdRes.setCode(208).setData(getIpfsObjRes.data);
     }
 
-    const fileInfo = await getFileInfo(tempFile);
-    const mime = fileInfo.mime;
+    const mime = await getMimeFromPath(tempFile);
     const fstat = await fs.stat(tempFile);
 
     let contentType: MediaType;

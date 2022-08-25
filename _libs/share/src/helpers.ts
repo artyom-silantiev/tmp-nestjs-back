@@ -1,5 +1,4 @@
 import { random } from 'lodash';
-import * as fileType from 'file-type';
 import * as hasha from 'hasha';
 
 export async function sleep(ms) {
@@ -122,8 +121,12 @@ export function shuffle(array: Array<any>) {
   return array;
 }
 
-export function getFileInfo(file: string) {
-  return fileType.fromFile(file);
+export function getMimeFromPath(filePath) {
+  const execSync = require('child_process').execSync;
+  const mimeType = execSync(
+    'file --mime-type -b "' + filePath + '"',
+  ).toString();
+  return mimeType.trim();
 }
 
 /*

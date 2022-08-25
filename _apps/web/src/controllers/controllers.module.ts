@@ -16,14 +16,12 @@ import { ApiCommonController } from './api/api-common.controller';
 
 import { PaginationService } from '@share/services/pagination.service';
 import { CommonSerivce } from './common.service';
-import { RedisModule } from '@share/modules/redis/redis.module';
 import { ClusterAppModule } from '@share/modules/cluster-app/cluster-app.module';
 import { LocalFilesController } from './local_files.controller';
 import { LocalFilesModule } from '@share/modules/local_files/local_files.module';
 
 @Module({
   imports: [
-    RedisModule,
     DbModule,
     LocalFilesModule,
     IpfsModule,

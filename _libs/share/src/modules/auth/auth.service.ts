@@ -1,19 +1,19 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { JwtUserAuthService } from '@share/modules/jwt/jwt-user-auth.service';
-import { CacheService } from '@share/modules/redis/cache.service';
 import { JwtUser } from './types';
 import { ExErrors } from '@share/ex_errors.type';
 import { PrismaService } from '@db/prisma.service';
 import { UserService } from '@db/services/user.service';
-import { useBcrypt } from '@share/bcrypt';
+import { useBcrypt } from '@share/composables/bcrypt';
+import { useCacheJwtUser } from '@share/composables/cache/jwt-user';
 
 @Injectable()
 export class AuthService {
   private bcrypt = useBcrypt();
+  private cacheJwtUser = useCacheJwtUser();
 
   constructor(
-    private cache: CacheService,
     private prismaService: PrismaService,
     private userService: UserService,
     private jwtUserAuth: JwtUserAuthService,
@@ -77,7 +77,7 @@ export class AuthService {
     const payload = this.jwtUserAuth.verify(accessToken);
 
     const userId = payload.sub;
-    const userJwtCache = await this.cache.cacheJwtUser.get(userId);
+    const userJwtCache = await this.cacheJwtUser.get(userId);
     if (userJwtCache) {
       const jwtUser = JSON.parse(userJwtCache);
       return Object.assign(new JwtUser(), jwtUser);
@@ -97,7 +97,7 @@ export class AuthService {
       userId: user.id.toString(),
       role: user.role,
     };
-    await this.cache.cacheJwtUser.set(userId, jwtUser);
+    await this.cacheJwtUser.set(userId, jwtUser);
 
     return Object.assign(new JwtUser(), jwtUser);
   }

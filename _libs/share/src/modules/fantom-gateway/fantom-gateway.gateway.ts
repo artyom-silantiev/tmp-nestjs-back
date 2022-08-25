@@ -6,7 +6,7 @@ import {
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
-import { useStdLogger } from '_libs/share/logger';
+import { Logger } from '@share/logger';
 
 @WebSocketGateway({ namespace: 'gateway' })
 export class FantomGatewayGateway
@@ -17,7 +17,7 @@ export class FantomGatewayGateway
   @WebSocketServer()
   server: Server;
 
-  private logger = useStdLogger('FantomDashboardGateway');
+  private logger = new Logger('FantomDashboardGateway');
 
   afterInit(server: Server) {
     this.logger.debug('Init');

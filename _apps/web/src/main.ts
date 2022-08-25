@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { WebModule } from './web.module';
-import { ClusterAppType, useEnv } from '@share/env/env';
-import { useStdLogger } from '_libs/share/logger';
+import { ClusterAppType, useEnv } from '@share/composables/env/env';
+import { Logger } from '@share/logger';
 
 import { appUseRedis } from '@share/modules/redis/redis.apphook';
 import { appUseClusterApp } from '@share/modules/cluster-app/cluster-app.apphook';
@@ -15,7 +15,7 @@ import { appUseDirs } from '@share/apphooks/dirs.apphook';
 async function bootstrap() {
   const app = await NestFactory.create(WebModule);
   const env = useEnv();
-  const logger = useStdLogger();
+  const logger = new Logger('App');
   console.log('Web ENV:', env);
 
   await appUseDirs(env);

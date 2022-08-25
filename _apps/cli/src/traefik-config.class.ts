@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as YAML from 'json-to-pretty-yaml';
 import { AppStatus } from './cluster.types';
 import { IpfsRanges } from '@share/modules/ipfs/ipfs-ranges';
-import { ClusterAppType, useEnv } from '@share/env/env';
+import { ClusterAppType, useEnv } from '@share/composables/env/env';
 
 const TRAEFIK_DIR = path.resolve('./traefik');
 const TRAEFIK_PROVIDERS_DIR = path.resolve(TRAEFIK_DIR, 'providers');

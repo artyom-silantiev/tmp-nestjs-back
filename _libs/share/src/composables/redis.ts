@@ -1,5 +1,5 @@
 import Redis from 'ioredis';
-import { useEnv } from '../../env/env';
+import { useEnv } from './env/env';
 const env = useEnv();
 
 function createClient() {

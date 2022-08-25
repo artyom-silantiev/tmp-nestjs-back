@@ -9,7 +9,7 @@ import {
 
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
-import { useStdLogger } from '_libs/share/logger';
+import { Logger } from '@share/logger';
 
 @UsePipes(new ValidationPipe())
 @WebSocketGateway({ namespace: 'test' })
@@ -19,7 +19,7 @@ export class ExampleGateway
   @WebSocketServer()
   server: Server;
 
-  private logger = useStdLogger('WebSocketGateway');
+  private logger = new Logger('WebSocketGateway');
 
   afterInit(server: Server) {
     this.logger.log('Init');

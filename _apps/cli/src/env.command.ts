@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common';
 import * as prompts from 'prompts';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { Env, NodeEnvType, useEnv } from '@share/env/env';
-import { useBs58 } from '@share/bs58';
+import { Env, NodeEnvType, useEnv } from '@share/composables/env/env';
+import { useBs58 } from '@share/composables/bs58';
 
 const bs58 = useBs58();
 @Injectable()

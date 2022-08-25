@@ -1,4 +1,4 @@
-import { Env } from '@share/env/env';
+import { Env } from '@share/composables/env/env';
 import * as fs from 'fs-extra';
 
 export async function appUseDirs(env: Env) {

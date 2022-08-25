@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { useEnv } from '@share/env/env';
+import { useEnv } from '@share/composables/env/env';
 
 @ApiTags('api/')
 @Controller('/api')

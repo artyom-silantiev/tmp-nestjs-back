@@ -1,5 +1,5 @@
 import { INestApplicationContext } from '@nestjs/common';
-import { ClusterAppType } from '@share/env/env';
+import { ClusterAppType } from '@share/composables/env/env';
 import { ClusterAppModule } from './cluster-app.module';
 import { ClusterAppService } from './cluster-app.service';
 

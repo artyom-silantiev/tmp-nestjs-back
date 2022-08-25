@@ -4,24 +4,22 @@ import {
   AppMessage,
   ClusterAppService,
 } from '@share/modules/cluster-app/cluster-app.service';
-import { CacheService } from '@share/modules/redis/cache.service';
 import { createDeferred } from '@share/helpers';
 import * as _ from 'lodash';
 import { AppStatus } from './cluster.types';
 import { TraefikConfig } from './traefik-config.class';
-import { ClusterAppType, useEnv } from '@share/env/env';
-import { useRedis } from '@share/modules/redis/redis';
+import { ClusterAppType, useEnv } from '@share/composables/env/env';
+import { useRedis } from '@share/composables/redis';
+import { useClusterStuff } from '@share/composables/cache/cluster-stuff';
 @Injectable()
 export class ClusterCommand {
   private env = useEnv();
+  private clusterStuff = useClusterStuff();
   private cheksAppsResolves = {} as {
     [appUid: string]: (boolean) => void;
   };
 
-  constructor(
-    private cliClusterApp: ClusterAppService,
-    private cache: CacheService,
-  ) {}
+  constructor(private cliClusterApp: ClusterAppService) {}
 
   private async initCliClusterApp() {
     await this.cliClusterApp.initClusterApp(ClusterAppType.Cli);
@@ -54,7 +52,7 @@ export class ClusterCommand {
   private async getClusterApps() {
     const redisCli = useRedis();
 
-    const clusterAppPrefix = this.cache.clusterStuff.getClusterAppPrefix();
+    const clusterAppPrefix = this.clusterStuff.getClusterAppPrefix();
     const clusterAppKeys = await redisCli.keys(clusterAppPrefix);
     const clusterAppsStatus = {} as {
       [appUid: string]: AppStatus;
@@ -72,7 +70,7 @@ export class ClusterCommand {
         );
 
         if (!appInfo) {
-          await this.cache.clusterStuff.del(appType, appUid);
+          await this.clusterStuff.del(appType, appUid);
           return false;
         }
 

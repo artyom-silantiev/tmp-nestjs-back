@@ -6,7 +6,7 @@ import { IpfsObjectService } from '@db/services/ipfs-object.service';
 import { StandardResult } from '@share/standard-result.class';
 import { IpfsObject } from '@prisma/client';
 import { IpfsStorageService } from './ipfs-storage.service';
-import { NodeEnvType, useEnv } from '@share/env/env';
+import { NodeEnvType, useEnv } from '@share/composables/env/env';
 
 export interface CacheItemMeta {
   type: 'IMAGE' | 'VIDEO' | 'AUDIO';

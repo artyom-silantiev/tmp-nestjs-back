@@ -8,8 +8,8 @@ import * as _ from 'lodash';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { IpfsMakeService } from './ipfs-make.service';
-import { useEnv } from '@share/env/env';
-import { useBs58 } from '@share/bs58';
+import { useEnv } from '@share/composables/env/env';
+import { useBs58 } from '@share/composables/bs58';
 
 @Injectable()
 export class IpfsInputService {

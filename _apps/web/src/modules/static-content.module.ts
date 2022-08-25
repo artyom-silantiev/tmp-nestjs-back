@@ -3,7 +3,7 @@ import {
   ServeStaticModule,
   ServeStaticModuleOptions,
 } from '@nestjs/serve-static';
-import { useEnv } from '@share/env/env';
+import { useEnv } from '@share/composables/env/env';
 import * as fs from 'fs-extra';
 
 @Module({})

@@ -4,8 +4,8 @@ import { User, Prisma, UserRole, Jwt, Setting } from '@prisma/client';
 import * as lodash from 'lodash';
 import { Enumerable } from '@share/support.types';
 import { ImageRow } from './image.service';
-import { useBcrypt } from '@share/bcrypt';
-import { useBs58 } from '@share/bs58';
+import { useBcrypt } from '@share/composables/bcrypt';
+import { useBs58 } from '@share/composables/bs58';
 
 export type UserRow = User & {
   Image?: ImageRow;

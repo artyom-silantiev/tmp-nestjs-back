@@ -2,7 +2,7 @@ import { TaskService } from '@db/services/task.service';
 import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { TaskType } from '@prisma/client';
-import { SendEmailType, useEnv } from '@share/env/env';
+import { SendEmailType, useEnv } from '@share/composables/env/env';
 import * as path from 'path';
 
 @Injectable()

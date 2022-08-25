@@ -5,7 +5,7 @@ import { IpfsCacheService } from '../ipfs/ipfs-cache.service';
 import { IpfsStorageService } from '../ipfs/ipfs-storage.service';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { useEnv } from '@share/env/env';
+import { useEnv } from '@share/composables/env/env';
 
 @Injectable()
 export class ClearDataService {
