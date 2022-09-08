@@ -52,8 +52,7 @@ export class UsersController {
 
   @Get('')
   @ApiOperation({
-    description: 'Fetch users list... moved from an old project',
-    summary: 'complete',
+    summary: '/',
   })
   async getUsers(@Query() paginationParams: GetUsersDto) {
     const grid = this.paginationService.parsePaginationParams(paginationParams);
@@ -85,8 +84,7 @@ export class UsersController {
 
   @Post('/signup')
   @ApiOperation({
-    description: 'create new user',
-    summary: 'complete',
+    summary: '/signup',
   })
   async signup(@Body() body: UserSignUpDto) {
     const email = body.email;
@@ -127,8 +125,7 @@ export class UsersController {
 
   @Post('/activation')
   @ApiOperation({
-    description: 'user activation',
-    summary: 'complete',
+    summary: '/activation',
   })
   async userActivate(@Body() userActivationDto: UserActivationDto) {
     const activationToken = userActivationDto.activationToken;
@@ -186,8 +183,7 @@ export class UsersController {
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   @ApiOperation({
-    description: 'user login',
-    summary: 'complete',
+    summary: '/login',
   })
   async login(
     @Request() req,
@@ -203,8 +199,7 @@ export class UsersController {
 
   @Post('/forgot')
   @ApiOperation({
-    description: 'user password forgot',
-    summary: 'complete',
+    summary: '/forgot',
   })
   async forgot(@Body() userForgotDto: UserForgotDto) {
     const userEmail = userForgotDto.email;
@@ -234,8 +229,7 @@ export class UsersController {
 
   @Post('/recovery')
   @ApiOperation({
-    description: 'user password recovery',
-    summary: 'complete',
+    summary: '/recovery',
   })
   async recovery(@Body() recoveryUserDto: UserRecoverytDto) {
     const recoveryToken = recoveryUserDto.recoveryToken;
@@ -277,8 +271,7 @@ export class UsersController {
 
   @Get('/:id')
   @ApiOperation({
-    description: 'get public user by id',
-    summary: 'complete',
+    summary: '/:id',
   })
   async getUserById(@Param() params: ByIdParamsDto) {
     const userIdBI = BigInt(params.id);

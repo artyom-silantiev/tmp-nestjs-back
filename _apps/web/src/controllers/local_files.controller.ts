@@ -139,8 +139,8 @@ export class LocalFilesController {
 
   @Head('/sha256/:sha256Param')
   @ApiOperation({
+    summary: '/sha256/:sha256Param',
     description: 'get data for ipfs object by sha256',
-    summary: 'complete',
   })
   async headBySha256(
     @Param() params: BySha256ParamDto,
@@ -172,8 +172,8 @@ export class LocalFilesController {
 
   @Get('/sha256/:sha256Param')
   @ApiOperation({
+    summary: '/sha256/:sha256Param',
     description: 'get data for ipfs object by sha256',
-    summary: 'complete',
   })
   async getBySha256(
     @Param() params: BySha256ParamDto,
@@ -203,8 +203,8 @@ export class LocalFilesController {
 
   @Head('/sha256/:sha256/:args')
   @ApiOperation({
+    summary: '/sha256/:sha256/:args',
     description: 'get data for ipfs object by sha256',
-    summary: 'complete',
   })
   async headBySha256AndArgs(
     @Param() params: BySha256AndArgsDto,
@@ -241,8 +241,8 @@ export class LocalFilesController {
 
   @Get('/sha256/:sha256/:args')
   @ApiOperation({
+    summary: '/sha256/:sha256/:args',
     description: 'get data for ipfs object by sha256',
-    summary: 'complete',
   })
   async getBySha256AndArgs(
     @Param() params: BySha256AndArgsDto,

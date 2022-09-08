@@ -4,7 +4,7 @@ import { JWTAuthName } from '@share/constans';
 
 export async function appUseSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
-    .setTitle('API')
+    .setTitle('Tmp-Nestjs')
     .setDescription(
       [
         'Example REST api<br>',
@@ -24,6 +24,7 @@ export async function appUseSwagger(app: INestApplication) {
       },
       JWTAuthName, // This name here is important for matching up with @ApiBearerAuth() in your controller!
     )
+    .setExternalDoc('Postman Collection', '/swagger-json')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, document);

@@ -20,7 +20,6 @@ export class SeederCommand {
     command: 'seeder',
   })
   async seeder() {
-    console.log('Запуск !!!');
     const seeds = [
       {
         name: '0001_create_admin',

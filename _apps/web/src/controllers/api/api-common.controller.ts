@@ -9,8 +9,7 @@ export class ApiCommonController {
 
   @Get('/configs')
   @ApiOperation({
-    description: 'get system configs for frontend',
-    summary: 'complete',
+    summary: '/configs',
   })
   getConfigs() {
     return {

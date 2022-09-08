@@ -55,8 +55,7 @@ export class UserCommonController {
 
   @Post('/logout')
   @ApiOperation({
-    description: 'logout and delete current access token',
-    summary: 'complete',
+    summary: '/logout',
   })
   async logout(@Request() req: RequestExpressJwt) {
     const bearerHeader = req.headers.authorization;
@@ -84,8 +83,7 @@ export class UserCommonController {
 
   @Get('/profile')
   @ApiOperation({
-    description: 'get current user profile',
-    summary: 'complete',
+    summary: '/profile',
   })
   async getCurrentUser(@Request() req: RequestExpressJwt) {
     const user = await this.userService.findFirst({
@@ -103,8 +101,7 @@ export class UserCommonController {
 
   @Put('/profile')
   @ApiOperation({
-    description: 'change current user profile',
-    summary: 'complete',
+    summary: '/profile',
   })
   async putCurrentUser(
     @Body() dto: UserCurrentPutDto,
@@ -129,8 +126,7 @@ export class UserCommonController {
 
   @Put('/profile/email')
   @ApiOperation({
-    description: 'change user email and send activation email',
-    summary: 'complete',
+    summary: '/profile/email',
   })
   async changeUserEmail(
     @Body() body: UserChangeEmailDto,
@@ -164,8 +160,7 @@ export class UserCommonController {
 
   @Put('/profile/password')
   @ApiOperation({
-    description: 'change user password',
-    summary: 'complete',
+    summary: '/profile/password',
   })
   async changeUserPassword(
     @Body() dto: UserChangePasswordDto,
@@ -196,8 +191,7 @@ export class UserCommonController {
 
   @Post('/upload_image')
   @ApiOperation({
-    description: 'upload image for user',
-    summary: 'complete',
+    summary: '/upload_image',
   })
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
