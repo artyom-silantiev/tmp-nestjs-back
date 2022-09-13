@@ -20,7 +20,7 @@ import {
   UserChangeEmailDto,
   UserChangePasswordDto,
   UserCurrentPutDto,
-} from './common.dto';
+} from './dto';
 import { AuthService } from '@share/modules/auth/auth.service';
 import {
   JwtUserActivationService,
@@ -39,7 +39,7 @@ import { useEnv } from '@share/composables/env/env';
 @ApiTags('api/user')
 @Controller('/api/user')
 @ACL()
-export class UserCommonController {
+export class UserController {
   private env = useEnv();
 
   constructor(

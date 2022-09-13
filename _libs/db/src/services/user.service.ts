@@ -108,6 +108,14 @@ export class UserService {
     return UserView.getByModel(model, type);
   }
 
+  toViewPublick(model: UserRow): UserView {
+    return UserView.getByModel(model, UserViewType.PUBLIC);
+  }
+
+  toViewPrivate(model: UserRow): UserView {
+    return UserView.getByModel(model, UserViewType.PRIVATE);
+  }
+
   createFetchBuilder() {
     return new UserFetchBuilder(this.prisma);
   }

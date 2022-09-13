@@ -1,6 +1,6 @@
 import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { StaticContentModule } from './modules/static-content.module';
-import { ControllersModule } from './controllers/controllers.module';
+import { RouterModule } from './router/router.module';
 import { AuthMiddleware } from '@share/modules/auth/auth.middleware';
 import { AuthModule } from '@share/modules/auth/auth.module';
 import { JwtUserAuthService } from '@share/modules/jwt/jwt-user-auth.service';
@@ -13,7 +13,7 @@ import { ClusterAppModule } from '@share/modules/cluster-app/cluster-app.module'
   imports: [
     DbModule,
     ClusterAppModule,
-    ControllersModule,
+    RouterModule,
     AuthModule,
     I18NextModule,
     StaticContentModule.register(),

@@ -29,13 +29,13 @@ import {
   JwtUserActivationService,
   UserActivationType,
 } from '@share/modules/jwt/jwt-user-activation.service';
-import { PaginationService } from '@share/services/pagination.service';
 import { JwtUserRecoveryService } from '@share/modules/jwt/jwt-user-recovery.service';
 import { SendEmailService } from '@share/modules/app-mailer/send-email.service';
-import { ByIdParamsDto } from '../dto';
+import { ByIdParamsDto } from '../../../dto';
 import { ExErrors } from '@share/ex_errors.type';
 import { PrismaService } from '@db/prisma.service';
 import { UserService, UserViewType } from '@db/services/user.service';
+import { useGrid } from '@share/composables/grid';
 
 @ApiTags('api/users')
 @Controller('/api/users')
@@ -44,7 +44,6 @@ export class UsersController {
     private prismaService: PrismaService,
     private userService: UserService,
     private authService: AuthService,
-    private paginationService: PaginationService,
     private mailer: SendEmailService,
     private jwtUserActivate: JwtUserActivationService,
     private jwtUserRecovery: JwtUserRecoveryService,
@@ -55,7 +54,7 @@ export class UsersController {
     summary: '/',
   })
   async getUsers(@Query() paginationParams: GetUsersDto) {
-    const grid = this.paginationService.parsePaginationParams(paginationParams);
+    const grid = useGrid(paginationParams);
 
     const fetchBuilder = this.userService.createFetchBuilder();
     fetchBuilder.init({

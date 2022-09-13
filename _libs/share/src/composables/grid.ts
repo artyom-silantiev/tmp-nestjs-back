@@ -1,5 +1,3 @@
-import { Injectable } from '@nestjs/common';
-
 export interface PaginationParams {
   page?: number;
   pageSize?: number;
@@ -49,10 +47,7 @@ export class Grid {
   }
 }
 
-@Injectable()
-export class PaginationService {
-  parsePaginationParams(params: PaginationParams, options?: PaginationOptions) {
-    const parsedPagination = new Grid(params, options);
-    return parsedPagination;
-  }
+export function useGrid(params: PaginationParams, options?: PaginationOptions) {
+  const parsedPagination = new Grid(params, options);
+  return parsedPagination;
 }
