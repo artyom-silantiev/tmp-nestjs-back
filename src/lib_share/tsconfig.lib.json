@@ -2,8 +2,14 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "declaration": true,
-    "outDir": "../../dist/lib_share"
+    "outDir": "../../dist/src/lib_share"
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
+  "include": ["./**/*"],
+  "exclude": [
+    "tsconfig.lib.json",
+    "node_modules",
+    "dist",
+    "test",
+    "**/*spec.ts"
+  ]
 }

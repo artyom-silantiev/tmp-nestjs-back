@@ -2,8 +2,14 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "declaration": true,
-    "outDir": "../../dist/libs/db"
+    "outDir": "../../dist/src/lib_db"
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
+  "include": ["./**/*"],
+  "exclude": [
+    "tsconfig.lib.json",
+    "node_modules",
+    "dist",
+    "test",
+    "**/*spec.ts"
+  ]
 }
