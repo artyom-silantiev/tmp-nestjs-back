@@ -1,9 +1,9 @@
 module.exports = {
-  nodePath: '/home/artyom/.nvm/versions/node/v16.14.0/bin/node',
+  nodePath: '/home/artyom/.nvm/versions/node/v16.18.1/bin/node',
   apps: [
     {
       name: 'web',
-      script: './dist/_apps/web/main.js',
+      script: './dist/src/app_web/main.js',
       node_args: '--enable-source-maps -r dotenv/config',
       exec_mode: 'cluster',
       instances: 1,

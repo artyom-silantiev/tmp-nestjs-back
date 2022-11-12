@@ -13,10 +13,10 @@
     "incremental": true,
     "skipLibCheck": true,
     "paths": {
-      "@share": ["_libs/share/src"],
-      "@share/*": ["_libs/share/src/*"],
-      "@db": ["_libs/db/src"],
-      "@db/*": ["_libs/db/src/*"]
+      "@share": ["src/lib_share"],
+      "@share/*": ["src/lib_share/*"],
+      "@db": ["src/lib_db"],
+      "@db/*": ["src/lib_db/*"]
     }
   }
 }

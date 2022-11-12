@@ -12,14 +12,14 @@
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "CLI": "echo 'cli block'",
-    "cli:seeder": "CLI_PATH=_apps/cli/src/cli.ts nestjs-command seeder",
-    "cli:cluster:list": "CLI_PATH=_apps/cli/src/cli.ts nestjs-command cluster:list",
-    "cli:cluster:update_traefik_config": "CLI_PATH=_apps/cli/src/cli.ts nestjs-command cluster:update_traefik_config",
+    "cli:seeder": "CLI_PATH=src/app_cli/cli.ts nestjs-command seeder",
+    "cli:cluster:list": "CLI_PATH=src/app_cli/cli.ts nestjs-command cluster:list",
+    "cli:cluster:update_traefik_config": "CLI_PATH=src/app_cli/cli.ts nestjs-command cluster:update_traefik_config",
     "WEB": "echo 'WEB block'",
-    "build:web": "nest build",
-    "start:web": "npx nest start",
-    "start:web:dev": "npx nest start --debug --watch",
-    "start:web:prod": "node dist/_apps/web/main"
+    "build:web": "nest build web",
+    "start:web": "npx nest start web",
+    "start:web:dev": "npx nest start web --debug --watch",
+    "start:web:prod": "node dist/src/app_web/main"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.8.1",

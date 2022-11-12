@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "declaration": false,
+    "outDir": "../../dist/src/app_web"
+  },
+  "include": ["./**/*"],
+  "exclude": [
+    "tsconfig.app.json",
+    "node_modules",
+    "dist",
+    "test",
+    "**/*spec.ts"
+  ]
+}
