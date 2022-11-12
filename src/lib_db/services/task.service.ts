@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { Task, TaskType } from '@prisma/client';
+import { Task, TaskType, Prisma } from '@prisma/client';
 
 export type TaskRow = Task;
 
@@ -12,7 +12,7 @@ export class TaskService {
     const newTask = await this.prisma.task.create({
       data: {
         type: taskType,
-        data: taskData as T,
+        data: taskData as Prisma.InputJsonValue,
       },
     });
     return newTask;
