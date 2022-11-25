@@ -8,9 +8,9 @@ import { createDeferred } from '@share/helpers';
 import * as _ from 'lodash';
 import { AppStatus } from './cluster.types';
 import { TraefikConfig } from './traefik-config.class';
-import { ClusterAppType, useEnv } from '@share/rlib/env/env';
-import { useRedis } from '@share/rlib/redis';
-import { useClusterStuff } from '@share/rlib/cache/cluster-stuff';
+import { ClusterAppType, useEnv } from '@share/lib/env/env';
+import { useRedis } from '@share/lib/redis';
+import { useClusterStuff } from '@share/lib/cache/cluster-stuff';
 @Injectable()
 export class ClusterCommand {
   private env = useEnv();

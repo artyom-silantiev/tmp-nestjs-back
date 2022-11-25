@@ -1,4 +1,4 @@
-import { useEnv } from '@share/rlib/env/env';
+import { useEnv } from '@share/lib/env/env';
 import * as bcrypt from 'bcrypt';
 
 class Bcrypt {

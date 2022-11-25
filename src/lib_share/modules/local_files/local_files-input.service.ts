@@ -6,8 +6,8 @@ import * as _ from 'lodash';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import { LocalFilesMakeService } from './local_files-make.service';
-import { useEnv } from '@share/rlib/env/env';
-import { useBs58 } from '@share/rlib/bs58';
+import { useEnv } from '@share/lib/env/env';
+import { useBs58 } from '@share/lib/bs58';
 
 @Injectable()
 export class LocalFilesInputService {

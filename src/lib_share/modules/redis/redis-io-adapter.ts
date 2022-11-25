@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { IoAdapter } from '@nestjs/platform-socket.io';
-import { useEnv } from '@share/rlib/env/env';
+import { useEnv } from '@share/lib/env/env';
 import { createClient } from 'redis';
 import { ServerOptions } from 'socket.io';
 import { createAdapter } from 'socket.io-redis';

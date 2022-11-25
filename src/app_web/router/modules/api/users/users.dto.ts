@@ -12,7 +12,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { EmailIsUnique } from '../../../../decorators/email-is-unique.decorator';
-import { PaginationParams } from '@share/rlib/grid';
+import { PaginationParams } from '@share/lib/grid';
 
 export class AuthDto {
   @ApiProperty({

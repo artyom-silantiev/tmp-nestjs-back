@@ -5,8 +5,8 @@ import { JwtUser } from './types';
 import { ExErrors } from '@share/ex_errors.type';
 import { PrismaService } from '@db/prisma.service';
 import { UserService } from '@db/services/user.service';
-import { useBcrypt } from '@share/rlib/bcrypt';
-import { useCacheJwtUser } from '@share/rlib/cache/jwt-user';
+import { useBcrypt } from '@share/lib/bcrypt';
+import { useCacheJwtUser } from '@share/lib/cache/jwt-user';
 
 @Injectable()
 export class AuthService {

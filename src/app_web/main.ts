@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { WebModule } from './web.module';
-import { ClusterAppType, useEnv } from '@share/rlib/env/env';
+import { ClusterAppType, useEnv } from '@share/lib/env/env';
 import { Logger } from '@share/logger';
 
 import { appUseRedis } from '@share/modules/redis/redis.apphook';

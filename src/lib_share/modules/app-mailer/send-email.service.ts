@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AppMailerService } from './app-mailer.service';
 import { I18nRequestScopeService } from 'nestjs-i18n';
-import { useEnv } from '@share/rlib/env/env';
+import { useEnv } from '@share/lib/env/env';
 
 @Injectable()
 export class SendEmailService {

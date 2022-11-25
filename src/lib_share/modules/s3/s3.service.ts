@@ -3,7 +3,7 @@ import * as aws from 'aws-sdk';
 import { StandardResult } from '@share/standard-result.class';
 import * as fs from 'fs-extra';
 import { S3 } from 'aws-sdk';
-import { useEnv } from '@share/rlib/env/env';
+import { useEnv } from '@share/lib/env/env';
 
 export type S3ClientParams = {
   isLocal: boolean;

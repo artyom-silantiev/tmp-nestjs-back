@@ -7,8 +7,8 @@ import { LocalFileService } from '@db/services/local-file.service';
 import { PrismaService } from '@db/prisma.service';
 import * as _ from 'lodash';
 import * as path from 'path';
-import { useEnv } from '@share/rlib/env/env';
-import { useCacheLocalFile } from '@share/rlib/cache/local-file';
+import { useEnv } from '@share/lib/env/env';
+import { useCacheLocalFile } from '@share/lib/cache/local-file';
 
 export type LocalFileMeta = {
   absPathToFile: string;

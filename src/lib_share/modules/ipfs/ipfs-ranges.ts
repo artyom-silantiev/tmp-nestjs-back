@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import * as multihash from 'multihashes';
 import { StandardResult } from '@share/standard-result.class';
-import { useBs58 } from '@share/rlib/bs58';
+import { useBs58 } from '@share/lib/bs58';
 
 const minBs58Prefix = 'NLei78zWmzUdbeRB3CiUfAizWUrbeeZh5K1rhAQKCh51';
 const maxBs58Prefix = 'fZy5bvk7a3DQAjCbGNtmrPXWkyVvPrdnZMyBZ5q5ieKG';

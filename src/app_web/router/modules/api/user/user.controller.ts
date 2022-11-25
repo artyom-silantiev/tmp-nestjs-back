@@ -34,7 +34,7 @@ import { Response } from 'express';
 import { PrismaService } from '@db/prisma.service';
 import { UserService, UserViewType } from '@db/services/user.service';
 import { IpfsInputService } from '@share/modules/ipfs/ipfs-input.service';
-import { useEnv } from '@share/rlib/env/env';
+import { useEnv } from '@share/lib/env/env';
 
 @ApiTags('api/user')
 @Controller('/api/user')

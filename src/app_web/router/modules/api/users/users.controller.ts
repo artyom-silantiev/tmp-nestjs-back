@@ -35,7 +35,7 @@ import { ByIdParamsDto } from '../../../dto';
 import { ExErrors } from '@share/ex_errors.type';
 import { PrismaService } from '@db/prisma.service';
 import { UserService, UserViewType } from '@db/services/user.service';
-import { useGrid } from '@share/rlib/grid';
+import { useGrid } from '@share/lib/grid';
 
 @ApiTags('api/users')
 @Controller('/api/users')

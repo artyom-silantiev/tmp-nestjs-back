@@ -13,8 +13,8 @@ import { PrismaService } from '@db/prisma.service';
 import { IpfsOutputService } from './ipfs-output.service';
 import { getMediaContentProbe } from '@share/ffmpeg';
 import { getMimeFromPath, getFileSha256 } from '@share/helpers';
-import { useEnv } from '@share/rlib/env/env';
-import { useBs58 } from '@share/rlib/bs58';
+import { useEnv } from '@share/lib/env/env';
+import { useBs58 } from '@share/lib/bs58';
 
 @Injectable()
 export class IpfsMakeService {

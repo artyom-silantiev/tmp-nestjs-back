@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { JwtType } from '@prisma/client';
 import { JwtDbService } from '@db/services/jwt-db.service';
-import { useEnv } from '@share/rlib/env/env';
-import { useBs58 } from '@share/rlib/bs58';
+import { useEnv } from '@share/lib/env/env';
+import { useBs58 } from '@share/lib/bs58';
 
 export class JwtUserAuthPayload {
   sub: string;

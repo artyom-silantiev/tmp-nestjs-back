@@ -6,7 +6,7 @@ import { AppMailerService } from './app-mailer.service';
 import * as path from 'path';
 import { SendEmailService } from './send-email.service';
 import { DbModule } from '@db/db.module';
-import { useEnv } from '@share/rlib/env/env';
+import { useEnv } from '@share/lib/env/env';
 
 @Module({
   imports: [

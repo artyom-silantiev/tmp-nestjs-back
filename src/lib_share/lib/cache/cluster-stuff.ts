@@ -1,4 +1,4 @@
-import { ClusterAppType } from '@share/rlib/env/env';
+import { ClusterAppType } from '@share/lib/env/env';
 import { useRedis } from '../redis';
 
 class ClusterStuff {
