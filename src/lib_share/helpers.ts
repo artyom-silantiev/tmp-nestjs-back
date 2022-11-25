@@ -1,5 +1,6 @@
 import { random } from 'lodash';
 import * as hasha from 'hasha';
+import { Logger } from './logger';
 
 export async function sleep(ms) {
   await new Promise((recolse) => {
@@ -170,4 +171,27 @@ export function durationFormat (value: number | string) {
 export async function getFileSha256(filePath: string): Promise<string> {
   await sleep(200);
   return hasha.fromFile(filePath, { algorithm: 'sha256' });
+}
+
+export function startQueue(params: {
+  name: string;
+  handle: () => Promise<void>;
+  delayMs: number;
+  logger?: Logger;
+}) {
+  const queueHandle = async () => {
+    try {
+      await params.handle();
+    } catch (error) {
+      console.error(`queue ${params.name} error!`);
+      console.error(error.toString());
+    }
+    setTimeout(queueHandle, params.delayMs);
+  };
+  if (params.logger) {
+    params.logger.log(`queue start: ${params.name}`);
+  } else {
+    console.log(`queue start: ${params.name}`);
+  }
+  setTimeout(queueHandle, 0);
 }

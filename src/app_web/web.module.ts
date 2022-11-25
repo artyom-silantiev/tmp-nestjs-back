@@ -8,6 +8,7 @@ import { I18NextModule } from '@share/modules/i18next';
 import { EmailIsUniqueRule } from './decorators/email-is-unique.decorator';
 import { DbModule } from '@db/db.module';
 import { ClusterAppModule } from '@share/modules/cluster-app/cluster-app.module';
+import { CronService } from './cron.service';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { ClusterAppModule } from '@share/modules/cluster-app/cluster-app.module'
     StaticContentModule.register(),
   ],
   controllers: [],
-  providers: [JwtUserAuthService, EmailIsUniqueRule],
+  providers: [CronService, JwtUserAuthService, EmailIsUniqueRule],
 })
 export class WebModule {
   configure(consumer: MiddlewareConsumer) {

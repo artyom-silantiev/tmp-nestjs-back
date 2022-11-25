@@ -16,9 +16,9 @@ import {
 
   Example:
 
-  root:upload_record_target=CDN_HIGHWINDS
-  user:<ID>:upload_record_target=VERY_SOME_SPECIAL_CDN
-  stream:<ID>:upload_record_target=VERY_SOME_SPECIAL_CDN_2
+  root:some_setting=SETTING_VALUE_FOR_ROOT
+  user:<ID>:some_setting=SETTING_VALUE_FOR_USER
+  stream:<ID>:some_setting=SETTING_VALUE_FOR_STREAM
 
   root > user > stream
 */
