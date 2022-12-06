@@ -7,9 +7,6 @@ import { GuestController } from './guest.controller';
 
 @Module({
   imports: [DbModule, AuthModule, AppMailerModule, JwtModule],
-  controllers: [
-    // /api/guest*
-    GuestController,
-  ],
+  controllers: [GuestController],
 })
 export class GuestModule {}

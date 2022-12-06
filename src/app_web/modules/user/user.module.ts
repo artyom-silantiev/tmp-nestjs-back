@@ -16,9 +16,6 @@ import { UserController } from './user.controller';
     IpfsModule,
     ClearDataModule,
   ],
-  controllers: [
-    // /api/user*
-    UserController,
-  ],
+  controllers: [UserController],
 })
 export class UserModule {}

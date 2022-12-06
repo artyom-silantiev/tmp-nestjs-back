@@ -51,7 +51,6 @@ import { S3Module } from '@share/modules/s3/s3.module';
           },
           {
             path: 'guest',
-            // /api/guest*
             module: GuestModule,
           },
         ],
