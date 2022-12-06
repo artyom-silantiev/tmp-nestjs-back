@@ -243,8 +243,8 @@ export class S3Service implements OnModuleInit {
   private ipfsS3Client: S3Client;
   private isInit = false;
 
-  onModuleInit() {
-    this.init();
+  async onModuleInit() {
+    await this.init();
   }
 
   async init() {

@@ -2,14 +2,14 @@ import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { useEnv } from '@share/lib/env/env';
 
-@ApiTags('api/')
-@Controller('/api')
-export class ApiCommonController {
+@ApiTags('api common')
+@Controller()
+export class CommonController {
   private env = useEnv();
 
-  @Get('/configs')
+  @Get('configs')
   @ApiOperation({
-    summary: '/configs',
+    summary: 'configs',
   })
   getConfigs() {
     return {

@@ -10,6 +10,7 @@ import { useEnv } from '@share/lib/env/env';
 
 @Module({
   imports: [
+    DbModule,
     MailerModule.forRootAsync({
       useFactory: () => {
         const env = useEnv();
@@ -45,7 +46,6 @@ import { useEnv } from '@share/lib/env/env';
         };
       },
     }),
-    DbModule,
   ],
   providers: [TaskService, AppMailerService, SendEmailService],
   exports: [AppMailerService, SendEmailService],

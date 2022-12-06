@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { IpfsStorageService } from './ipfs-storage.service';
 import { IpfsCacheService } from './ipfs-cache.service';
 import { Image, IpfsObject } from '@prisma/client';
@@ -12,7 +12,7 @@ import { useEnv } from '@share/lib/env/env';
 import { useBs58 } from '@share/lib/bs58';
 
 @Injectable()
-export class IpfsInputService {
+export class IpfsInputService implements OnModuleInit {
   private env = useEnv();
   private bs58 = useBs58();
 
@@ -23,6 +23,10 @@ export class IpfsInputService {
     @Inject(forwardRef(() => IpfsMakeService))
     private ipfsMake: IpfsMakeService,
   ) {}
+
+  async onModuleInit() {
+    await this.init();
+  }
 
   async init() {
     await this.ipfsStorage.init();

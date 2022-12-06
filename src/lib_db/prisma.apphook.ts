@@ -7,8 +7,6 @@ export async function appUsePrisma(
   app?: INestApplication,
 ) {
   const prismaService = appContext.select(DbModule).get(PrismaService);
-  await prismaService.init();
-
   if (app) {
     await prismaService.enableShutdownHooks(app);
   }

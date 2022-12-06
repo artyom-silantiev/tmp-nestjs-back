@@ -18,7 +18,7 @@ import {
   UserActivationDto,
   UserForgotDto,
   UserRecoverytDto,
-} from './users.dto';
+} from './guest.dto';
 import { AuthService } from '@share/modules/auth/auth.service';
 import { LocalAuthGuard } from '@share/modules/auth/local-auth.guard';
 
@@ -31,15 +31,15 @@ import {
 } from '@share/modules/jwt/jwt-user-activation.service';
 import { JwtUserRecoveryService } from '@share/modules/jwt/jwt-user-recovery.service';
 import { SendEmailService } from '@share/modules/app-mailer/send-email.service';
-import { ByIdParamsDto } from '../../../dto';
+import { ByIdParamsDto } from 'src/app_web/dto';
 import { ExErrors } from '@share/ex_errors.type';
 import { PrismaService } from '@db/prisma.service';
 import { UserService, UserViewType } from '@db/services/user.service';
 import { useGrid } from '@share/lib/grid';
 
-@ApiTags('api/users')
-@Controller('/api/users')
-export class UsersController {
+@ApiTags('api guest')
+@Controller()
+export class GuestController {
   constructor(
     private prismaService: PrismaService,
     private userService: UserService,
@@ -49,9 +49,10 @@ export class UsersController {
     private jwtUserRecovery: JwtUserRecoveryService,
   ) {}
 
+  /*
   @Get('')
   @ApiOperation({
-    summary: '/',
+    summary: '',
   })
   async getUsers(@Query() paginationParams: GetUsersDto) {
     const grid = useGrid(paginationParams);
@@ -80,10 +81,11 @@ export class UsersController {
 
     return grid.toWrapedResultRows(rowsResult, rowsTotal);
   }
+  */
 
-  @Post('/signup')
+  @Post('signup')
   @ApiOperation({
-    summary: '/signup',
+    summary: 'signup',
   })
   async signup(@Body() body: UserSignUpDto) {
     const email = body.email;
@@ -122,9 +124,9 @@ export class UsersController {
     };
   }
 
-  @Post('/activation')
+  @Post('activation')
   @ApiOperation({
-    summary: '/activation',
+    summary: 'activation',
   })
   async userActivate(@Body() userActivationDto: UserActivationDto) {
     const activationToken = userActivationDto.activationToken;
@@ -180,9 +182,9 @@ export class UsersController {
   }
 
   @UseGuards(LocalAuthGuard)
-  @Post('/login')
+  @Post('login')
   @ApiOperation({
-    summary: '/login',
+    summary: 'login',
   })
   async login(
     @Request() req,
@@ -196,9 +198,9 @@ export class UsersController {
     };
   }
 
-  @Post('/forgot')
+  @Post('forgot')
   @ApiOperation({
-    summary: '/forgot',
+    summary: 'forgot',
   })
   async forgot(@Body() userForgotDto: UserForgotDto) {
     const userEmail = userForgotDto.email;
@@ -226,9 +228,9 @@ export class UsersController {
     };
   }
 
-  @Post('/recovery')
+  @Post('recovery')
   @ApiOperation({
-    summary: '/recovery',
+    summary: 'recovery',
   })
   async recovery(@Body() recoveryUserDto: UserRecoverytDto) {
     const recoveryToken = recoveryUserDto.recoveryToken;
@@ -268,9 +270,9 @@ export class UsersController {
     };
   }
 
-  @Get('/:id')
+  @Get(':id')
   @ApiOperation({
-    summary: '/:id',
+    summary: ':id',
   })
   async getUserById(@Param() params: ByIdParamsDto) {
     const userIdBI = BigInt(params.id);

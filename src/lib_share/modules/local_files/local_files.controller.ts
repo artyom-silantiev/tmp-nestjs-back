@@ -34,8 +34,8 @@ export class BySha256AndArgsDto {
   args: string;
 }
 
-@ApiTags('/local_files/sha256/ (Local files by sha256)')
-@Controller('/local_files')
+@ApiTags('local files')
+@Controller()
 export class LocalFilesController {
   constructor(private localFilesOutput: LocalFilesOutputService) {}
 
@@ -137,7 +137,7 @@ export class LocalFilesController {
     };
   }
 
-  @Head('/sha256/:sha256Param')
+  @Head('sha256/:sha256Param')
   @ApiOperation({
     summary: '/sha256/:sha256Param',
     description: 'get data for ipfs object by sha256',
@@ -170,7 +170,7 @@ export class LocalFilesController {
     return;
   }
 
-  @Get('/sha256/:sha256Param')
+  @Get('sha256/:sha256Param')
   @ApiOperation({
     summary: '/sha256/:sha256Param',
     description: 'get data for ipfs object by sha256',
@@ -201,7 +201,7 @@ export class LocalFilesController {
     return new StreamableFile(fs.createReadStream(localFile.absPathToFile));
   }
 
-  @Head('/sha256/:sha256/:args')
+  @Head('sha256/:sha256/:args')
   @ApiOperation({
     summary: '/sha256/:sha256/:args',
     description: 'get data for ipfs object by sha256',
@@ -239,9 +239,9 @@ export class LocalFilesController {
     return;
   }
 
-  @Get('/sha256/:sha256/:args')
+  @Get('sha256/:sha256/:args')
   @ApiOperation({
-    summary: '/sha256/:sha256/:args',
+    summary: 'sha256/:sha256/:args',
     description: 'get data for ipfs object by sha256',
   })
   async getBySha256AndArgs(

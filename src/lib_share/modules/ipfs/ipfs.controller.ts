@@ -29,8 +29,8 @@ export class BySha256AndArgsDto {
   args: string;
 }
 
-@ApiTags('/ipfs/sha256/ (Ipfs by sha256)')
-@Controller('/ipfs')
+@ApiTags('ipfs')
+@Controller()
 export class IpfsController {
   constructor(private ipfsOutput: IpfsOutputService) {}
 
@@ -122,9 +122,9 @@ export class IpfsController {
     return ipfsRequest;
   }
 
-  @Head('/sha256/:sha256Param')
+  @Head('sha256/:sha256Param')
   @ApiOperation({
-    summary: '/sha256/:sha256Param',
+    summary: 'sha256/:sha256Param',
     description: 'get data for ipfs object by sha256',
   })
   async headBySha256(
@@ -158,9 +158,9 @@ export class IpfsController {
     return;
   }
 
-  @Get('/sha256/:sha256Param')
+  @Get('sha256/:sha256Param')
   @ApiOperation({
-    summary: '/sha256/:sha256Param',
+    summary: 'sha256/:sha256Param',
     description: 'get data for ipfs object by sha256',
   })
   async getBySha256(
@@ -192,9 +192,9 @@ export class IpfsController {
     return new StreamableFile(cacheItem.createReadStream());
   }
 
-  @Head('/sha256/:sha256/:args')
+  @Head('sha256/:sha256/:args')
   @ApiOperation({
-    summary: '/sha256/:sha256/:args',
+    summary: 'sha256/:sha256/:args',
     description: 'get data for ipfs object by sha256',
   })
   async headBySha256AndArgs(
@@ -231,9 +231,9 @@ export class IpfsController {
     return new StreamableFile(cacheItem.createReadStream());
   }
 
-  @Get('/sha256/:sha256/:args')
+  @Get('sha256/:sha256/:args')
   @ApiOperation({
-    summary: '/sha256/:sha256/:args',
+    summary: 'sha256/:sha256/:args',
     description: 'get data for ipfs object by sha256',
   })
   async getBySha256AndArgs(

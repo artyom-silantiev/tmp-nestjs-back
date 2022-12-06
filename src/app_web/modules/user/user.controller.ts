@@ -36,8 +36,8 @@ import { UserService, UserViewType } from '@db/services/user.service';
 import { IpfsInputService } from '@share/modules/ipfs/ipfs-input.service';
 import { useEnv } from '@share/lib/env/env';
 
-@ApiTags('api/user')
-@Controller('/api/user')
+@ApiTags('api user')
+@Controller()
 @ACL()
 export class UserController {
   private env = useEnv();
@@ -53,9 +53,9 @@ export class UserController {
     private clearData: ClearDataService,
   ) {}
 
-  @Post('/logout')
+  @Post('logout')
   @ApiOperation({
-    summary: '/logout',
+    summary: 'logout',
   })
   async logout(@Request() req: RequestExpressJwt) {
     const bearerHeader = req.headers.authorization;
@@ -81,9 +81,9 @@ export class UserController {
     };
   }
 
-  @Get('/profile')
+  @Get('profile')
   @ApiOperation({
-    summary: '/profile',
+    summary: 'profile',
   })
   async getCurrentUser(@Request() req: RequestExpressJwt) {
     const user = await this.userService.findFirst({
@@ -99,9 +99,9 @@ export class UserController {
     };
   }
 
-  @Put('/profile')
+  @Put('profile')
   @ApiOperation({
-    summary: '/profile',
+    summary: 'profile',
   })
   async putCurrentUser(
     @Body() dto: UserCurrentPutDto,
@@ -124,9 +124,9 @@ export class UserController {
     };
   }
 
-  @Put('/profile/email')
+  @Put('profile/email')
   @ApiOperation({
-    summary: '/profile/email',
+    summary: 'profile/email',
   })
   async changeUserEmail(
     @Body() body: UserChangeEmailDto,
@@ -158,9 +158,9 @@ export class UserController {
     };
   }
 
-  @Put('/profile/password')
+  @Put('profile/password')
   @ApiOperation({
-    summary: '/profile/password',
+    summary: 'profile/password',
   })
   async changeUserPassword(
     @Body() dto: UserChangePasswordDto,
@@ -186,12 +186,9 @@ export class UserController {
     };
   }
 
-  // GET /settings ??
-  // PUT /settings/:id ??
-
-  @Post('/upload_image')
+  @Post('upload_image')
   @ApiOperation({
-    summary: '/upload_image',
+    summary: 'upload_image',
   })
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')

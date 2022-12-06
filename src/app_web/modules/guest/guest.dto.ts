@@ -1,4 +1,4 @@
-import { Match } from '../../../../decorators/match.decorator';
+import { Match } from '../../decorators/match.decorator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsInt,
@@ -11,7 +11,7 @@ import {
   IsNotEmpty,
   MinLength,
 } from 'class-validator';
-import { EmailIsUnique } from '../../../../decorators/email-is-unique.decorator';
+import { EmailIsUnique } from '../../decorators/email-is-unique.decorator';
 import { PaginationParams } from '@share/lib/grid';
 
 export class AuthDto {
