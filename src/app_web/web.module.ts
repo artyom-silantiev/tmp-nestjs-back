@@ -34,7 +34,7 @@ import { S3Module } from '@share/modules/s3/s3.module';
     AppMailerModule,
     ScheduleModule.forRoot(),
 
-    // router
+    // Router
     CommonModule,
     UserModule,
     GuestModule,
@@ -47,7 +47,6 @@ import { S3Module } from '@share/modules/s3/s3.module';
         children: [
           {
             path: 'user',
-            // /api/user*
             module: UserModule,
           },
           {
@@ -59,23 +58,15 @@ import { S3Module } from '@share/modules/s3/s3.module';
       },
       {
         path: 'ipfs',
-        // HEAD /ipfs/sha256/:sha256Parma
-        // GET /ipfs/sha256/:sha256Parma
-        // HEAD /ipfs/sha256/:sha256Parma/:args
-        // GET /ipfs/sha256/:sha256Parma/:args
         module: IpfsModule,
       },
       {
         path: 'local_files',
-        // HEAD /local_files/sha256/:sha256Parma
-        // GET /local_files/sha256/:sha256Parma
-        // HEAD /local_files/sha256/:sha256Parma/:args
-        // GET /local_files/sha256/:sha256Parma/:args
         module: LocalFilesModule,
       },
     ]),
 
-    // static
+    // Static
     ServeStaticModule.forRootAsync({
       useFactory: async () => {
         const env = useEnv();
