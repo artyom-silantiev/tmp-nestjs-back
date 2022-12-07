@@ -6,7 +6,6 @@ import { IpfsOutputService } from './ipfs-output.service';
 import { IpfsStorageService } from './ipfs-storage.service';
 import { S3Module } from '../s3/s3.module';
 import { IpfsMakeService } from './ipfs-make.service';
-import { IpfsController } from './ipfs.controller';
 
 @Module({
   imports: [S3Module, DbModule],
@@ -24,6 +23,5 @@ import { IpfsController } from './ipfs.controller';
     IpfsStorageService,
     IpfsOutputService,
   ],
-  controllers: [IpfsController],
 })
 export class IpfsModule {}
