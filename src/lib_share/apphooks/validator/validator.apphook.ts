@@ -9,8 +9,11 @@ import { StripContextPipe } from './strip-context.pipe';
 import { UserContextInterceptor } from './user-context.interceptor';
 import { WebModule } from 'src/app_web/web.module';
 
-export async function appUseValidator(app: INestApplication) {
-  useContainer(app.select(WebModule), { fallbackOnErrors: true });
+export async function appUseValidator(
+  app: INestApplication,
+  appModuleClass: any,
+) {
+  useContainer(app.select(appModuleClass), { fallbackOnErrors: true });
   app.useGlobalInterceptors(new UserContextInterceptor());
   app.useGlobalPipes(
     new ValidationPipe({

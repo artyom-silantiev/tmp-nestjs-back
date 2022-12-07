@@ -19,7 +19,7 @@ async function bootstrap() {
   console.log('Web ENV:', env);
 
   await appUseDirs(env);
-  await appUseValidator(app);
+  await appUseValidator(app, WebModule);
   await appUseRedisAdapter(app);
 
   // SWAGGER
