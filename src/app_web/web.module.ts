@@ -12,17 +12,16 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { AppMailerModule } from '@share/modules/app-mailer/app-mailer.module';
 import { S3Module } from '@share/modules/s3/s3.module';
 import { AppRouterModule } from './router/router.module';
+import { ClusterAppType } from '@share/lib/env/env';
 @Module({
   imports: [
+    ClusterAppModule.register(ClusterAppType.Web),
     DbModule,
     S3Module,
-    ClusterAppModule,
     AuthModule,
     I18NextModule,
     AppMailerModule,
     ScheduleModule.forRoot(),
-
-    // Router
     AppRouterModule,
   ],
   controllers: [],

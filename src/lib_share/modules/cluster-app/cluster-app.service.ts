@@ -1,10 +1,16 @@
-import { Injectable, OnModuleDestroy } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import { EventEmitter } from 'events';
 import { ClusterAppType, useEnv } from '@share/lib/env/env';
 import { useBs58 } from '@share/lib/bs58';
 import { Logger } from '@share/logger';
 import { useRedis, useRedisPubSub } from '../../lib/redis';
 import { useClusterStuff } from '@share/lib/cache/cluster-stuff';
+import { APP_CLUSTER_TYPE } from './constans';
 
 export type AppMessage = {
   from: string;
@@ -19,7 +25,7 @@ export type AppInfo = {
 };
 
 @Injectable()
-export class ClusterAppService implements OnModuleDestroy {
+export class ClusterAppService implements OnModuleDestroy, OnModuleInit {
   private env = useEnv();
   private bs58 = useBs58();
   private clusterStuff = useClusterStuff();
@@ -30,12 +36,19 @@ export class ClusterAppService implements OnModuleDestroy {
   private channelName: string;
   emitter = new EventEmitter();
 
-  constructor() {}
-
-  async initClusterApp(clusterAppType: ClusterAppType) {
+  constructor(
+    @Inject(APP_CLUSTER_TYPE) private clusterAppType: ClusterAppType,
+  ) {
     this.uid = this.bs58.uid();
     this.type = clusterAppType;
+  }
+
+  async onModuleInit() {
     await this.initRedisPart();
+  }
+
+  async onModuleDestroy() {
+    await this.clusterStuff.del(this.type, this.uid);
   }
 
   private async initRedisPart() {
@@ -75,11 +88,6 @@ export class ClusterAppService implements OnModuleDestroy {
 
   getType() {
     return this.type;
-  }
-
-  async onModuleDestroy() {
-    const redisClient = useRedis();
-    await this.clusterStuff.del(this.type, this.uid);
   }
 
   async getAppInfoByTypeAndUid(appType: ClusterAppType, appUid) {

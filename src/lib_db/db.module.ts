@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { UserService } from './services/user.service';
 import { JwtDbService } from './services/jwt-db.service';
@@ -7,6 +7,7 @@ import { IpfsObjectService } from './services/ipfs-object.service';
 import { LocalFileService } from './services/local-file.service';
 import { ImageService } from './services/image.service';
 import { SettingService } from './services/setting.service';
+import { useAppWrap } from '@share/app-wrap';
 
 @Module({
   providers: [
@@ -30,4 +31,11 @@ import { SettingService } from './services/setting.service';
     UserService,
   ],
 })
-export class DbModule {}
+export class DbModule implements OnModuleInit {
+  async onModuleInit() {
+    const app = useAppWrap().getApp();
+    if (app) {
+      app.select(DbModule).get(PrismaService).enableShutdownHooks(app);
+    }
+  }
+}
