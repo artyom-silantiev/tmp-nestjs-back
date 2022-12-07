@@ -1,6 +1,6 @@
 import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { CronService } from './cron.service';
-import { EmailIsUniqueRule } from './decorators/email-is-unique.decorator';
+import { EmailIsUniqueRule } from '@share/decorators/email-is-unique.decorator';
 import { AuthMiddleware } from '@share/modules/auth/auth.middleware';
 
 import { AuthModule } from '@share/modules/auth/auth.module';

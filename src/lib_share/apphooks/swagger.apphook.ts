@@ -12,7 +12,7 @@ export async function appUseSwagger(app: INestApplication) {
         'Default admin password: password',
       ].join('<br>'),
     )
-    .setVersion('0.6.0')
+    .setVersion('0.6.3')
     .addBearerAuth(
       {
         type: 'http',
