@@ -1,21 +1,13 @@
-import { INestApplication, INestApplicationContext } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 
 class AppWrap {
   private app = null as null | INestApplication;
-  private appContext = null as null | INestApplicationContext;
 
   setApp(app: INestApplication) {
     this.app = app;
   }
   getApp() {
     return this.app;
-  }
-
-  setAppContext(appContext: INestApplicationContext) {
-    this.appContext = appContext;
-  }
-  getAppContext() {
-    return this.appContext;
   }
 }
 

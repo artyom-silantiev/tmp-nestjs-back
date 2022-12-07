@@ -16,12 +16,12 @@ import {
 
 @Module({
   imports: [
-    // Router
     CommonModule,
     UserModule,
     GuestModule,
     IpfsRouteModule,
     LocalFilesRouteModule,
+
     RouterModule.register([
       {
         path: 'api',

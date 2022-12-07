@@ -1,10 +1,16 @@
 import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+import { useAppWrap } from '@share/app-wrap';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
   async onModuleInit() {
     await this.init();
+
+    const app = useAppWrap().getApp();
+    if (app) {
+      this.enableShutdownHooks(app);
+    }
   }
 
   async init() {
