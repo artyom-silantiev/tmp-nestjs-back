@@ -7,7 +7,7 @@ import { useEnv } from '@share/lib/env/env';
 import { TaskService } from '@db/services/task.service';
 import { AppMailerService } from '@share/modules/app-mailer/app-mailer.service';
 import { PrismaService } from '@db/prisma.service';
-import { QueueTimer } from '@share/modules/queue_timer/queue_timer.decorator';
+import { QueueJob } from '@share/modules/queue_job/queue_job.decorator';
 import { sleep } from '@share/helpers';
 
 @Injectable()
@@ -21,7 +21,7 @@ export class CronService {
     private taskService: TaskService,
   ) {}
 
-  // @QueueTimer(1000)
+  // @QueueJob(1000)
   private test() {
     this.logger.debug('test');
   }
@@ -38,19 +38,19 @@ export class CronService {
     });
   }
 
-  // @QueueTimer(1000)
+  // @QueueJob(1000)
   private async test3() {
     await sleep(5000);
     this.logger.debug('test 3');
   }
 
-  // @QueueTimer(1000)
+  // @QueueJob(1000)
   private async test4() {
     await sleep(5000);
     throw new Error('error!');
   }
 
-  @QueueTimer(1000 * useEnv().MAILER_QUEUE_DELAY_SEC)
+  @QueueJob(1000 * useEnv().MAILER_QUEUE_DELAY_SEC)
   private async mailerSend() {
     const delayMs = 1000 * this.env.MAILER_QUEUE_DELAY_SEC;
 

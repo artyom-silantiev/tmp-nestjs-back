@@ -5,14 +5,14 @@ import { AppMailerModule } from '@share/modules/app-mailer/app-mailer.module';
 import { DbModule } from '@db/db.module';
 
 import { CronService } from './cron.service';
-import { QueueTimerModule } from '@share/modules/queue_timer/queue_timer.module';
+import { QueueJobModule } from '@share/modules/queue_job/queue_job.module';
 
 @Module({
   imports: [
     DbModule,
     AppMailerModule,
     ScheduleModule.forRoot(),
-    QueueTimerModule.forRoot(),
+    QueueJobModule.forRoot(),
   ],
   providers: [CronService],
 })

@@ -1,15 +1,15 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { DiscoveryService, MetadataScanner, Reflector } from '@nestjs/core';
 import { InstanceWrapper } from '@nestjs/core/injector/instance-wrapper';
-import { QUEUE_TIMER_DATA } from './queue_timer.constants';
+import { QUEUE_JOB_DATA } from './queue_job.constants';
 
 type QueueTimerOptions = {
   delayMs: number;
 };
 
 @Injectable()
-export class QueueTimerExplorer implements OnModuleInit {
-  private readonly logger = new Logger('QueueTimerExplorer');
+export class QueueJobExplorer implements OnModuleInit {
+  private readonly logger = new Logger('QueueJobExplorer');
 
   constructor(
     private readonly discoveryService: DiscoveryService,
@@ -49,14 +49,14 @@ export class QueueTimerExplorer implements OnModuleInit {
   ) {
     const methodRef = instance[key];
     const options = this.reflector.get(
-      QUEUE_TIMER_DATA,
+      QUEUE_JOB_DATA,
       methodRef,
     ) as QueueTimerOptions;
 
     if (options) {
       this.startQueueTimer(wrapper, instance, key, options);
 
-      this.logger.log(`Queue timer registred for "${wrapper.name}@${key}"`);
+      this.logger.log(`Queue job registred for "${wrapper.name}@${key}"`);
     }
   }
 
@@ -67,13 +67,13 @@ export class QueueTimerExplorer implements OnModuleInit {
   ) {
     const methodRef = instance[key];
     const options = this.reflector.get(
-      QUEUE_TIMER_DATA,
+      QUEUE_JOB_DATA,
       methodRef,
     ) as QueueTimerOptions;
 
     if (options) {
       this.logger.warn(
-        `Cannot register queue timer "${wrapper.name}@${key}" because it is defined in a non static provider.`,
+        `Cannot register queue job "${wrapper.name}@${key}" because it is defined in a non static provider.`,
       );
     }
   }
@@ -90,7 +90,7 @@ export class QueueTimerExplorer implements OnModuleInit {
       try {
         await methodRef.apply(instance);
       } catch (error) {
-        this.logger.error(`Queue timer "${wrapper.name}@${key}" errored: `);
+        this.logger.error(`Queue job "${wrapper.name}@${key}" errored: `);
         this.logger.error(error.stack ? error.stack : error);
       }
       setTimeout(queueHandle, options.delayMs);

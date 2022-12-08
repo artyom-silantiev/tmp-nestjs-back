@@ -9,6 +9,7 @@ module.exports = {
       instances: 1,
       increment_var: 'NODE_APP_INDEX',
       env: {
+        NO_COLOR: 1,
         NODE_APP_INDEX: 0,
         NODE_PORT: 3000,
       },

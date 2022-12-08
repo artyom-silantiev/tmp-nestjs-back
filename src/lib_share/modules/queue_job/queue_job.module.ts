@@ -1,17 +1,17 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { DiscoveryModule } from '@nestjs/core';
-import { QueueTimerExplorer } from './queue_timer.explorer';
+import { QueueJobExplorer } from './queue_job.explorer';
 
 @Module({
   imports: [DiscoveryModule],
   providers: [],
 })
-export class QueueTimerModule {
+export class QueueJobModule {
   static forRoot(): DynamicModule {
     return {
       global: true,
-      module: QueueTimerModule,
-      providers: [QueueTimerExplorer],
+      module: QueueJobModule,
+      providers: [QueueJobExplorer],
     };
   }
 }

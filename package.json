@@ -19,7 +19,7 @@
     "build:web": "nest build web",
     "start:web": "npx nest start web",
     "start:web:dev": "npx nest start web --debug --watch",
-    "start:web:prod": "node dist/src/app_web/main"
+    "start:web:prod": "NO_COLOR=1 node dist/src/app_web/main"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.8.1",

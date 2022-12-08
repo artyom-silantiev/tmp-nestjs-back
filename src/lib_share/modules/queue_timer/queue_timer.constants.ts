@@ -1,1 +1,0 @@
-export const QUEUE_TIMER_DATA = 'QUEUE_TIMER_DATA';
