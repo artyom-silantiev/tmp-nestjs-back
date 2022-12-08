@@ -7,10 +7,12 @@ import * as path from 'path';
 import { SendEmailService } from './send-email.service';
 import { DbModule } from '@db/db.module';
 import { useEnv } from '@share/lib/env/env';
+import { I18NextModule } from '../i18next';
 
 @Module({
   imports: [
     DbModule,
+    I18NextModule,
     MailerModule.forRootAsync({
       useFactory: () => {
         const env = useEnv();

@@ -11,6 +11,7 @@ import {
   RequestContext,
   REQUEST_CONTEXT,
 } from '@share/apphooks/validator/user-context.interceptor';
+import { useAppWrap } from '@share/app-wrap';
 
 export type ExistsOptions = {
   type: 'user';
@@ -37,11 +38,20 @@ export function IsExists(
 }
 
 @ValidatorConstraint({ name: 'IsExists', async: true })
-@Injectable()
 export class IsExistsRule implements ValidatorConstraintInterface {
-  constructor(private prismaService: PrismaService) {}
+  private isInit = false;
+  private prisma: PrismaService;
+
+  async init() {
+    this.prisma = useAppWrap().getApp().get(PrismaService);
+    this.isInit = true;
+  }
 
   async validate(value: string, args: ValidationArguments) {
+    if (!this.isInit) {
+      await this.init();
+    }
+
     const id = BigInt(value);
     const options = args.constraints[0] as ExistsOptions;
     const reqContext = args.object[REQUEST_CONTEXT] as RequestContext;
@@ -54,7 +64,7 @@ export class IsExistsRule implements ValidatorConstraintInterface {
     }
 
     if (options.type === 'user') {
-      row = await this.prismaService.user.findFirst({
+      row = await this.prisma.user.findFirst({
         where: {
           id,
         },
