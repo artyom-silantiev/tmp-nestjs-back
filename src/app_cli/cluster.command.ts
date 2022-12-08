@@ -22,7 +22,6 @@ export class ClusterCommand {
   constructor(private cliClusterApp: ClusterAppService) {}
 
   private async initCliClusterApp() {
-    await this.cliClusterApp.initClusterApp(ClusterAppType.Cli);
     this.cliClusterApp.emitter.on('PONG', (appMessage: AppMessage) => {
       const appResolve = this.cheksAppsResolves[appMessage.from];
       if (appResolve) {
