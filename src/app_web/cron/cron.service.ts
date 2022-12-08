@@ -1,95 +1,69 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { CronExpression, SchedulerRegistry } from '@nestjs/schedule';
+import { Injectable } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { TaskType } from '@prisma/client';
 import { ISendMailOptions } from '@nestjs-modules/mailer';
-import { CronJob } from 'cron';
 import { Logger } from '@share/logger';
-import { startQueue } from '@share/helpers';
-import { SendEmailType, useEnv } from '@share/lib/env/env';
+import { useEnv } from '@share/lib/env/env';
 import { TaskService } from '@db/services/task.service';
 import { AppMailerService } from '@share/modules/app-mailer/app-mailer.service';
 import { PrismaService } from '@db/prisma.service';
+import { QueueTimer } from '@share/modules/queue_timer/queue_timer.decorator';
+import { sleep } from '@share/helpers';
 
 @Injectable()
-export class CronService implements OnModuleInit {
+export class CronService {
   private env = useEnv();
   private logger = new Logger('CronService');
 
   constructor(
     private prisma: PrismaService,
-    private schedulerRegistry: SchedulerRegistry,
     private mailer: AppMailerService,
     private taskService: TaskService,
   ) {}
 
-  async onModuleInit() {
-    this.cronInit();
+  // @QueueTimer(1000)
+  private test() {
+    this.logger.debug('test');
   }
 
-  private cronInit() {
-    // this.startCronTest();
-    // this.startQueueTest();
-
-    // daemon master
-
-    if (this.env.MAILER_SEND_EMAIL_TYPE === SendEmailType.queue) {
-      this.startQueueMailerSend();
-    }
-  }
-
-  //
-  // crons ...
-  //
-
-  private startCronTest() {
-    const job = new CronJob(CronExpression.EVERY_5_SECONDS, async () => {
-      const number = Date.now();
-      this.logger.log('start', number);
-      await new Promise((resolve) => {
-        setTimeout(() => {
-          this.logger.log('end', number);
-          resolve(true);
-        }, 10000);
-      });
-    });
-
-    this.schedulerRegistry.addCronJob('test', job);
-    job.start();
-  }
-
-  private startQueueTest() {
-    const delayMs = 1000;
-
-    startQueue({
-      name: 'test',
-      handle: async () => {
-        this.logger.debug('test');
-      },
-      delayMs,
-      logger: this.logger,
+  // @Cron(CronExpression.EVERY_5_SECONDS)
+  private async test2() {
+    const number = Date.now();
+    this.logger.log('test2 start', number);
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        this.logger.log('test2 end', number);
+        resolve(true);
+      }, 10000);
     });
   }
 
-  private startQueueMailerSend() {
+  // @QueueTimer(1000)
+  private async test3() {
+    await sleep(5000);
+    this.logger.debug('test 3');
+  }
+
+  // @QueueTimer(1000)
+  private async test4() {
+    await sleep(5000);
+    throw new Error('error!');
+  }
+
+  @QueueTimer(1000 * useEnv().MAILER_QUEUE_DELAY_SEC)
+  private async mailerSend() {
     const delayMs = 1000 * this.env.MAILER_QUEUE_DELAY_SEC;
 
-    startQueue({
-      name: 'mailer send',
-      handle: async () => {
-        const taskTypes = [TaskType.SEND_EMAIL];
-        const attemptes = this.env.MAILER_QUEUE_ATTEMPTS;
-        const packSize = this.env.MAILER_QUEUE_PACK_SIZE;
-        await this.taskService.handleWrapPack<ISendMailOptions>(
-          taskTypes,
-          attemptes,
-          async (ctx) => {
-            await this.mailer.sendEmailNow(ctx.task.data);
-          },
-          packSize,
-        );
+    const taskTypes = [TaskType.SEND_EMAIL];
+    const attemptes = this.env.MAILER_QUEUE_ATTEMPTS;
+    const packSize = this.env.MAILER_QUEUE_PACK_SIZE;
+    await this.taskService.handleWrapPack<ISendMailOptions>(
+      taskTypes,
+      attemptes,
+      async (ctx) => {
+        await this.mailer.sendEmailNow(ctx.task.data);
       },
-      delayMs,
-      logger: this.logger,
-    });
+      packSize,
+    );
   }
 }
