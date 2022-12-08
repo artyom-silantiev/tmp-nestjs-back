@@ -1,4 +1,4 @@
-import { TaskService } from '@db/services/task.service';
+import { TaskRepository } from '@db/repositories/task.repository';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
@@ -49,7 +49,7 @@ import { I18NextModule } from '../i18next';
       },
     }),
   ],
-  providers: [TaskService, AppMailerService, SendEmailService],
+  providers: [TaskRepository, AppMailerService, SendEmailService],
   exports: [AppMailerService, SendEmailService],
 })
 export class AppMailerModule {}

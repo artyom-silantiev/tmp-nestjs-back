@@ -3,7 +3,7 @@ import { IpfsStorageService } from './ipfs-storage.service';
 import { IpfsCacheService } from './ipfs-cache.service';
 import { Image, IpfsObject } from '@prisma/client';
 import { StandardResult } from '@share/standard-result.class';
-import { ImageService } from '@db/services/image.service';
+import { ImageRepository } from '@db/repositories/image.repository';
 import * as _ from 'lodash';
 import * as path from 'path';
 import * as fs from 'fs-extra';
@@ -17,7 +17,7 @@ export class IpfsInputService implements OnModuleInit {
   private bs58 = useBs58();
 
   constructor(
-    private imageService: ImageService,
+    private imageRepository: ImageRepository,
     private ipfsStorage: IpfsStorageService,
     private ipfsCache: IpfsCacheService,
     @Inject(forwardRef(() => IpfsMakeService))
@@ -49,7 +49,7 @@ export class IpfsInputService implements OnModuleInit {
       return stdRes.setCode(code).setErrData({ errors: ipfsObjectRes.errData });
     }
 
-    const image = await this.imageService.createByIpfsObject(ipfsObject);
+    const image = await this.imageRepository.createByIpfsObject(ipfsObject);
 
     return stdRes.setCode(code).setData(image);
   }

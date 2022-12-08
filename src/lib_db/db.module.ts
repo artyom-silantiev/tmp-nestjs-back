@@ -1,33 +1,33 @@
 import { Module } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import { UserService } from './services/user.service';
-import { JwtDbService } from './services/jwt-db.service';
-import { TaskService } from './services/task.service';
-import { IpfsObjectService } from './services/ipfs-object.service';
-import { LocalFileService } from './services/local-file.service';
-import { ImageService } from './services/image.service';
-import { SettingService } from './services/setting.service';
+import { UserRepository } from './repositories/user.repository';
+import { JwtRepository } from './repositories/jwt.repository';
+import { TaskRepository } from './repositories/task.repository';
+import { IpfsObjectRepository } from './repositories/ipfs-object.repository';
+import { LocalFileRepository } from './repositories/local-file.repository';
+import { ImageRepository } from './repositories/image.repository';
+import { SettingRepository } from './repositories/setting.repository';
 
 @Module({
   providers: [
     PrismaService,
-    SettingService,
-    JwtDbService,
-    TaskService,
-    IpfsObjectService,
-    LocalFileService,
-    ImageService,
-    UserService,
+    SettingRepository,
+    JwtRepository,
+    TaskRepository,
+    IpfsObjectRepository,
+    LocalFileRepository,
+    ImageRepository,
+    UserRepository,
   ],
   exports: [
     PrismaService,
-    SettingService,
-    JwtDbService,
-    TaskService,
-    IpfsObjectService,
-    LocalFileService,
-    ImageService,
-    UserService,
+    SettingRepository,
+    JwtRepository,
+    TaskRepository,
+    IpfsObjectRepository,
+    LocalFileRepository,
+    ImageRepository,
+    UserRepository,
   ],
 })
 export class DbModule {}

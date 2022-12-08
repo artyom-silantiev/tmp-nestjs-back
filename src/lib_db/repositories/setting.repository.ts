@@ -24,8 +24,12 @@ import {
 */
 
 @Injectable()
-export class SettingService {
+export class SettingRepository {
   constructor(private prisma: PrismaService) {}
+
+  get $() {
+    return this.prisma.setting;
+  }
 
   toView(setting: Setting) {
     return {

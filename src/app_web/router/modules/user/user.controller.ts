@@ -32,7 +32,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ClearDataService } from '@share/modules/clear-data/clear-data.service';
 import { Response } from 'express';
 import { PrismaService } from '@db/prisma.service';
-import { UserService, UserViewType } from '@db/services/user.service';
+import { UserRepository, UserViewType } from '@db/repositories/user.repository';
 import { IpfsInputService } from '@share/modules/ipfs/ipfs-input.service';
 import { useEnv } from '@share/lib/env/env';
 
@@ -45,7 +45,7 @@ export class UserController {
   constructor(
     private prisma: PrismaService,
     private ipfsInput: IpfsInputService,
-    private userService: UserService,
+    private userRepository: UserRepository,
     private authService: AuthService,
     private mailer: SendEmailService,
     private jwtUserAuth: JwtUserAuthService,
@@ -86,7 +86,7 @@ export class UserController {
     summary: 'profile',
   })
   async getCurrentUser(@Request() req: RequestExpressJwt) {
-    const user = await this.userService.findFirst({
+    const user = await this.userRepository.findFirst({
       id: BigInt(req.user.userId),
     });
 
@@ -95,7 +95,7 @@ export class UserController {
     }
 
     return {
-      user: this.userService.toView(user, UserViewType.PRIVATE),
+      user: this.userRepository.toView(user, UserViewType.PRIVATE),
     };
   }
 
@@ -107,7 +107,7 @@ export class UserController {
     @Body() dto: UserCurrentPutDto,
     @Request() req: RequestExpressJwt,
   ) {
-    const user = await this.userService.findFirst({
+    const user = await this.userRepository.findFirst({
       id: BigInt(req.user.userId),
     });
 
@@ -115,12 +115,12 @@ export class UserController {
       throw new HttpException(ExErrors.Users.NotFound, HttpStatus.NOT_FOUND);
     }
 
-    const updatedUser = await this.userService.updateByModel(user, {
+    const updatedUser = await this.userRepository.updateByModel(user, {
       phone: dto.phone,
     });
 
     return {
-      user: this.userService.toView(updatedUser, UserViewType.PRIVATE),
+      user: this.userRepository.toView(updatedUser, UserViewType.PRIVATE),
     };
   }
 
@@ -134,7 +134,7 @@ export class UserController {
   ) {
     const userIdBI = BigInt(req.user.userId);
 
-    const currentUser = await this.userService.findFirst({
+    const currentUser = await this.userRepository.findFirst({
       id: userIdBI,
     });
 
@@ -179,7 +179,7 @@ export class UserController {
       );
     }
 
-    await this.userService.changePassword(userIdBI, dto.password);
+    await this.userRepository.changePassword(userIdBI, dto.password);
 
     return {
       message: 'your password has been changed',
@@ -224,7 +224,7 @@ export class UserController {
       );
     }
 
-    const user = await this.userService.findFirst({
+    const user = await this.userRepository.findFirst({
       id: BigInt(req.user.userId),
     });
     const oldImage = user.imageId;
@@ -239,7 +239,7 @@ export class UserController {
     const image = uploadImageRes.data;
     const code = uploadImageRes.code;
 
-    const updatedUser = await this.userService.updateByModel(user, {
+    const updatedUser = await this.userRepository.updateByModel(user, {
       imageId: image.id,
     });
 
@@ -249,7 +249,7 @@ export class UserController {
 
     res.status(code);
     return {
-      stream: this.userService.toView(updatedUser, UserViewType.PRIVATE),
+      stream: this.userRepository.toView(updatedUser, UserViewType.PRIVATE),
     };
   }
 }

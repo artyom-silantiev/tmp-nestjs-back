@@ -34,7 +34,7 @@ import { SendEmailService } from '@share/modules/app-mailer/send-email.service';
 import { ByIdParamsDto } from 'src/app_web/dto';
 import { ExErrors } from '@share/ex_errors.type';
 import { PrismaService } from '@db/prisma.service';
-import { UserService, UserViewType } from '@db/services/user.service';
+import { UserRepository, UserViewType } from '@db/repositories/user.repository';
 import { useGrid } from '@share/lib/grid';
 
 @ApiTags('api guest')
@@ -42,7 +42,7 @@ import { useGrid } from '@share/lib/grid';
 export class GuestController {
   constructor(
     private prismaService: PrismaService,
-    private userService: UserService,
+    private userRepository: UserRepository,
     private authService: AuthService,
     private mailer: SendEmailService,
     private jwtUserActivate: JwtUserActivationService,
@@ -57,14 +57,14 @@ export class GuestController {
   async getUsers(@Query() paginationParams: GetUsersDto) {
     const grid = useGrid(paginationParams);
 
-    const fetchBuilder = this.userService.createFetchBuilder();
+    const fetchBuilder = this.userRepository.createFetchBuilder();
     fetchBuilder.init({
       where: {
         role: UserRole.USER,
-        ...this.userService.whereNotDeleted(),
+        ...this.userRepository.whereNotDeleted(),
       },
       include: {
-        ...this.userService.includeImage(),
+        ...this.userRepository.includeImage(),
       },
       skip: grid.skip,
       take: grid.take,
@@ -77,7 +77,7 @@ export class GuestController {
     }
 
     const { rows, rowsTotal } = await fetchBuilder.fetch();
-    const rowsResult = rows.map((v) => this.userService.toView(v));
+    const rowsResult = rows.map((v) => this.userRepository.toView(v));
 
     return grid.toWrapedResultRows(rowsResult, rowsTotal);
   }
@@ -95,7 +95,7 @@ export class GuestController {
     const title = body.title;
 
     // TODO
-    const data = await this.userService.createUser({
+    const data = await this.userRepository.createUser({
       email,
       password,
       phone,
@@ -115,7 +115,10 @@ export class GuestController {
     });
     */
 
-    const userView = this.userService.toView(data.user, UserViewType.PRIVATE);
+    const userView = this.userRepository.toView(
+      data.user,
+      UserViewType.PRIVATE,
+    );
 
     return {
       message:
@@ -139,9 +142,9 @@ export class GuestController {
       );
     }
 
-    const user = await this.userService.findFirst({
+    const user = await this.userRepository.findFirst({
       id: BigInt(checkResult.payload.userId),
-      ...this.userService.whereNotDeleted(),
+      ...this.userRepository.whereNotDeleted(),
     });
 
     if (!user) {
@@ -177,7 +180,7 @@ export class GuestController {
 
     return {
       accessToken: auth.accessToken,
-      user: this.userService.toView(auth.user, UserViewType.PRIVATE),
+      user: this.userRepository.toView(auth.user, UserViewType.PRIVATE),
     };
   }
 
@@ -194,7 +197,7 @@ export class GuestController {
     const auth = await this.authService.login(req.user);
     return {
       accessToken: auth.accessToken,
-      user: this.userService.toView(auth.user, UserViewType.PRIVATE),
+      user: this.userRepository.toView(auth.user, UserViewType.PRIVATE),
     };
   }
 
@@ -205,9 +208,9 @@ export class GuestController {
   async forgot(@Body() userForgotDto: UserForgotDto) {
     const userEmail = userForgotDto.email;
 
-    const user = await this.userService.findFirst({
+    const user = await this.userRepository.findFirst({
       email: userEmail,
-      ...this.userService.whereNotDeleted(),
+      ...this.userRepository.whereNotDeleted(),
     });
 
     if (!user) {
@@ -244,16 +247,16 @@ export class GuestController {
     }
 
     const userId = BigInt(checkResult.payload.userId);
-    const user = await this.userService.findFirst({
+    const user = await this.userRepository.findFirst({
       id: userId,
-      ...this.userService.whereNotDeleted(),
+      ...this.userRepository.whereNotDeleted(),
     });
 
     if (!user) {
       throw new HttpException(ExErrors.Users.NotFound, HttpStatus.NOT_FOUND);
     }
 
-    await this.userService.changePassword(user.id, recoveryUserDto.password);
+    await this.userRepository.changePassword(user.id, recoveryUserDto.password);
     try {
       await this.prismaService.jwt.delete({
         where: {
@@ -266,7 +269,7 @@ export class GuestController {
 
     return {
       accessToken: auth.accessToken,
-      user: this.userService.toView(auth.user, UserViewType.PRIVATE),
+      user: this.userRepository.toView(auth.user, UserViewType.PRIVATE),
     };
   }
 
@@ -277,10 +280,10 @@ export class GuestController {
   async getUserById(@Param() params: ByIdParamsDto) {
     const userIdBI = BigInt(params.id);
 
-    const user = await this.userService.findFirst({
+    const user = await this.userRepository.findFirst({
       id: userIdBI,
       role: UserRole.USER,
-      ...this.userService.whereNotDeleted(),
+      ...this.userRepository.whereNotDeleted(),
     });
 
     if (!user) {
@@ -288,7 +291,7 @@ export class GuestController {
     }
 
     return {
-      user: this.userService.toView(user),
+      user: this.userRepository.toView(user),
     };
   }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { JwtType } from '@prisma/client';
-import { JwtDbService } from '@db/services/jwt-db.service';
+import { JwtRepository } from '@db/repositories/jwt.repository';
 import { useEnv } from '@share/lib/env/env';
 import { useBs58 } from '@share/lib/bs58';
 
@@ -18,7 +18,7 @@ export class JwtUserAuthService {
   private SECRET: string;
   private TTL_SEC: number;
 
-  constructor(private jwtDb: JwtDbService) {
+  constructor(private jwtRepository: JwtRepository) {
     this.SECRET = this.env.SECRET_JWT_AUTH;
     this.TTL_SEC = this.env.JWT_AUTH_TTL_SEC;
   }
@@ -36,7 +36,7 @@ export class JwtUserAuthService {
 
     const expirationTsMs = Math.floor(Date.now() + ttlSec * 1000);
     const expirationAt = new Date(expirationTsMs);
-    const jwtRow = await this.jwtDb.create(
+    const jwtRow = await this.jwtRepository.create(
       JwtType.USER_AUTH,
       userId,
       uid,
@@ -53,7 +53,7 @@ export class JwtUserAuthService {
   async check(token: string) {
     try {
       const payload = this.verify(token);
-      const jwtRow = await this.jwtDb.getLiveJwt(
+      const jwtRow = await this.jwtRepository.getLiveJwt(
         JwtType.USER_AUTH,
         payload.uid,
       );

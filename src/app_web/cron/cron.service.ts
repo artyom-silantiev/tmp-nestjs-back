@@ -4,7 +4,7 @@ import { TaskType } from '@prisma/client';
 import { ISendMailOptions } from '@nestjs-modules/mailer';
 import { Logger } from '@share/logger';
 import { useEnv } from '@share/lib/env/env';
-import { TaskService } from '@db/services/task.service';
+import { TaskRepository } from '@db/repositories/task.repository';
 import { AppMailerService } from '@share/modules/app-mailer/app-mailer.service';
 import { PrismaService } from '@db/prisma.service';
 import { QueueJob } from '@share/modules/queue_job/queue_job.decorator';
@@ -18,7 +18,7 @@ export class CronService {
   constructor(
     private prisma: PrismaService,
     private mailer: AppMailerService,
-    private taskService: TaskService,
+    private taskService: TaskRepository,
   ) {}
 
   // @QueueJob(1000)

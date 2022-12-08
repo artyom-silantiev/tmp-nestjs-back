@@ -3,7 +3,7 @@ import { LocalFilesRequest } from './local_files_request';
 import { StandardResult } from '@share/standard-result.class';
 import { LocalFilesMakeService } from './local_files-make.service';
 import { LocalFile, MediaType } from '@prisma/client';
-import { LocalFileService } from '@db/services/local-file.service';
+import { LocalFileRepository } from '@db/repositories/local-file.repository';
 import { PrismaService } from '@db/prisma.service';
 import * as _ from 'lodash';
 import * as path from 'path';
@@ -30,7 +30,7 @@ export class LocalFilesOutputService {
 
   constructor(
     private prisma: PrismaService,
-    private localFileService: LocalFileService,
+    private localFileRepository: LocalFileRepository,
     private localFilesMake: LocalFilesMakeService,
   ) {}
 
@@ -50,9 +50,8 @@ export class LocalFilesOutputService {
       return stdRes.setData(cacheLocalFileMeta);
     }
 
-    const localFileRes = await this.localFileService.getLocalFileBySha256Hash(
-      sha256,
-    );
+    const localFileRes =
+      await this.localFileRepository.getLocalFileBySha256Hash(sha256);
     if (localFileRes.isBad) {
       return stdRes.mergeBad(localFileRes);
     }

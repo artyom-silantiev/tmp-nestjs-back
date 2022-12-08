@@ -5,8 +5,12 @@ import { Task, TaskType, Prisma } from '@prisma/client';
 export type TaskRow = Task;
 
 @Injectable()
-export class TaskService {
+export class TaskRepository {
   constructor(private prisma: PrismaService) {}
+
+  get $() {
+    return this.prisma.task;
+  }
 
   async taskCreate<T>(taskType: TaskType, taskData: T) {
     const newTask = await this.prisma.task.create({

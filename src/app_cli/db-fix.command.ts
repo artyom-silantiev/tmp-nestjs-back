@@ -1,12 +1,12 @@
 import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@db/prisma.service';
-import { UserService } from '@db/services/user.service';
+import { UserRepository } from '@db/repositories/user.repository';
 
 @Injectable()
 export class DbFixCommand {
   constructor(
     private prisma: PrismaService,
-    private userService: UserService,
+    private userRepository: UserRepository,
   ) {}
 }

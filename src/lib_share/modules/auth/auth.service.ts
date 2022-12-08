@@ -4,7 +4,7 @@ import { JwtUserAuthService } from '@share/modules/jwt/jwt-user-auth.service';
 import { JwtUser } from './types';
 import { ExErrors } from '@share/ex_errors.type';
 import { PrismaService } from '@db/prisma.service';
-import { UserService } from '@db/services/user.service';
+import { UserRepository } from '@db/repositories/user.repository';
 import { useBcrypt } from '@share/lib/bcrypt';
 import { useCacheJwtUser } from '@share/lib/cache/jwt-user';
 
@@ -15,12 +15,12 @@ export class AuthService {
 
   constructor(
     private prismaService: PrismaService,
-    private userService: UserService,
+    private userRepository: UserRepository,
     private jwtUserAuth: JwtUserAuthService,
   ) {}
 
   async passwordCheck(userId: bigint, password: string) {
-    const user = await this.userService.findFirst({
+    const user = await this.userRepository.findFirst({
       id: userId,
     });
 
@@ -40,7 +40,7 @@ export class AuthService {
   }
 
   async validateUser(email: string, password: string): Promise<User> {
-    const user = await this.userService.findFirst({
+    const user = await this.userRepository.findFirst({
       email,
     });
 

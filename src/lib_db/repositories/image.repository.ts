@@ -14,8 +14,12 @@ export type ImageRow = Image & {
 };
 
 @Injectable()
-export class ImageService {
+export class ImageRepository {
   constructor(private prisma: PrismaService) {}
+
+  get $() {
+    return this.prisma.image;
+  }
 
   async createByIpfsObject(ipfsObject: IpfsObject) {
     const image = await this.prisma.image.create({

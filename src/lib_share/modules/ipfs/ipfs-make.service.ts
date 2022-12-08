@@ -6,7 +6,7 @@ import * as sharp from 'sharp';
 import { ThumbParam } from './ipfs_request';
 import { StandardResult } from '@share/standard-result.class';
 import { CacheItem, IpfsCacheService } from './ipfs-cache.service';
-import { IpfsObjectService } from '@db/services/ipfs-object.service';
+import { IpfsObjectRepository } from '@db/repositories/ipfs-object.repository';
 import { IpfsObject, MediaType } from '@prisma/client';
 import { IpfsStorageService } from './ipfs-storage.service';
 import { PrismaService } from '@db/prisma.service';
@@ -23,7 +23,7 @@ export class IpfsMakeService {
 
   constructor(
     private prisma: PrismaService,
-    private ipfsService: IpfsObjectService,
+    private ipfsRepository: IpfsObjectRepository,
     private ipfsCache: IpfsCacheService,
     private ipfsStorage: IpfsStorageService,
     private ipfsOutput: IpfsOutputService,
@@ -42,7 +42,7 @@ export class IpfsMakeService {
     const stdRes = new StandardResult<IpfsObject>(201);
     const fileSha256Hash = await getFileSha256(tempFile);
 
-    const getIpfsObjRes = await this.ipfsService.getIpfsObjectBySha256Hash(
+    const getIpfsObjRes = await this.ipfsRepository.getIpfsObjectBySha256Hash(
       fileSha256Hash,
     );
     if (getIpfsObjRes.isGood) {
@@ -159,7 +159,7 @@ export class IpfsMakeService {
 
     const orgSha256 = orgCacheItem.meta.sha256;
     const getOrgIpfsObjectRes =
-      await this.ipfsService.getIpfsObjectBySha256Hash(orgSha256);
+      await this.ipfsRepository.getIpfsObjectBySha256Hash(orgSha256);
     if (getOrgIpfsObjectRes.isBad) {
       return stdRes.setCode(404).setErrData('');
     }

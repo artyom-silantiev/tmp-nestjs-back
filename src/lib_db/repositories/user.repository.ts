@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma.service';
 import { User, Prisma, UserRole, Jwt, Setting } from '@prisma/client';
 import * as lodash from 'lodash';
 import { Enumerable } from '@share/support.types';
-import { ImageRow } from './image.service';
+import { ImageRow } from './image.repository';
 import { useBcrypt } from '@share/lib/bcrypt';
 import { useBs58 } from '@share/lib/bs58';
 
@@ -98,11 +98,15 @@ export class UserFetchBuilder {
 }
 
 @Injectable()
-export class UserService {
+export class UserRepository {
   private bcrypt = useBcrypt();
   private bs58 = useBs58();
 
   constructor(private prisma: PrismaService) {}
+
+  get $() {
+    return this.prisma.user;
+  }
 
   toView(model: UserRow, type: UserViewType = UserViewType.PUBLIC): UserView {
     return UserView.getByModel(model, type);

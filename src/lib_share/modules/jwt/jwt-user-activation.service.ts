@@ -1,4 +1,4 @@
-import { JwtDbService } from '@db/services/jwt-db.service';
+import { JwtRepository } from '@db/repositories/jwt.repository';
 import { Injectable } from '@nestjs/common';
 import { Jwt, JwtType } from '@prisma/client';
 import * as jwt from 'jsonwebtoken';
@@ -30,7 +30,7 @@ export class JwtUserActivationService {
   private SECRET: string;
   private TTL_SEC: number;
 
-  constructor(private jwtDb: JwtDbService) {
+  constructor(private jwtRepository: JwtRepository) {
     this.SECRET = this.env.SECRET_JWT_ACTIVATION;
     this.TTL_SEC = this.env.JWT_ACTIVATION_TTL_SEC;
   }
@@ -48,7 +48,7 @@ export class JwtUserActivationService {
 
     const expirationTsMs = Math.floor(Date.now() + ttlSec * 1000);
     const expirationAt = new Date(expirationTsMs);
-    const jwtRow = await this.jwtDb.create(
+    const jwtRow = await this.jwtRepository.create(
       JwtType.USER_ACTIVATION,
       userId,
       uid,
@@ -66,7 +66,7 @@ export class JwtUserActivationService {
   async check(token: string) {
     try {
       const payload = this.verify(token);
-      const jwtRow = (await this.jwtDb.getLiveJwt(
+      const jwtRow = (await this.jwtRepository.getLiveJwt(
         JwtType.USER_ACTIVATION,
         payload.uid,
       )) as Jwt & { meta: UserActivationMeta };

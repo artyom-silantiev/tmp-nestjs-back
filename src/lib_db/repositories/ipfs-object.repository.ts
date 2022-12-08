@@ -10,8 +10,12 @@ export type IpfsObjectRow = IpfsObject & {
 };
 
 @Injectable()
-export class IpfsObjectService {
+export class IpfsObjectRepository {
   constructor(private prisma: PrismaService) {}
+
+  get $() {
+    return this.prisma.ipfsObject;
+  }
 
   async getIpfsObjectById(id: bigint) {
     const ipfsObject = await this.prisma.ipfsObject.findFirst({

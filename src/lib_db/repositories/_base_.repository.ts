@@ -80,8 +80,14 @@ export class BaseFetchBuilder {
 */
 
 @Injectable()
-export class BaseService {
+export class BaseRepository {
   constructor(private prisma: PrismaService) {}
+
+  /*
+  get $() {
+    return this.prisma.base;
+  }
+  */
 
   toView(model: BaseRow) {
     return BaseView.getByModel(model);

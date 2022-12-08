@@ -1,4 +1,4 @@
-import { TaskService } from '@db/services/task.service';
+import { TaskRepository } from '@db/repositories/task.repository';
 import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { TaskType } from '@prisma/client';
@@ -9,14 +9,17 @@ import * as path from 'path';
 export class AppMailerService {
   private env = useEnv();
 
-  constructor(private task: TaskService, private mailer: MailerService) {}
+  constructor(
+    private taskRepository: TaskRepository,
+    private mailer: MailerService,
+  ) {}
 
   async sendEmailNow(params: ISendMailOptions) {
     return await this.mailer.sendMail(params);
   }
 
   async sendEmailTask(params: ISendMailOptions) {
-    await this.task.taskCreate(TaskType.SEND_EMAIL, params);
+    await this.taskRepository.taskCreate(TaskType.SEND_EMAIL, params);
   }
 
   async sendEmail(params: ISendMailOptions) {

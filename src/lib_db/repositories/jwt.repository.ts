@@ -7,8 +7,12 @@ export type JwtRow = Jwt & {
 };
 
 @Injectable()
-export class JwtDbService {
+export class JwtRepository {
   constructor(private prisma: PrismaService) {}
+
+  get $() {
+    return this.prisma.jwt;
+  }
 
   async create(
     type: JwtType,

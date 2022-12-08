@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Image, LocalFile } from '@prisma/client';
 import { StandardResult } from '@share/standard-result.class';
-import { ImageService } from '@db/services/image.service';
+import { ImageRepository } from '@db/repositories/image.repository';
 import * as _ from 'lodash';
 import * as path from 'path';
 import * as fs from 'fs-extra';
@@ -15,7 +15,7 @@ export class LocalFilesInputService {
   private bs58 = useBs58();
 
   constructor(
-    private imageService: ImageService,
+    private imageRepository: ImageRepository,
     private localFilesMake: LocalFilesMakeService,
   ) {}
 
@@ -37,7 +37,7 @@ export class LocalFilesInputService {
       return stdRes.setCode(code).setErrData({ errors: localFileRes.errData });
     }
 
-    const image = await this.imageService.createByLocalFile(localFile);
+    const image = await this.imageRepository.createByLocalFile(localFile);
 
     return stdRes.setCode(code).setData(image);
   }

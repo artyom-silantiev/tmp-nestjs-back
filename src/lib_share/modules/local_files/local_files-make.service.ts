@@ -7,7 +7,7 @@ import * as _ from 'lodash';
 import * as path from 'path';
 import * as sharp from 'sharp';
 import * as fs from 'fs-extra';
-import { LocalFileService } from '@db/services/local-file.service';
+import { LocalFileRepository } from '@db/repositories/local-file.repository';
 import { PrismaService } from '@db/prisma.service';
 import { ThumbParam } from './local_files_request';
 import { getMediaContentProbe } from '@share/ffmpeg';
@@ -22,7 +22,7 @@ export class LocalFilesMakeService {
 
   constructor(
     private prisma: PrismaService,
-    private localFileService: LocalFileService,
+    private localFileRepository: LocalFileRepository,
   ) {}
 
   async createLocalFileByFile(
@@ -39,7 +39,7 @@ export class LocalFilesMakeService {
     const fileSha256Hash = await getFileSha256(tempFile);
 
     const getLocalFileRes =
-      await this.localFileService.getLocalFileBySha256Hash(fileSha256Hash);
+      await this.localFileRepository.getLocalFileBySha256Hash(fileSha256Hash);
     if (getLocalFileRes.isGood) {
       await fs.remove(tempFile);
       return stdRes.setCode(208).setData(getLocalFileRes.data);

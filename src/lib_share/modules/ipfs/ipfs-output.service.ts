@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import IpfsRequest, { ThumbParam } from './ipfs_request';
 import { StandardResult } from '@share/standard-result.class';
 import { CacheItem, IpfsCacheService } from './ipfs-cache.service';
-import { IpfsObjectService } from '@db/services/ipfs-object.service';
+import { IpfsObjectRepository } from '@db/repositories/ipfs-object.repository';
 import { IpfsMakeService } from './ipfs-make.service';
 import { useEnv } from '@share/lib/env/env';
 
@@ -12,7 +12,7 @@ export class IpfsOutputService {
   private env = useEnv();
 
   constructor(
-    private ipfsService: IpfsObjectService,
+    private ipfsRepository: IpfsObjectRepository,
     private ipfsCache: IpfsCacheService,
     @Inject(forwardRef(() => IpfsMakeService))
     private ipfsMake: IpfsMakeService,
@@ -31,9 +31,8 @@ export class IpfsOutputService {
     if (orgCacheItem) {
       stdRes.setData(orgCacheItem);
     } else {
-      const getIpfsObjectRes = await this.ipfsService.getIpfsObjectBySha256Hash(
-        sha256,
-      );
+      const getIpfsObjectRes =
+        await this.ipfsRepository.getIpfsObjectBySha256Hash(sha256);
       if (getIpfsObjectRes.isBad) {
         return stdRes.mergeBad(getIpfsObjectRes);
       }

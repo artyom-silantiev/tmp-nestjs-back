@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as path from 'path';
 import * as _ from 'lodash';
 import * as fs from 'fs-extra';
-import { IpfsObjectService } from '@db/services/ipfs-object.service';
+import { IpfsObjectRepository } from '@db/repositories/ipfs-object.repository';
 import { StandardResult } from '@share/standard-result.class';
 import { IpfsObject } from '@prisma/client';
 import { IpfsStorageService } from './ipfs-storage.service';
@@ -86,7 +86,7 @@ export class IpfsCacheService {
   clearCacheResolves = [] as ((value: unknown) => void)[];
 
   constructor(
-    private ipfsService: IpfsObjectService,
+    private ipfsRepository: IpfsObjectRepository,
     private ipfsStorage: IpfsStorageService,
   ) {}
 
@@ -215,9 +215,8 @@ export class IpfsCacheService {
   }
 
   public async updateMetaFileBySha256(sha256: string) {
-    const getIpfsObjectRes = await this.ipfsService.getIpfsObjectBySha256Hash(
-      sha256,
-    );
+    const getIpfsObjectRes =
+      await this.ipfsRepository.getIpfsObjectBySha256Hash(sha256);
     if (getIpfsObjectRes.isBad) {
       return false;
     }
@@ -312,9 +311,9 @@ export class IpfsCacheService {
     if (ipfsObject.type === 'IMAGE' && !ipfsObject.isThumb) {
       const thumbs = {} as { [thumbName: string]: string };
 
-      const ipfsObjectThumbs = await this.ipfsService.getThumbs(ipfsObject);
+      const ipfsObjectThumbs = await this.ipfsRepository.getThumbs(ipfsObject);
       for (const ipfsObjectThumb of ipfsObjectThumbs) {
-        const thumbIpfsObject = await this.ipfsService.getIpfsObjectById(
+        const thumbIpfsObject = await this.ipfsRepository.getIpfsObjectById(
           ipfsObjectThumb.thumbIpfsObjectId,
         );
         if (!thumbIpfsObject) {

@@ -2,7 +2,7 @@ import { Command } from 'nestjs-command';
 import { Injectable } from '@nestjs/common';
 import { UserRole } from '@prisma/client';
 import { PrismaService } from '@db/prisma.service';
-import { UserService, UserViewType } from '@db/services/user.service';
+import { UserRepository, UserViewType } from '@db/repositories/user.repository';
 
 interface Seed {
   name: string;
@@ -13,7 +13,7 @@ interface Seed {
 export class SeederCommand {
   constructor(
     private prisma: PrismaService,
-    private userService: UserService,
+    private userRepository: UserRepository,
   ) {}
 
   @Command({
@@ -58,7 +58,7 @@ export class SeederCommand {
   }
 
   async seedCreateAdmin() {
-    const data = await this.userService.createUser({
+    const data = await this.userRepository.createUser({
       password: 'password',
       email: 'admin@example.com',
       emailActivatedAt: new Date(),
@@ -70,7 +70,7 @@ export class SeederCommand {
 
     console.log(
       'admin create:',
-      this.userService.toView(data.user, UserViewType.PRIVATE),
+      this.userRepository.toView(data.user, UserViewType.PRIVATE),
     );
   }
 }

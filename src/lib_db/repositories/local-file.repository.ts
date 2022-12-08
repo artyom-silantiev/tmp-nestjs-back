@@ -10,8 +10,12 @@ export type IpfsObjectRow = LocalFile & {
 };
 
 @Injectable()
-export class LocalFileService {
+export class LocalFileRepository {
   constructor(private prisma: PrismaService) {}
+
+  get $() {
+    return this.prisma.localFile;
+  }
 
   async getLocalFileById(id: bigint) {
     const localFile = await this.prisma.localFile.findFirst({
