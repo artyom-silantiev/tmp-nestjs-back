@@ -13,7 +13,7 @@ export type IpfsObjectRow = IpfsObject & {
 export class IpfsObjectRepository {
   constructor(private prisma: PrismaService) {}
 
-  get $() {
+  get R() {
     return this.prisma.ipfsObject;
   }
 

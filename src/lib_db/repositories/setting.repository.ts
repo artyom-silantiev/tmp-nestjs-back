@@ -27,7 +27,7 @@ import {
 export class SettingRepository {
   constructor(private prisma: PrismaService) {}
 
-  get $() {
+  get R() {
     return this.prisma.setting;
   }
 

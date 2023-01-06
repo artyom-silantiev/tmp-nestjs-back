@@ -2,8 +2,8 @@ version: '3.7'
 
 services:
   db:
-    container_name: db
-    image: "postgres:14.4"
+    container_name: tnp-db
+    image: "postgres:14.6"
     restart: always
     environment:
       - POSTGRES_USER=postgres
@@ -16,14 +16,14 @@ services:
         - "5432:5432"
 
   redis:
-    container_name: redis
+    container_name: tnp-redis
     image: redis
     ports:
       - '6379:6379'
     restart: always
 
   s3:
-    container_name: s3
+    container_name: tnp-s3
     image: minio/minio
     command: server /data
     ports:

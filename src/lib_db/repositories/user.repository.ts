@@ -104,7 +104,7 @@ export class UserRepository {
 
   constructor(private prisma: PrismaService) {}
 
-  get $() {
+  get R() {
     return this.prisma.user;
   }
 

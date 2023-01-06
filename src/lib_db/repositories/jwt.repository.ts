@@ -10,7 +10,7 @@ export type JwtRow = Jwt & {
 export class JwtRepository {
   constructor(private prisma: PrismaService) {}
 
-  get $() {
+  get R() {
     return this.prisma.jwt;
   }
 

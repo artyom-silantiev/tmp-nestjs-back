@@ -84,7 +84,7 @@ export class BaseRepository {
   constructor(private prisma: PrismaService) {}
 
   /*
-  get $() {
+  get R() {
     return this.prisma.base;
   }
   */

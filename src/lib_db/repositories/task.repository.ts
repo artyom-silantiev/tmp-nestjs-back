@@ -8,7 +8,7 @@ export type TaskRow = Task;
 export class TaskRepository {
   constructor(private prisma: PrismaService) {}
 
-  get $() {
+  get R() {
     return this.prisma.task;
   }
 

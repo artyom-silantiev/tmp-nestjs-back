@@ -13,7 +13,7 @@ export type IpfsObjectRow = LocalFile & {
 export class LocalFileRepository {
   constructor(private prisma: PrismaService) {}
 
-  get $() {
+  get R() {
     return this.prisma.localFile;
   }
 

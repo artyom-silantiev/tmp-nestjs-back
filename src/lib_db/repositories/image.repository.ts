@@ -17,7 +17,7 @@ export type ImageRow = Image & {
 export class ImageRepository {
   constructor(private prisma: PrismaService) {}
 
-  get $() {
+  get R() {
     return this.prisma.image;
   }
 
