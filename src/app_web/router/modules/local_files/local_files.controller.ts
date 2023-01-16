@@ -10,7 +10,6 @@ import {
 import { Response, Request } from 'express';
 import { ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
-import IpfsRequest from '@share/modules/ipfs/ipfs_request';
 import {
   LocalFileMeta,
   LocalFilesOutputService,
@@ -102,29 +101,29 @@ export class LocalFilesController {
     args: string,
     query: { [key: string]: string },
   ) {
-    const ipfsRequest = new IpfsRequest(sha256);
+    const localFileRequest = new LocalFilesRequest(sha256);
 
     const match = args.match(/^(image|video)(\.(\w+))?$/);
     if (match) {
-      ipfsRequest.type = match[1] as 'image' | 'video';
+      localFileRequest.type = match[1] as 'image' | 'video';
       if (match[3]) {
-        ipfsRequest.format = match[3];
+        localFileRequest.format = match[3];
       }
     }
 
     if (query.w) {
-      ipfsRequest.thumb = {
+      localFileRequest.thumb = {
         type: 'width',
         name: query.w,
       };
     } else if (query.n) {
-      ipfsRequest.thumb = {
+      localFileRequest.thumb = {
         type: 'name',
         name: query.n,
       };
     }
 
-    return ipfsRequest;
+    return localFileRequest;
   }
 
   getHeadersForLocalFile(localFile: LocalFileMeta) {
