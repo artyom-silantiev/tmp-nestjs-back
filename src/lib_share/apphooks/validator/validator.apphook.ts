@@ -19,7 +19,7 @@ export async function appUseValidator(
       transform: true,
       transformOptions: { enableImplicitConversion: true },
       exceptionFactory: (validationErrors: ValidationError[] = []) => {
-        const errorFields = {} as {
+        const fieldsHasErrors = {} as {
           [fieldName: string]: {
             code: string;
             message: string;
@@ -31,10 +31,10 @@ export async function appUseValidator(
             const fieldName = error.property;
             const errorCode = key;
 
-            if (!errorFields[fieldName]) {
-              errorFields[fieldName] = [];
+            if (!fieldsHasErrors[fieldName]) {
+              fieldsHasErrors[fieldName] = [];
             }
-            errorFields[fieldName].push({
+            fieldsHasErrors[fieldName].push({
               code: errorCode,
               message: error.constraints[key]
             })
@@ -42,7 +42,7 @@ export async function appUseValidator(
         });
 
         return new BadRequestException({
-          fieldsHasErrors: errorFields,
+          fieldsHasErrors,
         });
       },
     }),
