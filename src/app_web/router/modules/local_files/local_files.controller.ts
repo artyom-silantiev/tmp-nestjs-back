@@ -37,7 +37,7 @@ export class BySha256AndArgsDto {
 @ApiTags('local files')
 @Controller()
 export class LocalFilesController {
-  constructor(private localFilesOutput: LocalFilesOutputService) {}
+  constructor(private localFilesOutput: LocalFilesOutputService) { }
 
   parseSha256Param(sha256Param: string, query: { [key: string]: string }) {
     let localFilesRequest: LocalFilesRequest;
@@ -97,7 +97,7 @@ export class LocalFilesController {
     return localFilesRequest;
   }
 
-  getIpfsObjectBySha256AndArgsAndQuery(
+  getLocalFileBySha256AndArgsAndQuery(
     sha256: string,
     args: string,
     query: { [key: string]: string },
@@ -214,7 +214,7 @@ export class LocalFilesController {
     const sha256 = params['sha256'];
     const args = params['args'];
     const query = req.query as { [key: string]: string };
-    const localFilesRequest = this.getIpfsObjectBySha256AndArgsAndQuery(
+    const localFilesRequest = this.getLocalFileBySha256AndArgsAndQuery(
       sha256,
       args,
       query,
@@ -252,7 +252,7 @@ export class LocalFilesController {
     const sha256 = params['sha256'];
     const args = params['args'];
     const query = req.query as { [key: string]: string };
-    const localFilesRequest = this.getIpfsObjectBySha256AndArgsAndQuery(
+    const localFilesRequest = this.getLocalFileBySha256AndArgsAndQuery(
       sha256,
       args,
       query,

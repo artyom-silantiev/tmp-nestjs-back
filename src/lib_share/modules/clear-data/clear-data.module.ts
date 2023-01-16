@@ -9,4 +9,4 @@ import { S3Module } from '../s3/s3.module';
   providers: [ClearDataService],
   exports: [ClearDataService],
 })
-export class ClearDataModule {}
+export class ClearDataModule { }
