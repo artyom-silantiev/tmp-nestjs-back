@@ -19,19 +19,31 @@ export async function appUseValidator(
       transform: true,
       transformOptions: { enableImplicitConversion: true },
       exceptionFactory: (validationErrors: ValidationError[] = []) => {
-        const errorMessages = [];
+        const errorFields = {} as {
+          [fieldName: string]: {
+            code: string;
+            message: string;
+          }[];
+        };
+
         validationErrors.forEach((error) => {
-          errorMessages.push({
-            field: error.property,
-            errors: Object.keys(error.constraints).map((key) => {
-              return {
-                code: key,
-                message: error.constraints[key],
-              };
-            }),
+          Object.keys(error.constraints).forEach((key: string) => {
+            const fieldName = error.property;
+            const errorCode = key;
+
+            if (!errorFields[fieldName]) {
+              errorFields[fieldName] = [];
+            }
+            errorFields[fieldName].push({
+              code: errorCode,
+              message: error.constraints[key]
+            })
           });
         });
-        return new BadRequestException(errorMessages);
+
+        return new BadRequestException({
+          fieldsHasErrors: errorFields,
+        });
       },
     }),
     new StripContextPipe(),

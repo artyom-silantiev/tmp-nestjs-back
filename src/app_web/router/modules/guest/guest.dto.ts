@@ -18,6 +18,7 @@ export class AuthDto {
   @ApiProperty({
     name: 'email',
   })
+  @IsEmail()
   email: string;
 
   @ApiProperty({

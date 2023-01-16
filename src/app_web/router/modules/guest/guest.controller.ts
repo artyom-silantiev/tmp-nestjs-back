@@ -47,7 +47,7 @@ export class GuestController {
     private mailer: SendEmailService,
     private jwtUserActivate: JwtUserActivationService,
     private jwtUserRecovery: JwtUserRecoveryService,
-  ) {}
+  ) { }
 
   /*
   @Get('')
@@ -184,7 +184,6 @@ export class GuestController {
     };
   }
 
-  @UseGuards(LocalAuthGuard)
   @Post('login')
   @ApiOperation({
     summary: 'login',
@@ -194,7 +193,9 @@ export class GuestController {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     @Body() body: AuthDto,
   ) {
-    const auth = await this.authService.login(req.user);
+    const user = await this.authService.validateUser(body.email, body.password);
+
+    const auth = await this.authService.login(user);
     return {
       accessToken: auth.accessToken,
       user: this.userRepository.toView(auth.user, UserViewType.PRIVATE),
@@ -263,7 +264,7 @@ export class GuestController {
           id: checkResult.jwtRow.id,
         },
       });
-    } catch (error) {}
+    } catch (error) { }
 
     const auth = await this.authService.login(user);
 
