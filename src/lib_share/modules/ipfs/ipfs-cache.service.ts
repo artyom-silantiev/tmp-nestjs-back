@@ -7,6 +7,7 @@ import { StandardResult } from '@share/standard-result.class';
 import { IpfsObject } from '@prisma/client';
 import { IpfsStorageService } from './ipfs-storage.service';
 import { NodeEnvType, useEnv } from '@share/lib/env/env';
+import { IpfsDefs } from './defs';
 
 export interface CacheItemMeta {
   type: 'IMAGE' | 'VIDEO' | 'AUDIO';
@@ -88,7 +89,7 @@ export class IpfsCacheService {
   constructor(
     private ipfsRepository: IpfsObjectRepository,
     private ipfsStorage: IpfsStorageService,
-  ) {}
+  ) { }
 
   async init() {
     if (this.isInit) {
@@ -96,7 +97,7 @@ export class IpfsCacheService {
     }
 
     CacheItem.ipfsCacheService = this;
-    await fs.mkdirs(this.env.DIR_IPFS_CACHE);
+    await fs.mkdirs(IpfsDefs.DIR_IPFS_CACHE);
     await this.scanItems();
 
     this.isInit = true;
@@ -124,13 +125,13 @@ export class IpfsCacheService {
   }
 
   async scanItems() {
-    await this.scanDir(this.env.DIR_IPFS_CACHE);
+    await this.scanDir(IpfsDefs.DIR_IPFS_CACHE);
   }
 
   private getCacheItemPaths(sha256: string) {
     const suffix = sha256.substr(0, this.env.IPFS_CACHE_DIR_SUFFIX_LENGTH);
     const cacheItemPathToFile = path.resolve(
-      this.env.DIR_IPFS_CACHE,
+      IpfsDefs.DIR_IPFS_CACHE,
       suffix,
       sha256,
     );

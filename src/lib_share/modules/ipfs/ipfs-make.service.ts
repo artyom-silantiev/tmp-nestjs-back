@@ -27,7 +27,7 @@ export class IpfsMakeService {
     private ipfsCache: IpfsCacheService,
     private ipfsStorage: IpfsStorageService,
     private ipfsOutput: IpfsOutputService,
-  ) {}
+  ) { }
 
   public async createIpfsObjectFromFile(
     tempFile: string,
@@ -165,7 +165,7 @@ export class IpfsMakeService {
     }
 
     const tempNewThumbImageFile = path.resolve(
-      this.env.DIR_TEMP_FILES,
+      this.env.DIR_TEMP,
       this.bs58.uid() + '.thumb.jpg',
     );
     const image = sharp(orgCacheItem.pathFile);

@@ -56,9 +56,8 @@ export class Env {
 
   DATABASE_URL = toString(E.DATABASE_URL, 'postgresql://postgres:postgres@localhost:5432/postgres?schema=public');
 
-  DIR_TEMP_FILES = toPath(E.DIR_TEMP_FILES, './data/nodes/{NAF}/temp');
-  DIR_IPFS_CACHE = toPath(E.DIR_IPFS_CACHE, './data/nodes/{NAF}/ipfs_cache');
-  DIR_LOCAL_FILES = toPath(E.DIR_LOCAL_FILES, './data/local_files');
+  DIR_DATA = toPath(E.DIR_DATA, './data/nodes/{NAF}/data');
+  DIR_TEMP = toPath(E.DIR_TEMP, './data/nodes/{NAF}/temp');
   DIR_FRONT_APP_MAIN = toPath(E.DIR_FRONT_APP_MAIN, './data/frontends/main');
   DIR_ASSETS_PUBLIC = toPath(E.DIR_ASSETS_PUBLIC, './assets/public');
 
@@ -205,7 +204,7 @@ export function toArrayStrings(envParam: string, spliter: string, defaultValue: 
     try {
       const values = envParam.split(spliter);
       return values;
-    } catch (error) {}
+    } catch (error) { }
   }
   return defaultValue;
 }

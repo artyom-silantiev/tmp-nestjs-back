@@ -14,6 +14,7 @@ import { getMediaContentProbe } from '@share/ffmpeg';
 import { getMimeFromPath, getFileSha256 } from '@share/helpers';
 import { useEnv } from '@share/lib/env/env';
 import { useBs58 } from '@share/lib/bs58';
+import { LocalFilesDefs } from './defs';
 
 @Injectable()
 export class LocalFilesMakeService {
@@ -23,7 +24,7 @@ export class LocalFilesMakeService {
   constructor(
     private prisma: PrismaService,
     private localFileRepository: LocalFileRepository,
-  ) {}
+  ) { }
 
   async createLocalFileByFile(
     tempFile: string,
@@ -101,7 +102,7 @@ export class LocalFilesMakeService {
     const year = now.format('YYYY');
     const month = now.format('MM');
     const day = now.format('DD');
-    const locaFiles = this.env.DIR_LOCAL_FILES;
+    const locaFiles = LocalFilesDefs.DIR_DATA;
     const locDirForFile = path.join(year, month, day);
     const absDirForFile = path.resolve(locaFiles, locDirForFile);
     const locPathToFile = path.join(locDirForFile, fileSha256Hash);
@@ -160,7 +161,7 @@ export class LocalFilesMakeService {
     const stdRes = new StandardResult<LocalFile>(201);
 
     const tempNewThumbImageFile = path.resolve(
-      this.env.DIR_TEMP_FILES,
+      this.env.DIR_TEMP,
       this.bs58.uid() + '.thumb.jpg',
     );
     const image = sharp(orgLocalFile.pathToFile);

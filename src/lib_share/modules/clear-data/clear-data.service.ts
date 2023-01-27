@@ -6,6 +6,7 @@ import { IpfsStorageService } from '../ipfs/ipfs-storage.service';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import { useEnv } from '@share/lib/env/env';
+import { LocalFilesDefs } from '../local_files/defs';
 
 @Injectable()
 export class ClearDataService {
@@ -15,7 +16,7 @@ export class ClearDataService {
     private prisma: PrismaService,
     private ipfsCache: IpfsCacheService,
     private ipfsStorage: IpfsStorageService,
-  ) {}
+  ) { }
 
   async safeDeleteUserById(userId: bigint) {
     const user = await this.prisma.user.findFirst({
@@ -229,7 +230,7 @@ export class ClearDataService {
     }
 
     const absPathToFile = path.resolve(
-      this.env.DIR_LOCAL_FILES,
+      LocalFilesDefs.DIR_DATA,
       localFile.pathToFile,
     );
     await fs.remove(absPathToFile);

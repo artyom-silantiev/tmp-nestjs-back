@@ -9,6 +9,7 @@ import * as _ from 'lodash';
 import * as path from 'path';
 import { useEnv } from '@share/lib/env/env';
 import { useCacheLocalFile } from '@share/lib/cache/local-file';
+import { LocalFilesDefs } from './defs';
 
 export type LocalFileMeta = {
   absPathToFile: string;
@@ -32,7 +33,7 @@ export class LocalFilesOutputService {
     private prisma: PrismaService,
     private localFileRepository: LocalFileRepository,
     private localFilesMake: LocalFilesMakeService,
-  ) {}
+  ) { }
 
   async getLocalFilePathByLocalFilesRequest(
     localFilesRequest: LocalFilesRequest,
@@ -70,7 +71,7 @@ export class LocalFilesOutputService {
         thumb.name = LocalFilesRequest.parseThumbSize(
           parseInt(thumb.name),
           tmpLocalFile.width,
-          this.env.IPFS_CACHE_MIN_THUMB_LOG_SIZE,
+          this.env.LOCAL_FILES_CACHE_MIN_THUMB_LOG_SIZE,
         );
       } else if (thumb.type === 'name') {
         if (thumb.name === 'fullhd') {
@@ -114,7 +115,7 @@ export class LocalFilesOutputService {
     }
 
     const absPathToFile = path.resolve(
-      this.env.DIR_LOCAL_FILES,
+      LocalFilesDefs.DIR_DATA,
       localFile.pathToFile,
     );
     const localFileMeta = {

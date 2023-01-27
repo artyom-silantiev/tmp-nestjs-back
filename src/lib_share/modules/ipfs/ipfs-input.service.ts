@@ -22,7 +22,7 @@ export class IpfsInputService implements OnModuleInit {
     private ipfsCache: IpfsCacheService,
     @Inject(forwardRef(() => IpfsMakeService))
     private ipfsMake: IpfsMakeService,
-  ) {}
+  ) { }
 
   async onModuleInit() {
     await this.init();
@@ -56,7 +56,7 @@ export class IpfsInputService implements OnModuleInit {
 
   async uploadImageByMulterFile(imageFile: Express.Multer.File) {
     const tempName = this.bs58.uid();
-    const tempFile = path.resolve(this.env.DIR_TEMP_FILES, tempName);
+    const tempFile = path.resolve(this.env.DIR_TEMP, tempName);
     await fs.writeFile(tempFile, imageFile.buffer);
     return this.uploadImageByFile(tempFile);
   }

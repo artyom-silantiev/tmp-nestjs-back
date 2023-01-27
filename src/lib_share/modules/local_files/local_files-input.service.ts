@@ -17,9 +17,9 @@ export class LocalFilesInputService {
   constructor(
     private imageRepository: ImageRepository,
     private localFilesMake: LocalFilesMakeService,
-  ) {}
+  ) { }
 
-  async init() {}
+  async init() { }
 
   async uploadImageByFile(imageFile: string) {
     const stdRes = new StandardResult<Image>();
@@ -44,7 +44,7 @@ export class LocalFilesInputService {
 
   async uploadImageByMulter(imageFile: Express.Multer.File) {
     const tempName = this.bs58.uid();
-    const tempFile = path.resolve(this.env.DIR_TEMP_FILES, tempName);
+    const tempFile = path.resolve(this.env.DIR_TEMP, tempName);
     await fs.writeFile(tempFile, imageFile.buffer);
     return this.uploadImageByFile(tempFile);
   }
